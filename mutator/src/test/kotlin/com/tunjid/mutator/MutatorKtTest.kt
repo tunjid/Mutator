@@ -53,7 +53,6 @@ class MutatorKtTest {
         assertEquals(
             State(7),
             mutator.state
-                .onEach { println("uhhh $it") }
                 .filter { it.count == 7 }.first()
         )
     }

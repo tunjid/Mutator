@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -43,30 +42,29 @@ fun <State : Any> Flow<Mutation<State>>.reduceInto(initialState: State): Flow<St
 fun <Action : Any, State : Any> mutatorOf(
     scope: CoroutineScope,
     initialState: State,
-    started: SharingStarted = SharingStarted.WhileSubscribed(5000),
+    started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
     transform: (Flow<Action>) -> Flow<Mutation<State>>
-): Mutator<Action, State> {
+): Mutator<Action, State> = object : Mutator<Action, State> {
     val actions = MutableSharedFlow<Action>()
 
-    return object : Mutator<Action, State> {
-        override val scope: CoroutineScope get() = scope
+    override val scope: CoroutineScope get() = scope
 
-        override val state: StateFlow<State> =
-            transform(actions)
-                .reduceInto(initialState)
-                .onEach { println(it) }
-                .stateIn(
-                    scope = scope,
-                    started = started,
-                    initialValue = initialState
-                )
+    override val state: StateFlow<State> =
+        transform(actions)
+            .reduceInto(initialState)
+            .stateIn(
+                scope = scope,
+                started = started,
+                initialValue = initialState
+            )
 
-        override val accept: (Action) -> Unit = { action ->
-            scope.launch {
-                // Suspend till downstream is connected
-                actions.subscriptionCount.first { it > 0 }
-                actions.emit(action)
-            }
+    override val accept: (Action) -> Unit = { action ->
+        scope.launch {
+            // Suspend till downstream is connected
+            actions.subscriptionCount.first { it > 0 }
+            actions.emit(action)
         }
     }
 }
+
+private const val DefaultStopTimeoutMillis = 5000L
