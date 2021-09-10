@@ -17,6 +17,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     project.ext {
+
+        libGroupId = "com.tunjid"
+        libArtifactId = "mutator"
+        libVersion = "0.0.0"
+
         kotlin_version = '1.5.20'
 
         buildToolsVersion = "30.0.3"
@@ -37,13 +42,18 @@ buildscript {
         // Tests
         junit_version = "4.13.2"
         coroutines_test_version = "1.5.0"
+
+        // Artifactory publishing params
+        localProps = new Properties()
+
+        localProps.load(new FileInputStream(file("local.properties")))
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.1"
+        classpath "com.android.tools.build:gradle:7.0.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20"
 
         // NOTE: Do not place your application dependencies here; they belong

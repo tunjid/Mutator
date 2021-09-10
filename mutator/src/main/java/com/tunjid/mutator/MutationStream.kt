@@ -23,6 +23,38 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.scan
+
+/**
+ * Data class holding a change transform for a type [T].
+ */
+data class Mutation<T : Any>(
+    val mutate: T.() -> T
+)
+
+/**
+ * Class holding the context of the [Action] emitted that is being split out into
+ * a [Mutation] [Flow].
+ *
+ * Use typically involves invoking [type] to identify the [Action] stream being transformed, and
+ * subsequently invoking [flow] to perform a custom transformation on the split out [Flow].
+ */
+data class TransformationContext<Action : Any>(
+    private val type: Action,
+    val backing: Flow<Action>
+) {
+
+    /**
+     * A convenience for the backing [Flow] of the [Action] subtype  from the parent [Flow]
+     */
+    inline val <reified Subtype : Action> Subtype.flow: Flow<Subtype>
+        get() = backing as Flow<Subtype>
+
+    /**
+     * the first [Action] of the specified type emitted from the parent [Flow]
+     */
+    fun type() = type
+}
 
 /**
  * Transforms a [Flow] of [Action] to a [Flow] of [Mutation] of [State], allowing for finer grained
@@ -61,20 +93,8 @@ fun <Action : Any, State : Any> Flow<Action>.toMutationStream(
             transform = { it }
         )
 
-/**
- * Class holding context of the [Action] emitted that is being split out into a [Mutation] [Flow].
- * Use typically involves invoking [type] to identify the stream being transformed, and
- * subsequently invoking [flow] to perform a custom transformation on the split out [Flow].
- */
-data class TransformationContext<Action : Any>(
-    private val type: Action,
-    val backing: Flow<Action>
-) {
-    inline val <reified Subtype : Action> Subtype.flow: Flow<Subtype>
-        get() = backing as Flow<Subtype>
-
-    fun type() = type
-}
+fun <State : Any> Flow<Mutation<State>>.reduceInto(initialState: State): Flow<State> =
+    scan(initialState) { state, mutation -> mutation.mutate(state) }
 
 /**
  * Container for representing a [Flow] of a subtype of [Action] that has been split out from

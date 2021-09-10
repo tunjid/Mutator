@@ -26,28 +26,18 @@ import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-interface Mutator<Action : Any, State : Any> {
-    val scope: CoroutineScope
+interface StateHolder<Action : Any, State : Any> {
     val state: StateFlow<State>
     val accept: (Action) -> Unit
 }
 
-data class Mutation<T : Any>(
-    val mutate: T.() -> T
-)
-
-fun <State : Any> Flow<Mutation<State>>.reduceInto(initialState: State): Flow<State> =
-    scan(initialState) { state, mutation -> mutation.mutate(state) }
-
-fun <Action : Any, State : Any> mutatorOf(
+fun <Action : Any, State : Any> scopedStateHolder(
     scope: CoroutineScope,
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
     transform: (Flow<Action>) -> Flow<Mutation<State>>
-): Mutator<Action, State> = object : Mutator<Action, State> {
+): StateHolder<Action, State> = object : StateHolder<Action, State> {
     val actions = MutableSharedFlow<Action>()
-
-    override val scope: CoroutineScope get() = scope
 
     override val state: StateFlow<State> =
         transform(actions)
