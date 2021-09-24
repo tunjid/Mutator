@@ -87,13 +87,13 @@ afterEvaluate {
             }
         }
         repositories {
-            if (parent.ext.localProps['publishUrl']) {
+            if (parent.ext.localProps.publishUrl) {
                 maven {
-                    name = parent.ext.localProps['repoName']
-                    url = parent.ext.localProps['publishUrl']
+                    name = parent.ext.localProps.repoName
+                    url = parent.ext.localProps.publishUrl
                     credentials {
-                        username = parent.ext.localProps['username']
-                        password = parent.ext.localProps['password']
+                        username = parent.ext.localProps.username
+                        password = parent.ext.localProps.password
                     }
                 }
             }
@@ -101,9 +101,9 @@ afterEvaluate {
     }
 
     signing {
-        if (parent.ext.localProps['signingKey'] && parent.ext.localProps['signingPassword']) {
-            def signingKey = parent.ext.localProps['signingKey']
-            def signingPassword = parent.ext.localProps['signingPassword']
+        if (parent.ext.localProps.signingKey && parent.ext.localProps.signingPassword) {
+            def signingKey = parent.ext.localProps.signingKey
+            def signingPassword = parent.ext.localProps.signingPassword
             useInMemoryPgpKeys(signingKey, signingPassword)
             sign publishing.publications
         }
