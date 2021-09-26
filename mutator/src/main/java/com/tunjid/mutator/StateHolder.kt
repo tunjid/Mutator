@@ -17,18 +17,17 @@
 package com.tunjid.mutator
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 interface StateHolder<Action : Any, State : Any> {
     val state: StateFlow<State>
     val accept: (Action) -> Unit
 }
+
+fun <State: Any> StateHolder<Mutation<State>, State>.accept(
+    mutator: State.() -> State
+) = accept(Mutation(mutator))
 
 fun <Action : Any, State : Any> scopedStateHolder(
     scope: CoroutineScope,
@@ -53,6 +52,31 @@ fun <Action : Any, State : Any> scopedStateHolder(
             actions.subscriptionCount.first { it > 0 }
             actions.emit(action)
         }
+    }
+}
+
+fun <State : Any, SubState : Any> StateHolder<Mutation<State>, State>.derived(
+    scope: CoroutineScope,
+    mapper: (State) -> SubState,
+    mutator: (State, SubState) -> State
+) = object : StateHolder<Mutation<SubState>, SubState> {
+    override val state: StateFlow<SubState> =
+        this@derived.state
+            .map { mapper(it) }
+            .distinctUntilChanged()
+            .stateIn(
+                scope = scope,
+                started = SharingStarted.Eagerly,
+                initialValue = mapper(this@derived.state.value)
+            )
+
+    override val accept: (Mutation<SubState>) -> Unit = { mutation ->
+        this@derived.accept(Mutation {
+            val currentState = this
+            val mapped = mapper(currentState)
+            val mutated = mutation.mutate(mapped)
+            mutator(currentState, mutated)
+        })
     }
 }
 
