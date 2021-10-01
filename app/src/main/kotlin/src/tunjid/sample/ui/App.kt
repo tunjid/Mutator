@@ -9,13 +9,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import src.tunjid.sample.globalui.UiState
 import src.tunjid.sample.nav.MultiStackNav
+import src.tunjid.sample.nav.StackNav
+import src.tunjid.sample.ui.playground.PlaygroundRoute
 
 class App {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     val navStateHolder: StateHolder<Mutation<MultiStackNav>, MultiStackNav> = scopedStateHolder(
         scope = scope,
-        initialState = MultiStackNav(),
+        initialState = MultiStackNav(
+            currentIndex = 0,
+            stacks = listOf(
+                StackNav(
+                    name = "First",
+                    routes = listOf(PlaygroundRoute)
+                )
+            )
+        ),
         transform = { it }
     )
     val globalUiStateHolder: StateHolder<Mutation<UiState>, UiState> = scopedStateHolder(

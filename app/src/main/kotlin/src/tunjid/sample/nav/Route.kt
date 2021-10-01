@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 
 interface Route {
     @Composable
-    fun render()
+    fun Render()
 }
 
 data class StackNav(
