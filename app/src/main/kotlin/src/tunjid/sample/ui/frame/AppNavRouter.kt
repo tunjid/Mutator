@@ -23,7 +23,7 @@ internal fun AppNavRouter(
         .collectAsState()
 
     when (val route = routeState.value) {
-        is Route -> route.render()
+        is Route -> route.Render()
         else -> Box {
             Text(
                 modifier = Modifier

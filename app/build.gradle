@@ -43,7 +43,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.0.1'
+        kotlinCompilerExtensionVersion '1.0.0-beta09'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
