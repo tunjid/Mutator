@@ -1,4 +1,4 @@
-package src.tunjid.sample.ui.frame
+package com.tunjid.sample.ui.frame
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
@@ -18,10 +18,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.StateFlow
-import src.tunjid.sample.globalui.ToolbarItem
-import src.tunjid.sample.globalui.ToolbarState
-import src.tunjid.sample.ui.AppDependencies
-import src.tunjid.sample.ui.mapState
+import com.tunjid.sample.globalui.ToolbarItem
+import com.tunjid.sample.globalui.ToolbarState
+import com.tunjid.sample.ui.AppDependencies
+import com.tunjid.sample.ui.mapState
 
 @Composable
 internal fun BoxScope.AppToolbar(stateFlow: StateFlow<ToolbarState>) {

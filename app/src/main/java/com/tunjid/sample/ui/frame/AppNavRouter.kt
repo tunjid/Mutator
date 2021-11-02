@@ -1,4 +1,4 @@
-package src.tunjid.sample.ui.frame
+package com.tunjid.sample.ui.frame
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -8,10 +8,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.StateFlow
-import src.tunjid.sample.nav.MultiStackNav
-import src.tunjid.sample.nav.Route
-import src.tunjid.sample.nav.current
-import src.tunjid.sample.ui.mapState
+import com.tunjid.sample.nav.MultiStackNav
+import com.tunjid.sample.nav.Route
+import com.tunjid.sample.nav.current
+import com.tunjid.sample.ui.mapState
 
 @Composable
 internal fun AppNavRouter(

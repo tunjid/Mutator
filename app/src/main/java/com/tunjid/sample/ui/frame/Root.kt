@@ -1,16 +1,16 @@
-package src.tunjid.sample.ui.frame
+package com.tunjid.sample.ui.frame
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import src.tunjid.sample.globalui.UiState
-import src.tunjid.sample.globalui.bottomNavPositionalState
-import src.tunjid.sample.globalui.fragmentContainerState
-import src.tunjid.sample.globalui.toolbarState
-import src.tunjid.sample.ui.AppDependencies
-import src.tunjid.sample.ui.mapState
+import com.tunjid.sample.globalui.UiState
+import com.tunjid.sample.globalui.bottomNavPositionalState
+import com.tunjid.sample.globalui.fragmentContainerState
+import com.tunjid.sample.globalui.toolbarState
+import com.tunjid.sample.ui.AppDependencies
+import com.tunjid.sample.ui.mapState
 
 @Composable
 fun Root() {

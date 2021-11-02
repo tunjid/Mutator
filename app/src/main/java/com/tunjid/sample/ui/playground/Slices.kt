@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package src.tunjid.sample.ui.playground
+package com.tunjid.sample.ui.playground
 
 import android.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import com.tunjid.mutator.Mutation
-import src.tunjid.sample.globalui.InsetFlags
-import src.tunjid.sample.globalui.UiState
+import com.tunjid.sample.globalui.InsetFlags
+import com.tunjid.sample.globalui.UiState
 
 data class Slice<T : Any>(
     val name: String,

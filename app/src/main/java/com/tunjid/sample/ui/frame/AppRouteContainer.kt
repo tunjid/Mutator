@@ -1,4 +1,4 @@
-package src.tunjid.sample.ui.frame
+package com.tunjid.sample.ui.frame
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.Box
@@ -11,13 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import kotlinx.coroutines.flow.StateFlow
-import src.tunjid.sample.globalui.FragmentContainerPositionalState
-import src.tunjid.sample.globalui.keyboardSize
-import src.tunjid.sample.ui.countIf
-import src.tunjid.sample.ui.uiSizes
+import com.tunjid.sample.globalui.FragmentContainerPositionalState
+import com.tunjid.sample.globalui.keyboardSize
+import com.tunjid.sample.ui.countIf
+import com.tunjid.sample.ui.uiSizes
 
 @Composable
 internal fun AppRouteContainer(

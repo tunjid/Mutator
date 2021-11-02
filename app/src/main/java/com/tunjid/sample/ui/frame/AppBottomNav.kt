@@ -1,4 +1,4 @@
-package src.tunjid.sample.ui.frame
+package com.tunjid.sample.ui.frame
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.BoxScope
@@ -17,12 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import com.tunjid.mutator.accept
 import kotlinx.coroutines.flow.StateFlow
-import src.tunjid.sample.globalui.BottomNavPositionalState
-import src.tunjid.sample.ui.AppDependencies
-import src.tunjid.sample.ui.countIf
-import src.tunjid.sample.ui.uiSizes
+import com.tunjid.sample.globalui.BottomNavPositionalState
+import com.tunjid.sample.ui.AppDependencies
+import com.tunjid.sample.ui.countIf
+import com.tunjid.sample.ui.uiSizes
+import com.tunjid.mutator.accept
 
 @Composable
 internal fun BoxScope.AppBottomNav(

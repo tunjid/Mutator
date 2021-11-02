@@ -1,4 +1,4 @@
-package src.tunjid.sample.ui.playground
+package com.tunjid.sample.ui.playground
 
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.BorderStroke
@@ -30,10 +30,10 @@ import com.tunjid.mutator.StateHolder
 import com.tunjid.mutator.accept
 import com.tunjid.mutator.scopedStateHolder
 import kotlinx.coroutines.flow.Flow
-import src.tunjid.sample.globalui.UiState
-import src.tunjid.sample.nav.Route
-import src.tunjid.sample.ui.AppDependencies
-import src.tunjid.sample.ui.InitialUiState
+import com.tunjid.sample.globalui.UiState
+import com.tunjid.sample.nav.Route
+import com.tunjid.sample.ui.AppDependencies
+import com.tunjid.sample.ui.InitialUiState
 
 data class State(
     val selectedSlice: Slice<*>? = null,
