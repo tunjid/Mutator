@@ -26,6 +26,7 @@ import com.tunjid.sample.activityflow.permissionsMutator
 import com.tunjid.sample.globalui.UiState
 import com.tunjid.sample.nav.MultiStackNav
 import com.tunjid.sample.nav.StackNav
+import com.tunjid.sample.ui.permissions.PermissionsRoute
 import com.tunjid.sample.ui.playground.PlaygroundRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,8 +52,12 @@ class App : Application() {
                     currentIndex = 0,
                     stacks = listOf(
                         StackNav(
-                            name = "First",
+                            name = "UiState",
                             routes = listOf(PlaygroundRoute)
+                        ),
+                        StackNav(
+                            name = "Permissions",
+                            routes = listOf(PermissionsRoute)
                         )
                     )
                 ),
@@ -67,7 +72,12 @@ class App : Application() {
         override val permissionMutator: Mutator<String, StateFlow<Map<String, Boolean>>> =
             permissionsMutator(
                 scope = scope,
-                permissions = listOf(Manifest.permission.ACCESS_FINE_LOCATION)
+                permissions = listOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.RECORD_AUDIO,
+                )
             )
     }
 }
