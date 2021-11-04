@@ -20,12 +20,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-interface StateHolder<Action : Any, State : Any> {
+interface Mutator<Action : Any, State : Any> {
     val state: StateFlow<State>
     val accept: (Action) -> Unit
 }
 
-fun <State: Any> StateHolder<Mutation<State>, State>.accept(
+fun <State: Any> Mutator<Mutation<State>, State>.accept(
     mutator: State.() -> State
 ) = accept(Mutation(mutator))
 
@@ -34,7 +34,7 @@ fun <Action : Any, State : Any> scopedStateHolder(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
     transform: (Flow<Action>) -> Flow<Mutation<State>>
-): StateHolder<Action, State> = object : StateHolder<Action, State> {
+): Mutator<Action, State> = object : Mutator<Action, State> {
     val actions = MutableSharedFlow<Action>()
 
     override val state: StateFlow<State> =
@@ -55,11 +55,11 @@ fun <Action : Any, State : Any> scopedStateHolder(
     }
 }
 
-fun <State : Any, SubState : Any> StateHolder<Mutation<State>, State>.derived(
+fun <State : Any, SubState : Any> Mutator<Mutation<State>, State>.derived(
     scope: CoroutineScope,
     mapper: (State) -> SubState,
     mutator: (State, SubState) -> State
-) = object : StateHolder<Mutation<SubState>, SubState> {
+) = object : Mutator<Mutation<SubState>, SubState> {
     override val state: StateFlow<SubState> =
         this@derived.state
             .map { mapper(it) }

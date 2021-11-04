@@ -73,7 +73,7 @@ internal fun ActionMenu(stateFlow: StateFlow<List<ToolbarItem>>) {
 
 @Composable
 fun ToolbarIcon(item: ToolbarItem) {
-    val uiStateHolder = AppDependencies.current.globalUiStateHolder
+    val uiStateHolder = AppDependencies.current.globalUiMutator
     val scope = rememberCoroutineScope()
 
     val clicks by uiStateHolder.state

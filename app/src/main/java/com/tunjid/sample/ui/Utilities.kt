@@ -46,7 +46,7 @@ private data class MutableFunction<T>(var backing: (T) -> Unit = {}) : (T) -> Un
 
 @Composable
 fun InitialUiState(state: UiState) {
-    val uiStateHolder = AppDependencies.current.globalUiStateHolder
+    val uiStateHolder = AppDependencies.current.globalUiMutator
 
     val toolbarMenuClickListener = remember {
         MutableFunction(state.toolbarMenuClickListener)

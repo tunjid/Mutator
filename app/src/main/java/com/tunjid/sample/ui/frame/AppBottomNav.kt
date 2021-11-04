@@ -28,7 +28,7 @@ import com.tunjid.mutator.accept
 internal fun BoxScope.AppBottomNav(
     stateFlow: StateFlow<BottomNavPositionalState>
 ) {
-    val navStateHolder = AppDependencies.current.navStateHolder
+    val navStateHolder = AppDependencies.current.navMutator
     val nav by navStateHolder.state.collectAsState()
     val state by stateFlow.collectAsState()
 

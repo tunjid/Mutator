@@ -18,7 +18,7 @@ package com.tunjid.sample.ui
 
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.StateHolder
+import com.tunjid.mutator.Mutator
 import com.tunjid.mutator.scopedStateHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +31,7 @@ import com.tunjid.sample.ui.playground.PlaygroundRoute
 class App {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-    val navStateHolder: StateHolder<Mutation<MultiStackNav>, MultiStackNav> = scopedStateHolder(
+    val navMutator: Mutator<Mutation<MultiStackNav>, MultiStackNav> = scopedStateHolder(
         scope = scope,
         initialState = MultiStackNav(
             currentIndex = 0,
@@ -44,7 +44,7 @@ class App {
         ),
         transform = { it }
     )
-    val globalUiStateHolder: StateHolder<Mutation<UiState>, UiState> = scopedStateHolder(
+    val globalUiMutator: Mutator<Mutation<UiState>, UiState> = scopedStateHolder(
         scope = scope,
         initialState = UiState(),
         transform = { it }

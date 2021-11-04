@@ -15,8 +15,8 @@ import com.tunjid.sample.ui.mapState
 @Composable
 fun Root() {
     val rootScope = rememberCoroutineScope()
-    val uiStateFlow = AppDependencies.current.globalUiStateHolder.state
-    val navStateFlow = AppDependencies.current.navStateHolder.state
+    val uiStateFlow = AppDependencies.current.globalUiMutator.state
+    val navStateFlow = AppDependencies.current.navMutator.state
 
     Box(
         modifier = Modifier.fillMaxSize()

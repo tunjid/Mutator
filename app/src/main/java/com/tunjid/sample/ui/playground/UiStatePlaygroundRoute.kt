@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.getSystemService
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.StateHolder
+import com.tunjid.mutator.Mutator
 import com.tunjid.mutator.accept
 import com.tunjid.mutator.scopedStateHolder
 import kotlinx.coroutines.flow.Flow
@@ -44,11 +44,11 @@ object PlaygroundRoute : Route {
     @Composable
     override fun Render() {
         val scope = rememberCoroutineScope()
-        val globalUiStateHolder = AppDependencies.current.globalUiStateHolder
+        val globalUiStateHolder = AppDependencies.current.globalUiMutator
 
         PlaygroundScreen(
-            globalUiStateHolder = globalUiStateHolder,
-            stateHolder = remember {
+            globalUiMutator = globalUiStateHolder,
+            mutator = remember {
                 scopedStateHolder(
                     scope = scope,
                     initialState = State(),
@@ -61,8 +61,8 @@ object PlaygroundRoute : Route {
 
 @Composable
 private fun PlaygroundScreen(
-    globalUiStateHolder: StateHolder<Mutation<UiState>, UiState>,
-    stateHolder: StateHolder<Mutation<State>, State>
+    globalUiMutator: Mutator<Mutation<UiState>, UiState>,
+    mutator: Mutator<Mutation<State>, State>
 ) {
     val imm = LocalContext.current.getSystemService<InputMethodManager>()
     val showKeyBoard = {
@@ -84,8 +84,8 @@ private fun PlaygroundScreen(
         )
     )
 
-    val globalUiState by globalUiStateHolder.state.collectAsState()
-    val state by stateHolder.state.collectAsState()
+    val globalUiState by globalUiMutator.state.collectAsState()
+    val state by mutator.state.collectAsState()
     val selectedSlice = state.selectedSlice
 
     LazyColumn {
@@ -97,7 +97,7 @@ private fun PlaygroundScreen(
                     StrokedBox(
                         modifier = Modifier
                             .clickable {
-                                stateHolder.accept { copy(selectedSlice = slice) }
+                                mutator.accept { copy(selectedSlice = slice) }
                             }
                             .fillMaxWidth(),
                         content = {
@@ -131,9 +131,9 @@ private fun PlaygroundScreen(
     }
 
     if (selectedSlice != null) ChangeDialog(
-        stateHolder = stateHolder,
+        mutator = mutator,
         selectedSlice = selectedSlice,
-        onChange = globalUiStateHolder.accept
+        onChange = globalUiMutator.accept
     )
 }
 
@@ -156,7 +156,7 @@ private fun StrokedBox(
 
 @Composable
 private fun ChangeDialog(
-    stateHolder: StateHolder<Mutation<State>, State>,
+    mutator: Mutator<Mutation<State>, State>,
     selectedSlice: Slice<*>,
     onChange: (Mutation<UiState>) -> Unit,
 ) {
@@ -165,7 +165,7 @@ private fun ChangeDialog(
             // Dismiss the dialog when the user clicks outside the dialog or on the back
             // button. If you want to disable that functionality, simply use an empty
             // onCloseRequest.
-            stateHolder.accept { copy(selectedSlice = null) }
+            mutator.accept { copy(selectedSlice = null) }
         },
         title = {
             Text(text = "Dialog Title")
@@ -180,7 +180,7 @@ private fun ChangeDialog(
                         Text(
                             modifier = Modifier.clickable {
                                 onChange(selectedSlice.select(index))
-                                stateHolder.accept { copy(selectedSlice = null) }
+                                mutator.accept { copy(selectedSlice = null) }
                             },
                             text = selectedSlice.optionName(index)
                         )
