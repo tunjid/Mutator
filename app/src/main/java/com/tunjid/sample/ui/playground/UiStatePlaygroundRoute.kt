@@ -32,7 +32,7 @@ import com.tunjid.mutator.stateFlowMutator
 import kotlinx.coroutines.flow.Flow
 import com.tunjid.sample.globalui.UiState
 import com.tunjid.sample.nav.Route
-import com.tunjid.sample.ui.AppDependencies
+import com.tunjid.sample.AppDependencies
 import com.tunjid.sample.ui.InitialUiState
 import kotlinx.coroutines.flow.StateFlow
 

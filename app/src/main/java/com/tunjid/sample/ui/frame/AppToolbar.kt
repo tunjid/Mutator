@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.StateFlow
 import com.tunjid.sample.globalui.ToolbarItem
 import com.tunjid.sample.globalui.ToolbarState
-import com.tunjid.sample.ui.AppDependencies
+import com.tunjid.sample.AppDependencies
 import com.tunjid.sample.ui.mapState
 
 @Composable

@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import kotlinx.coroutines.flow.StateFlow
 import com.tunjid.sample.globalui.BottomNavPositionalState
-import com.tunjid.sample.ui.AppDependencies
+import com.tunjid.sample.AppDependencies
 import com.tunjid.sample.ui.countIf
 import com.tunjid.sample.ui.uiSizes
 import com.tunjid.mutator.accept
