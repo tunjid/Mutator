@@ -28,7 +28,7 @@ import androidx.core.content.getSystemService
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.Mutator
 import com.tunjid.mutator.accept
-import com.tunjid.mutator.scopedStateHolder
+import com.tunjid.mutator.stateFlowMutator
 import kotlinx.coroutines.flow.Flow
 import com.tunjid.sample.globalui.UiState
 import com.tunjid.sample.nav.Route
@@ -49,7 +49,7 @@ object PlaygroundRoute : Route {
         PlaygroundScreen(
             globalUiMutator = globalUiStateHolder,
             mutator = remember {
-                scopedStateHolder(
+                stateFlowMutator(
                     scope = scope,
                     initialState = State(),
                     transform = { flow: Flow<Mutation<State>> -> flow }

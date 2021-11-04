@@ -26,13 +26,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.scan
 
 /**
- * Data class holding a change transform for a type [T].
- */
-data class Mutation<T : Any>(
-    val mutate: T.() -> T
-)
-
-/**
  * Class holding the context of the [Action] emitted that is being split out into
  * a [Mutation] [Flow].
  *

@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class MutationStreamKtTest {
+class FlowMutationStreamKtTest {
     @Test
     fun `simple stream splitting`() = runBlocking {
         val actions = listOf(

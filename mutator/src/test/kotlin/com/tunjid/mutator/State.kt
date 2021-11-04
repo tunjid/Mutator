@@ -31,5 +31,4 @@ val Action.mutation: Mutation<State>
     get() = when (this) {
         is Action.Add -> Mutation { copy(count = count + value) }
         is Action.Subtract -> Mutation { copy(count = count - value) }
-
     }
