@@ -27,11 +27,12 @@ import com.tunjid.sample.globalui.UiState
 import com.tunjid.sample.nav.MultiStackNav
 import com.tunjid.sample.nav.StackNav
 import com.tunjid.sample.ui.playground.PlaygroundRoute
+import kotlinx.coroutines.flow.StateFlow
 
 class App {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-    val navMutator: Mutator<Mutation<MultiStackNav>, MultiStackNav> = stateFlowMutator(
+    val navMutator: Mutator<Mutation<MultiStackNav>, StateFlow<MultiStackNav>> = stateFlowMutator(
         scope = scope,
         initialState = MultiStackNav(
             currentIndex = 0,
@@ -44,7 +45,7 @@ class App {
         ),
         transform = { it }
     )
-    val globalUiMutator: Mutator<Mutation<UiState>, UiState> = stateFlowMutator(
+    val globalUiMutator: Mutator<Mutation<UiState>, StateFlow<UiState>> = stateFlowMutator(
         scope = scope,
         initialState = UiState(),
         transform = { it }

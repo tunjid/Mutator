@@ -34,6 +34,7 @@ import com.tunjid.sample.globalui.UiState
 import com.tunjid.sample.nav.Route
 import com.tunjid.sample.ui.AppDependencies
 import com.tunjid.sample.ui.InitialUiState
+import kotlinx.coroutines.flow.StateFlow
 
 data class State(
     val selectedSlice: Slice<*>? = null,
@@ -61,8 +62,8 @@ object PlaygroundRoute : Route {
 
 @Composable
 private fun PlaygroundScreen(
-    globalUiMutator: Mutator<Mutation<UiState>, UiState>,
-    mutator: Mutator<Mutation<State>, State>
+    globalUiMutator: Mutator<Mutation<UiState>, StateFlow<UiState>>,
+    mutator: Mutator<Mutation<State>, StateFlow<State>>
 ) {
     val imm = LocalContext.current.getSystemService<InputMethodManager>()
     val showKeyBoard = {
@@ -156,7 +157,7 @@ private fun StrokedBox(
 
 @Composable
 private fun ChangeDialog(
-    mutator: Mutator<Mutation<State>, State>,
+    mutator: Mutator<Mutation<State>, StateFlow<State>>,
     selectedSlice: Slice<*>,
     onChange: (Mutation<UiState>) -> Unit,
 ) {

@@ -32,7 +32,7 @@ fun <Action : Any, State : Any> stateFlowMutator(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
     transform: (Flow<Action>) -> Flow<Mutation<State>>
-): Mutator<Action, State> = object : Mutator<Action, State> {
+): Mutator<Action, StateFlow<State>> = object : Mutator<Action, StateFlow<State>> {
     val actions = MutableSharedFlow<Action>()
 
     override val state: StateFlow<State> =
@@ -53,11 +53,11 @@ fun <Action : Any, State : Any> stateFlowMutator(
     }
 }
 
-fun <State : Any, SubState : Any> Mutator<Mutation<State>, State>.derived(
+fun <State : Any, SubState : Any> Mutator<Mutation<State>, StateFlow<State>>.derived(
     scope: CoroutineScope,
     mapper: (State) -> SubState,
     mutator: (State, SubState) -> State
-) = object : Mutator<Mutation<SubState>, SubState> {
+) = object : Mutator<Mutation<SubState>, StateFlow<SubState>> {
     override val state: StateFlow<SubState> =
         this@derived.state
             .map { mapper(it) }
