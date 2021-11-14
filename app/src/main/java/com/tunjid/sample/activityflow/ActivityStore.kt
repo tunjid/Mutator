@@ -23,29 +23,32 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
 
-data class ActivityCache(
-    val status: Lifecycle.Event = Lifecycle.Event.ON_DESTROY,
-    val map: Map<Lifecycle.Event, List<ComponentActivity>> = Lifecycle.Event.values()
-        .fold(mutableMapOf()) { map, status ->
-            map[status] = listOf()
+data class ActivityStore(
+    val latestEvent: Lifecycle.Event = Lifecycle.Event.ON_DESTROY,
+    val eventToActivities: Map<Lifecycle.Event, List<ComponentActivity>> = Lifecycle.Event.values()
+        // Do not keep references to destroyed activities
+        .filter { it != Lifecycle.Event.ON_DESTROY && it != Lifecycle.Event.ON_ANY }
+        .fold(mutableMapOf()) { map, event ->
+            map[event] = listOf()
             map
         }
 )
 
 
-fun Context.activityCache(onChanged: (ActivityCache) -> Unit) {
-    var cache = ActivityCache()
+fun Context.activityCache(onChanged: (ActivityStore) -> Unit) {
+    var cache = ActivityStore()
     fun send(event: Lifecycle.Event, activity: Activity) {
-        if (activity is ComponentActivity) {
-            cache = cache.copy(
-                status = event,
-                map = cache.map.mapValues { (key, value) ->
-                    if (key == event) (value - activity) + activity
-                    else value - activity
-                }
-            )
-            onChanged(cache)
-        }
+        if (activity !is ComponentActivity) return
+
+        cache = cache.copy(
+            latestEvent = event,
+            eventToActivities = cache.eventToActivities.mapValues { (key, value) ->
+                // Keep the most recently changed activity at the end of the list
+                if (key == event) (value - activity) + activity
+                else value - activity
+            }
+        )
+        onChanged(cache)
     }
 
     val callbacks = object :

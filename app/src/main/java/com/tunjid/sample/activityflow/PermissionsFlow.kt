@@ -53,12 +53,12 @@ fun Context.permissionsMutator(
             var permissionCache = PermissionsCache()
 
             activityCache { activityCache ->
-                val activityList = activityCache.map[activityCache.status]
+                val activityList = activityCache.eventToActivities[activityCache.latestEvent]
                 if (activityList == null || activityList.isEmpty()) return@activityCache
 
                 val activity = activityList.last()
 
-                permissionCache = when (activityCache.status) {
+                permissionCache = when (activityCache.latestEvent) {
                     Lifecycle.Event.ON_CREATE -> permissionCache.copy(
                         activeActivity = activity,
                         map = permissionCache.map + (activity to permissions.map { permission ->
