@@ -62,7 +62,7 @@ fun Context.permissionsMutator(
                     Lifecycle.Event.ON_CREATE -> permissionCache.copy(
                         activeActivity = activity,
                         map = permissionCache.map + (activity to permissions.map { permission ->
-                            permission to activity.permissionStateHolder(permission)
+                            permission to activity.permissionMutator(permission)
                         }.toMap())
                     )
                     Lifecycle.Event.ON_DESTROY -> permissionCache.copy(
@@ -115,7 +115,7 @@ fun Context.permissionsMutator(
 }
 
 
-private fun ComponentActivity.permissionStateHolder(permissionString: String): Mutator<Unit, StateFlow<Boolean>> {
+private fun ComponentActivity.permissionMutator(permissionString: String): Mutator<Unit, StateFlow<Boolean>> {
 
     val stateFlow = MutableStateFlow(hasPermission(permissionString))
 
