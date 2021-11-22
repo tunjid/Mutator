@@ -52,9 +52,9 @@ fun Context.permissionsMutator(
         override val state: StateFlow<PermissionsCache> = callbackFlow {
             var permissionCache = PermissionsCache()
 
-            activityCache { activityCache ->
+            onActivitiesChanged { activityCache ->
                 val activityList = activityCache.eventToActivities[activityCache.latestEvent]
-                if (activityList == null || activityList.isEmpty()) return@activityCache
+                if (activityList == null || activityList.isEmpty()) return@onActivitiesChanged
 
                 val activity = activityList.last()
 

@@ -35,7 +35,7 @@ data class ActivityStore(
 )
 
 
-fun Context.activityCache(onChanged: (ActivityStore) -> Unit) {
+fun Context.onActivitiesChanged(onChanged: (ActivityStore) -> Unit) {
     var cache = ActivityStore()
     fun send(event: Lifecycle.Event, activity: Activity) {
         if (activity !is ComponentActivity) return
