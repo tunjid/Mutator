@@ -37,7 +37,7 @@ data class ActivityStore(
 
 fun Context.onActivitiesChanged(onChanged: (ActivityStore) -> Unit) {
     var cache = ActivityStore()
-    fun send(event: Lifecycle.Event, activity: Activity) {
+    fun reduce(event: Lifecycle.Event, activity: Activity) {
         if (activity !is ComponentActivity) return
 
         cache = cache.copy(
@@ -54,22 +54,22 @@ fun Context.onActivitiesChanged(onChanged: (ActivityStore) -> Unit) {
     val callbacks = object :
         Application.ActivityLifecycleCallbacks {
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) =
-            send(Lifecycle.Event.ON_CREATE, activity)
+            reduce(Lifecycle.Event.ON_CREATE, activity)
 
         override fun onActivityStarted(activity: Activity) =
-            send(Lifecycle.Event.ON_START, activity)
+            reduce(Lifecycle.Event.ON_START, activity)
 
         override fun onActivityResumed(activity: Activity) =
-            send(Lifecycle.Event.ON_RESUME, activity)
+            reduce(Lifecycle.Event.ON_RESUME, activity)
 
-        override fun onActivityPaused(activity: Activity) = send(Lifecycle.Event.ON_PAUSE, activity)
+        override fun onActivityPaused(activity: Activity) = reduce(Lifecycle.Event.ON_PAUSE, activity)
 
-        override fun onActivityStopped(activity: Activity) = send(Lifecycle.Event.ON_STOP, activity)
+        override fun onActivityStopped(activity: Activity) = reduce(Lifecycle.Event.ON_STOP, activity)
 
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
 
         override fun onActivityDestroyed(activity: Activity) =
-            send(Lifecycle.Event.ON_DESTROY, activity)
+            reduce(Lifecycle.Event.ON_DESTROY, activity)
 
     }
     val app = (applicationContext as Application)

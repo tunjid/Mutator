@@ -128,7 +128,7 @@ private fun ComponentActivity.permissionMutator(permissionString: String): Mutat
             if (event == Lifecycle.Event.ON_DESTROY) trySend(false)
         }
         lifecycle.addObserver(observer)
-        awaitClose { }
+        awaitClose { lifecycle.removeObserver(observer) }
     }
         .onStart { emit(true) }
 
