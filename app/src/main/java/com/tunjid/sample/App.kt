@@ -21,7 +21,7 @@ import android.app.Application
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.Mutator
-import com.tunjid.mutator.stateFlowMutator
+import com.tunjid.mutator.coroutines.stateFlowMutator
 import com.tunjid.sample.activityflow.permissionsMutator
 import com.tunjid.sample.globalui.UiState
 import com.tunjid.sample.nav.MultiStackNav

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tunjid.mutator
+package com.tunjid.mutator.coroutines
 
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.distinctUntilChanged

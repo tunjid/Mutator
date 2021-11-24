@@ -28,7 +28,7 @@ import androidx.core.content.getSystemService
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.Mutator
 import com.tunjid.mutator.accept
-import com.tunjid.mutator.stateFlowMutator
+import com.tunjid.mutator.coroutines.stateFlowMutator
 import kotlinx.coroutines.flow.Flow
 import com.tunjid.sample.globalui.UiState
 import com.tunjid.sample.nav.Route

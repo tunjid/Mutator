@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.tunjid.mutator
+package com.tunjid.mutator.coroutines
 
+import com.tunjid.mutator.Mutation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow

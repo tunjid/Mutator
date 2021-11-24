@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package com.tunjid.mutator
+package com.tunjid.mutator.coroutines
+import com.tunjid.mutator.Mutation
 
 data class State(
     val count: Int = 0
