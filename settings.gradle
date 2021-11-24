@@ -19,10 +19,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
     }
 }
 rootProject.name = "Mutator"
 include ':app'
-include ':mutator'
-include ':mutator-coroutines'
+include ':core'
+include ':coroutines'
