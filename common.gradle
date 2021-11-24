@@ -42,7 +42,7 @@ afterEvaluate {
             lib(MavenPublication) {
                 version = project.version
                 groupId project.group
-                artifactId project.getName()
+                artifactId project.name
 
                 from components.java
 
@@ -51,7 +51,7 @@ afterEvaluate {
                     artifact javadocJar
 
                     pom {
-                        name = project.getName()
+                        name = project.name
                         description = "A tiny library for representing mutable states and the types that drive said mutations"
                         url = 'https://github.com/tunjid/Mutator'
                         licenses {
