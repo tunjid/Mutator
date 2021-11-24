@@ -52,7 +52,7 @@ afterEvaluate {
 
                     pom {
                         name = project.getName()
-                        description = "A tiny redux-like library that makes it easy to transform streams of actions into streams of state"
+                        description = "A tiny library for representing mutable states and the types that drive said mutations"
                         url = 'https://github.com/tunjid/Mutator'
                         licenses {
                             license {

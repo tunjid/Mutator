@@ -17,11 +17,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     project.ext {
-
-        libGroupId = "com.tunjid"
-        libArtifactId = "mutator"
-        libVersion = "0.0.0"
-
         kotlin_version = '1.5.31'
 
         buildToolsVersion = "30.0.3"
