@@ -28,11 +28,18 @@ fun <Action : Any, State : Any> stateFlowMutator(
     started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
     transform: (Flow<Action>) -> Flow<Mutation<State>>
 ): Mutator<Action, StateFlow<State>> = object : Mutator<Action, StateFlow<State>> {
+    var seed = initialState
     val actions = MutableSharedFlow<Action>()
 
     override val state: StateFlow<State> =
-        transform(actions)
-            .reduceInto(initialState)
+        flow {
+            // Seed the reduction with the last produced state
+            emitAll(
+                transform(actions)
+                    .reduceInto(seed)
+                    .onEach(::seed::set)
+            )
+        }
             .stateIn(
                 scope = scope,
                 started = started,
