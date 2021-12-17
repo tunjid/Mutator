@@ -20,6 +20,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 java {
+    withSourcesJar()
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
@@ -98,12 +99,6 @@ afterEvaluate {
             sign publishing.publications
         }
     }
-}
-
-// Gradle task to generate sources after building a release aar
-task sourcesJar(type: Jar) {
-    archiveClassifier = 'sources'
-    from sourceSets.main.allJava
 }
 
 task javadocJar(type: Jar) {
