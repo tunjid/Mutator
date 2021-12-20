@@ -98,37 +98,37 @@ In the above, fetching may need to be done consecutively, whereas only the most 
 sorting request should be honored. A `StateFlow` `Mutator` for the above therefore may resemble:
 
 ```kotlin
-        val mutator = stateFlowMutator<Action, State>(
-            scope = scope,
-            initialState = State(comparator = defaultComparator),
-            started = SharingStarted.WhileSubscribed(),
-            transform = { actions ->
-                actions.toMutationStream {
-                    when (val action = type()) {
-                        is Action.Fetch -> action.flow
-                            .map { fetch ->
-                                val fetched = repository.get(fetch.query)
-                                Mutation {
-                                    copy(
-                                        items = (items + fetched).sortedWith(comparator),
-                                    )
-                                }
-                            }
-                        is Action.Subtract -> action.flow
-                            .flatMapLatest { sort ->
-                                flowOf(
-                                    Mutation {
-                                        copy(
-                                            comparator = sort.comparator,
-                                            items = items.sortedWith(comparator)
-                                        )
-                                    }
+val mutator = stateFlowMutator<Action, State>(
+    scope = scope,
+    initialState = State(comparator = defaultComparator),
+    started = SharingStarted.WhileSubscribed(),
+    transform = { actions ->
+        actions.toMutationStream {
+            when (val action = type()) {
+                is Action.Fetch -> action.flow
+                    .map { fetch ->
+                        val fetched = repository.get(fetch.query)
+                        Mutation {
+                            copy(
+                                items = (items + fetched).sortedWith(comparator),
+                            )
+                        }
+                    }
+                is Action.Subtract -> action.flow
+                    .flatMapLatest { sort ->
+                        flowOf(
+                            Mutation {
+                                copy(
+                                    comparator = sort.comparator,
+                                    items = items.sortedWith(comparator)
                                 )
                             }
+                        )
                     }
-                }
             }
-        )
+        }
+    }
+)
 ```
 
 In the above, by splitting the `Action` `Flow` into independent `Flows` of it's subtypes,
