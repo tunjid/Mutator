@@ -22,13 +22,13 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import kotlinx.coroutines.test.runTest
+import kotlin.test.*
+
 
 class FlowMutationStreamKtTest {
     @Test
-    fun `simple stream splitting`() = runBlocking {
+    fun `simple stream splitting`() = runTest {
         val actions = listOf(
             Action.Add(value = 1),
             Action.Add(value = 1),
@@ -49,7 +49,7 @@ class FlowMutationStreamKtTest {
     }
 
     @Test
-    fun `stream splitting with common flow operator`() = runBlocking {
+    fun `stream splitting with common flow operator`() = runTest {
         val actions = listOf(
             Action.Add(value = 1),
             Action.Add(value = 1),
@@ -83,7 +83,7 @@ class FlowMutationStreamKtTest {
     }
 
     @Test
-    fun `stream splitting with different flow operators`() = runBlocking {
+    fun `stream splitting with different flow operators`() = runTest {
         val actions = listOf(
             Action.Add(value = -1),
             Action.Add(value = 1),

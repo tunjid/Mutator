@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
+import org.gradle.kotlin.dsl.`kotlin-dsl`
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
 }
-rootProject.name = "Mutator"
-include ':app'
-include ':core'
-include ':coroutines'
+
+plugins {
+    `kotlin-dsl`
+}
+
+dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
+}

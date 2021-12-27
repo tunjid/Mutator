@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-apply from: "${project.rootDir}/common.gradle"
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+plugins {
+    `kotlin-library-convention`
 }
