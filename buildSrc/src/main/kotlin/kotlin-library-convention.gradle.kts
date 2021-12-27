@@ -76,12 +76,7 @@ afterEvaluate {
                 groupId = project.group as String
                 artifactId = project.name as String
 
-                from(components["java"])
-
                 afterEvaluate {
-//                    artifact sourcesJar
-//                    artifact javadocJar
-
                     pom {
                         name.set(project.name)
                         description.set("A tiny library for representing mutable states and the types that drive said mutations")
