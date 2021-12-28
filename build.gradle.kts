@@ -16,46 +16,38 @@
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    project.ext {
-        kotlin_version = '1.5.31'
-
-        buildToolsVersion = "30.0.3"
-        compileSdkVersion = 31
-        targetSdkVersion = 31
-        minSdkVersion = 21
-
-        coroutines_version = "1.5.0"
-
-        app_compat_version = '1.3.0'
-        core_ktx_version = '1.5.0'
-        activity_version = '1.2.3'
-        recycler_view_version = "1.2.1"
-        fragment_version = '1.3.5'
-        material_version = '1.3.0'
-
-        // Tests
-        junit_version = "4.13.2"
-        coroutines_test_version = "1.5.0"
-
-        localProps = new Properties()
-        localProps.load(new FileInputStream(file("local.properties")))
-
-        libProps = new Properties()
-        libProps.load(new FileInputStream(file("libraryVersion.properties")))
+    extra.apply {
+        set("buildToolsVersion", "30.0.2")
+        set("compileSdkVersion", 30)
+        set("targetSdkVersion", 30)
+        set("minSdkVersion", 21)
+        set("localProps", java.util.Properties().apply {
+            load(java.io.FileInputStream(file("local.properties")))
+        })
+        set("libProps", java.util.Properties().apply {
+            load(java.io.FileInputStream(file("libraryVersion.properties")))
+        })
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.3"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
+        classpath("com.android.tools.build:gradle:7.0.4")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+tasks.register("clean", Delete::class) {
+    delete(rootProject.buildDir)
 }
