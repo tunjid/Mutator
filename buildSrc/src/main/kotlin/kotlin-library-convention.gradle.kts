@@ -68,39 +68,33 @@ allprojects {
     }
 }
 
-afterEvaluate {
     publishing {
         publications {
-            register("lib", MavenPublication::class) {
-                version = project.version as String
-                groupId = project.group as String
-                artifactId = project.name as String
-
-                afterEvaluate {
-                    pom {
-                        name.set(project.name)
-                        description.set("A tiny library for representing mutable states and the types that drive said mutations")
-                        url.set("https://github.com/tunjid/Mutator")
-                        licenses {
-                            license {
-                                name.set("Apache License 2.0")
-                                url.set("https://github.com/tunjid/Mutator/blob/main/LICENSE")
-                            }
-                        }
-                        developers {
-                            developer {
-                                id.set("tunjid")
-                                name.set("Adetunji Dahunsi")
-                                email.set("tjdah100@gmail.com")
-                            }
-                        }
-                        scm {
-                            connection.set("scm:git:github.com/tunjid/Mutator.git")
-                            developerConnection.set("scm:git:ssh://github.com/tunjid/Mutator.git")
-                            url.set("https://github.com/tunjid/Mutator/tree/main")
+            withType<MavenPublication> {
+                pom {
+                    name.set(project.name)
+                    description.set("A tiny library for representing mutable states and the types that drive said mutations")
+                    url.set("https://github.com/tunjid/Mutator")
+                    licenses {
+                        license {
+                            name.set("Apache License 2.0")
+                            url.set("https://github.com/tunjid/Mutator/blob/main/LICENSE")
                         }
                     }
+                    developers {
+                        developer {
+                            id.set("tunjid")
+                            name.set("Adetunji Dahunsi")
+                            email.set("tjdah100@gmail.com")
+                        }
+                    }
+                    scm {
+                        connection.set("scm:git:github.com/tunjid/Mutator.git")
+                        developerConnection.set("scm:git:ssh://github.com/tunjid/Mutator.git")
+                        url.set("https://github.com/tunjid/Mutator/tree/main")
+                    }
                 }
+
             }
         }
         repositories {
@@ -120,7 +114,7 @@ afterEvaluate {
             }
         }
     }
-}
+
 
 signing {
     val localProperties = parent?.ext?.get("localProps") as? java.util.Properties
