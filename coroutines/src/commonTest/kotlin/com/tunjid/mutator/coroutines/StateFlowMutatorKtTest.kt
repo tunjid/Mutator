@@ -1,7 +1,6 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutator
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filter
@@ -9,19 +8,17 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineScope
-import org.junit.Test
+import kotlinx.coroutines.test.runTest
+import kotlin.test.*
 
 class StateFlowMutatorKtTest {
 
     @Test
-    fun stateFlowMutatorRemembersLastValue() = runBlocking {
-        val testScope = TestCoroutineScope()
+    fun stateFlowMutatorRemembersLastValue() = runTest {
         val results = mutableListOf<State>()
 
         val mutator = stateFlowMutator<Action, State>(
-            scope = testScope,
+            scope = this,
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             transform = { actions ->
@@ -57,6 +54,7 @@ class StateFlowMutatorKtTest {
         mutator.state.filter { it.count == 2 }.first()
         assertEquals(
             listOf(
+                State(),
                 State(),
                 State(2),
             ),

@@ -17,14 +17,7 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutation
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.flow.*
 
 /**
  * Class holding the context of the [Action] emitted that is being split out into
@@ -56,28 +49,51 @@ data class TransformationContext<Action : Any>(
  * than others. For example: a certain action may need to only cause mutations on distinct
  * emissions, whereas other actions may need to use more complex [Flow] transformations like
  * [Flow.flatMapMerge] and so on.
+ *
+ *  [transform]: a function for mapping independent [Flow]s of [Action] to [Flow]s of [State]
+ *  [Mutation]s
+ * @see [splitByType]
  */
 fun <Action : Any, State : Any> Flow<Action>.toMutationStream(
     // Ergonomic hack to simulate multiple receivers
     transform: TransformationContext<Action>.() -> Flow<Mutation<State>>
-): Flow<Mutation<State>> =
-    channelFlow<Flow<Mutation<State>>> mutationFlow@{
-        val keysToFlowHolders = mutableMapOf<String, FlowHolder<Action>>()
-        this@toMutationStream
+): Flow<Mutation<State>> = splitByType(
+    selector = { it },
+    transform = transform
+)
+
+/**
+ * Transforms a [Flow] of [Input] to a [Flow] of [Output] by splitting the original into [Flow]s
+ * of type [Selector]. Each independent [Flow] of the [Selector] type can then be transformed
+ * into a [Flow] of [Output].
+ *
+ * [selector]: The mapping to the type the [Input] [Flow] should be split into
+ * [transform]: a function for mapping independent [Flow]s of [Selector] to [Flow]s of [Output]
+ */
+fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
+    selector: (Input) -> Selector,
+    // Ergonomic hack to simulate multiple receivers
+    transform: TransformationContext<Selector>.() -> Flow<Output>
+): Flow<Output> =
+    channelFlow<Flow<Output>> mutationFlow@{
+        val keysToFlowHolders = mutableMapOf<String, FlowHolder<Selector>>()
+        this@splitByType
             .collect { item ->
-                val flowKey = item.flowKey
+                val mapped = selector(item)
+                val flowKey = mapped::class.qualifiedName
+                    ?: throw IllegalArgumentException("Only well defined classes can be split")
                 when (val existingHolder = keysToFlowHolders[flowKey]) {
                     null -> {
-                        val holder = FlowHolder(item)
+                        val holder = FlowHolder(mapped)
                         keysToFlowHolders[flowKey] = holder
-                        val emission = TransformationContext(item, holder.exposedFlow)
+                        val emission = TransformationContext(mapped, holder.exposedFlow)
                         val mutationFlow = transform(emission)
                         channel.send(mutationFlow)
                     }
                     else -> {
                         // Wait for downstream to be connected
                         existingHolder.internalSharedFlow.subscriptionCount.first { it > 0 }
-                        existingHolder.internalSharedFlow.emit(item)
+                        existingHolder.internalSharedFlow.emit(mapped)
                     }
                 }
             }
@@ -100,9 +116,3 @@ private data class FlowHolder<Action>(
     val internalSharedFlow: MutableSharedFlow<Action> = MutableSharedFlow()
     val exposedFlow: Flow<Action> = internalSharedFlow.onStart { emit(firstEmission) }
 }
-
-/**
- * Uniquely identifies a class using it's kotlin class simple name.
- * Note the the above makes it unsuitable for anonymous classes.
- */
-private val Any.flowKey get() = this::class.simpleName!!
