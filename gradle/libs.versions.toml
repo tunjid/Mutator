@@ -1,5 +1,6 @@
 [versions]
 androidGradlePlugin = "7.0.4"
+dokka = "1.6.10"
 junit4 = "4.13.2"
 kotlin = "1.6.10"
 kotlinxCoroutines = "1.6.0"
@@ -7,6 +8,7 @@ kotlinxCoroutines = "1.6.0"
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+dokka-gradlePlugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }

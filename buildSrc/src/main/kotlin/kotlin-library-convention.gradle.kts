@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.hasProperty
+
 /*
  * Copyright 2021 Google LLC
  *
@@ -18,8 +20,8 @@ plugins {
     kotlin("multiplatform")
     `maven-publish`
     signing
+    id("org.jetbrains.dokka")
 }
-
 
 kotlin {
     jvm {
@@ -68,9 +70,18 @@ allprojects {
     }
 }
 
+val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)
+
+val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+    dependsOn(dokkaHtml)
+    archiveClassifier.set("javadoc")
+    from(dokkaHtml.outputDirectory)
+}
+
     publishing {
         publications {
             withType<MavenPublication> {
+                artifact(javadocJar)
                 pom {
                     name.set(project.name)
                     description.set("A tiny library for representing mutable states and the types that drive said mutations")
@@ -120,12 +131,11 @@ signing {
     val localProperties = parent?.ext?.get("localProps") as? java.util.Properties
         ?: return@signing
 
-    if (localProperties.contains("signingKey") && localProperties.contains("signingPassword")) {
-        val signingKey = localProperties.getProperty("signingKey")
-        val signingPassword = localProperties.getProperty("signingPassword")
+    val signingKey = localProperties.getProperty("signingKey")
+    val signingPassword = localProperties.getProperty("signingPassword")
+
+    if (signingKey != null && signingPassword != null) {
         useInMemoryPgpKeys(signingKey, signingPassword)
-//            sign publishing.publications
         sign(publishing.publications)
-//            sign(publishing.publications["mavenJava"])
     }
 }

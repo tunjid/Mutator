@@ -22,9 +22,10 @@ repositories {
 }
 
 plugins {
-    `kotlin-dsl`
+    `kotlin-dsl` version "2.1.7"
 }
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
+    implementation("org.jetbrains.dokka:dokka-gradle-plugin:1.6.10")
 }
