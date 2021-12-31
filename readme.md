@@ -1,5 +1,9 @@
 # Mutator
 
+Please note, this is not an official Google repository. It is a Kotlin multiplatform experiment
+that makes no guarantees about API stability or long term support. None of the works presented here
+are production tested, and should not be taken as anything more than its face value.
+
 ## Introduction
 
 A `Mutator` is an abstract data type declaration of the form:
