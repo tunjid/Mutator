@@ -18,10 +18,14 @@
 buildscript {
     extra.apply {
         set("localProps", java.util.Properties().apply {
-            load(java.io.FileInputStream(file("local.properties")))
+            file("local.properties").let { file ->
+                if (file.exists()) load(file)
+            }
         })
         set("libProps", java.util.Properties().apply {
-            load(java.io.FileInputStream(file("libraryVersion.properties")))
+            file("libraryVersion.properties").let { file ->
+                if (file.exists()) load(file)
+            }
         })
     }
     repositories {
