@@ -19,12 +19,12 @@ buildscript {
     extra.apply {
         set("localProps", java.util.Properties().apply {
             file("local.properties").let { file ->
-                if (file.exists()) load(file)
+                if (file.exists()) load(java.io.FileInputStream(file))
             }
         })
         set("libProps", java.util.Properties().apply {
             file("libraryVersion.properties").let { file ->
-                if (file.exists()) load(file)
+                if (file.exists()) load(java.io.FileInputStream(file))
             }
         })
     }
