@@ -63,7 +63,7 @@ data class State(
 )
 ```
 
-A `StateFlow` Mutator` of the above can be created by:
+A `StateFlow` `Mutator` of the above can be created by:
 
 ```kotlin
         val mutator = stateFlowMutator<Action, State>(
