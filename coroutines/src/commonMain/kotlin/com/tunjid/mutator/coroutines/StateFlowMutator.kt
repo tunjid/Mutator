@@ -27,9 +27,21 @@ fun <Action : Any, State : Any> stateFlowMutator(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
     transform: (Flow<Action>) -> Flow<Mutation<State>>
-): Mutator<Action, StateFlow<State>> = object : Mutator<Action, StateFlow<State>> {
-    var seed = initialState
-    val actions = MutableSharedFlow<Action>()
+): Mutator<Action, StateFlow<State>> = StateFlowMutator(
+    scope = scope,
+    initialState = initialState,
+    started = started,
+    transform = transform
+)
+
+internal class StateFlowMutator<Action : Any, State : Any>(
+    scope: CoroutineScope,
+    initialState: State,
+    started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
+    transform: (Flow<Action>) -> Flow<Mutation<State>>
+) : Mutator<Action, StateFlow<State>> {
+    private var seed = initialState
+    internal val actions = MutableSharedFlow<Action>()
 
     override val state: StateFlow<State> =
         flow {

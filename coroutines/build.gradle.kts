@@ -41,6 +41,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
+                implementation("app.cash.turbine:turbine:0.7.0")
             }
         }
     }
