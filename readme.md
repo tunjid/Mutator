@@ -122,7 +122,7 @@ val mutator = stateFlowMutator<Action, State>(
                             )
                         }
                     }
-                is Action.Subtract -> action.flow
+                is Action.Sort -> action.flow
                     .flatMapLatest { sort ->
                         flowOf(
                             Mutation {
