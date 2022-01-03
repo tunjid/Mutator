@@ -142,6 +142,8 @@ val mutator = stateFlowMutator<Action, State>(
 In the above, by splitting the `Action` `Flow` into independent `Flows` of it's subtypes,
 `Mutation` instances are easily generated that can be reduced into the current `State`.
 
+A more robust example can be seen in the [Me](https://github.com/tunjid/me) project.
+
 Ultimately a `Mutator` serves to produce a stream of `State` from a stream of `Actions`,
 the implementation of which is completely open ended.
 
