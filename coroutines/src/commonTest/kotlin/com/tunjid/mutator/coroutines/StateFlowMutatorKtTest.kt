@@ -71,7 +71,7 @@ class StateFlowMutatorKtTest {
             // Read first emission, should be the last value seen
             assertEquals(State(2), awaitItem())
 
-            // Add 2, then wait till its processed
+            // Subtract 5, then wait till its processed
             mutator.accept(Action.Subtract(5))
             assertEquals(State(-3), awaitItem())
 
