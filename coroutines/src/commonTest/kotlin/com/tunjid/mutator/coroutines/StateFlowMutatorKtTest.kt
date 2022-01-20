@@ -17,11 +17,13 @@
 package com.tunjid.mutator.coroutines
 
 import app.cash.turbine.test
+import com.tunjid.mutator.Mutator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -54,7 +56,7 @@ class StateFlowMutatorKtTest {
             scope = scope,
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
-            transform = { actions ->
+            actionTransform = { actions ->
                 actions.toMutationStream {
                     when (val action = type()) {
                         is IntAction.Add -> action.flow
@@ -95,5 +97,16 @@ class StateFlowMutatorKtTest {
         }
 
         scope.cancel()
+    }
+
+    @Test
+    fun noOpOperatorCompiles() {
+        val noOpMutator: Mutator<Action, StateFlow<State>> = State().asNoOpStateFlowMutator()
+        noOpMutator.accept(IntAction.Add(value = 1))
+
+        assertEquals(
+            expected = State(),
+            actual = noOpMutator.state.value
+        )
     }
 }
