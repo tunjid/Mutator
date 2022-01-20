@@ -18,18 +18,6 @@ plugins {
     `kotlin-library-convention`
 }
 
-//allprojects {
-//    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-//        kotlinOptions {
-//            jvmTarget = '1.8'
-//            freeCompilerArgs = freeCompilerArgs + listOf(
-//                    "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
-//                    "-Xuse-experimental=kotlinx.coroutines.FlowPreview"
-//            )
-//        }
-//    }
-//}
-
 kotlin {
     sourceSets {
         val commonMain by getting {
@@ -42,6 +30,12 @@ kotlin {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.cashapp.turbine)
+            }
+        }
+        all {
+            languageSettings.apply {
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                optIn("kotlinx.coroutines.FlowPreview")
             }
         }
     }

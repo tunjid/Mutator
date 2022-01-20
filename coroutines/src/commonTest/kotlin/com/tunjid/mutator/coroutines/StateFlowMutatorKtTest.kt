@@ -50,16 +50,16 @@ class StateFlowMutatorKtTest {
     fun stateFlowMutatorRemembersLastValue() = runTest {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-        val mutator = stateFlowMutator<Action, State>(
+        val mutator = stateFlowMutator<IntAction, State>(
             scope = scope,
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             transform = { actions ->
                 actions.toMutationStream {
                     when (val action = type()) {
-                        is Action.Add -> action.flow
+                        is IntAction.Add -> action.flow
                             .map { it.mutation }
-                        is Action.Subtract -> action.flow
+                        is IntAction.Subtract -> action.flow
                             .map { it.mutation }
                     }
                 }
@@ -70,26 +70,26 @@ class StateFlowMutatorKtTest {
             assertEquals(State(), awaitItem())
 
             // Add 2, then wait till its processed
-            mutator.accept(Action.Add(2))
-            assertEquals(State(2), awaitItem())
+            mutator.accept(IntAction.Add(value = 2))
+            assertEquals(expected = State(count = 2.0), actual = awaitItem())
 
             cancelAndIgnoreRemainingEvents()
         }
 
         // At this point, there are no subscribers and the upstream is cancelled
         assertEquals(
-            expected = State(2),
+            expected = State(count = 2.0),
             actual = mutator.state.value
         )
 
         // Subscribe again
         mutator.state.test {
             // Read first emission, should be the last value seen
-            assertEquals(State(2), awaitItem())
+            assertEquals(expected = State(2.0), actual = awaitItem())
 
             // Subtract 5, then wait till its processed
-            mutator.accept(Action.Subtract(5))
-            assertEquals(State(-3), awaitItem())
+            mutator.accept(IntAction.Subtract(value = 5))
+            assertEquals(State(count = -3.0), awaitItem())
 
             cancelAndIgnoreRemainingEvents()
         }
