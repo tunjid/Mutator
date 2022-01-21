@@ -146,9 +146,6 @@ class FlowMutationStreamKtTest {
                     is DoubleAction -> type.flow
                         .onEach { doubleActions.add(it) }
                         .map { it.mutation }
-                    is IntAction.Add  -> type.flow
-                        .onEach { intActions.add(it) }
-                        .map { it.mutation }
                 }
             }
             .reduceInto(State())

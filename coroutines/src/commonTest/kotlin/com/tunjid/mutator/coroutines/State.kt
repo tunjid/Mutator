@@ -16,7 +16,6 @@
 
 package com.tunjid.mutator.coroutines
 import com.tunjid.mutator.Mutation
-import kotlin.math.pow
 
 data class State(
     val count: Double = 0.0
