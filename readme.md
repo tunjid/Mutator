@@ -196,7 +196,7 @@ actions
     }
 ```
 
-In the above the two distinct keys map to the `IntAction` and `DoubleAction` supertypes allowing
+In the above the two distinct keys map to the `IntAction` and `DoubleAction` super types allowing
 for granular control of the ensuing `Mutation` stream.
 
 Ultimately a `Mutator` serves to produce a stream of `State` from a stream of `Actions`,
