@@ -144,6 +144,61 @@ In the above, by splitting the `Action` `Flow` into independent `Flows` of it's 
 
 A more robust example can be seen in the [Me](https://github.com/tunjid/me) project.
 
+#### Nuanced use cases
+
+Sometimes when splitting an `Action` into a `Mutation` stream, the `Action` type may need to be
+split by it's super class and not it's actual class. Take the following `Action` and `State`
+pairing:
+
+```
+data class State(
+    val count: Double = 0.0
+)
+
+sealed class Action
+
+sealed class IntAction: Action() {
+    abstract val value: Int
+
+    data class Add(override val value: Int) : IntAction()
+    data class Subtract(override val value: Int) : IntAction()
+}
+
+sealed class DoubleAction: Action() {
+    abstract val value: Double
+
+    data class Divide(override val value: Double) : DoubleAction()
+    data class Multiply(override val value: Double) : DoubleAction()
+}
+```
+
+By default, all 4 `Actions` will need to have their resulting `Flows` defined. To help group them
+into `Flows` of their super types, a `keySelector` can be used:
+
+```
+val actions = MutableSharedFlow<Action>()
+
+actions
+    .toMutationStream(
+        keySelector = { action ->
+            when (action) {
+                is IntAction -> "IntAction"
+                is DoubleAction -> "DoubleAction"
+            }
+        }
+    ) {
+        when (val type = type()) {
+            is IntAction -> type.flow
+                .map { it.mutation }
+            is DoubleAction -> type.flow
+                .map { it.mutation }
+        }
+    }
+```
+
+In the above the two distinct keys map to the `IntAction` and `DoubleAction` super types allowing
+for granular control of the ensuing `Mutation` stream.
+
 Ultimately a `Mutator` serves to produce a stream of `State` from a stream of `Actions`,
 the implementation of which is completely open ended.
 

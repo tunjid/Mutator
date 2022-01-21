@@ -18,18 +18,29 @@ package com.tunjid.mutator.coroutines
 import com.tunjid.mutator.Mutation
 
 data class State(
-    val count: Int = 0
+    val count: Double = 0.0
 )
 
-sealed class Action {
+sealed class Action
+
+sealed class IntAction: Action() {
     abstract val value: Int
 
-    data class Add(override val value: Int) : Action()
-    data class Subtract(override val value: Int) : Action()
+    data class Add(override val value: Int) : IntAction()
+    data class Subtract(override val value: Int) : IntAction()
+}
+
+sealed class DoubleAction: Action() {
+    abstract val value: Double
+
+    data class Divide(override val value: Double) : DoubleAction()
+    data class Multiply(override val value: Double) : DoubleAction()
 }
 
 val Action.mutation: Mutation<State>
     get() = when (this) {
-        is Action.Add -> Mutation { copy(count = count + value) }
-        is Action.Subtract -> Mutation { copy(count = count - value) }
+        is IntAction.Add -> Mutation { copy(count = count + value) }
+        is IntAction.Subtract -> Mutation { copy(count = count - value) }
+        is DoubleAction.Divide -> Mutation { copy(count = count / value) }
+        is DoubleAction.Multiply -> Mutation { copy(count = count * value) }
     }

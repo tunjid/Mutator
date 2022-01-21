@@ -21,19 +21,21 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.test.runTest
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 
 class FlowMutationStreamKtTest {
     @Test
     fun `simple stream splitting`() = runTest {
         val actions = listOf(
-            Action.Add(value = 1),
-            Action.Add(value = 1),
-            Action.Subtract(value = 2),
-            Action.Add(value = 7),
+            IntAction.Add(value = 1),
+            IntAction.Add(value = 1),
+            IntAction.Subtract(value = 2),
+            IntAction.Add(value = 7),
         )
         val testFlow = actions
             .asFlow()
@@ -43,7 +45,7 @@ class FlowMutationStreamKtTest {
             .reduceInto(State())
 
         assertEquals(
-            State(count = 7),
+            State(count = 7.0),
             testFlow.take(count = actions.size + 1).last()
         )
     }
@@ -51,20 +53,20 @@ class FlowMutationStreamKtTest {
     @Test
     fun `stream splitting with common flow operator`() = runTest {
         val actions = listOf(
-            Action.Add(value = 1),
-            Action.Add(value = 1),
-            Action.Add(value = 1),
-            Action.Add(value = 1),
-            Action.Add(value = 1),
+            IntAction.Add(value = 1),
+            IntAction.Add(value = 1),
+            IntAction.Add(value = 1),
+            IntAction.Add(value = 1),
+            IntAction.Add(value = 1),
 
-            Action.Subtract(value = 2),
-            Action.Subtract(value = 2),
-            Action.Subtract(value = 2),
+            IntAction.Subtract(value = 2),
+            IntAction.Subtract(value = 2),
+            IntAction.Subtract(value = 2),
 
-            Action.Add(value = 7),
-            Action.Add(value = 7),
-            Action.Add(value = 7),
-            Action.Add(value = 7),
+            IntAction.Add(value = 7),
+            IntAction.Add(value = 7),
+            IntAction.Add(value = 7),
+            IntAction.Add(value = 7),
         )
 
         val testFlow = actions
@@ -77,7 +79,7 @@ class FlowMutationStreamKtTest {
             .reduceInto(State())
 
         assertEquals(
-            State(count = 6),
+            State(count = 6.0),
             testFlow.take(count = actions.distinct().size + 1).last()
         )
     }
@@ -85,23 +87,23 @@ class FlowMutationStreamKtTest {
     @Test
     fun `stream splitting with different flow operators`() = runTest {
         val actions = listOf(
-            Action.Add(value = -1),
-            Action.Add(value = 1),
-            Action.Add(value = 2),
+            IntAction.Add(value = -1),
+            IntAction.Add(value = 1),
+            IntAction.Add(value = 2),
 
-            Action.Subtract(value = -1),
-            Action.Subtract(value = 1),
-            Action.Subtract(value = 2),
+            IntAction.Subtract(value = -1),
+            IntAction.Subtract(value = 1),
+            IntAction.Subtract(value = 2),
         )
 
         val testFlow = actions
             .asFlow()
             .toMutationStream {
-                when(val type = type()) {
-                    is Action.Add -> type.flow
+                when (val type = type()) {
+                    is IntAction.Add -> type.flow
                         .filter { it.value > 0 && it.value % 2 == 0 }
                         .map { it.mutation }
-                    is Action.Subtract -> type.flow
+                    is IntAction.Subtract -> type.flow
                         .filter { it.value > 0 && it.value % 2 != 0 }
                         .map { it.mutation }
                 }
@@ -109,8 +111,64 @@ class FlowMutationStreamKtTest {
             .reduceInto(State())
 
         assertEquals(
-            State(count = 1),
+            State(count = 1.0),
             testFlow.take(count = 3).last()
+        )
+    }
+
+    @Test
+    fun `stream splitting works with custom keys`() = runTest {
+        val intActions = mutableListOf<IntAction>()
+        val doubleActions = mutableListOf<DoubleAction>()
+
+        val actions = listOf(
+            IntAction.Add(value = 2),
+            IntAction.Subtract(value = 1),
+
+            DoubleAction.Multiply(value = 6.0),
+            DoubleAction.Divide(value = 3.0),
+        )
+
+        val testFlow = actions
+            .asFlow()
+            .toMutationStream(
+                keySelector = { action ->
+                    when (action) {
+                        is IntAction -> "IntAction"
+                        is DoubleAction -> "DoubleAction"
+                    }
+                }
+            ) {
+                when (val type = type()) {
+                    is IntAction -> type.flow
+                        .onEach { intActions.add(it) }
+                        .map { it.mutation }
+                    is DoubleAction -> type.flow
+                        .onEach { doubleActions.add(it) }
+                        .map { it.mutation }
+                }
+            }
+            .reduceInto(State())
+
+        assertEquals(
+            State(count = 2.0),
+            testFlow.take(count = 5).last()
+        )
+
+        assertEquals(
+            listOf(
+                IntAction.Add(value = 2),
+                IntAction.Subtract(value = 1),
+            ),
+            intActions
+        )
+
+        assertEquals(
+            listOf(
+                DoubleAction.Multiply(value = 6.0),
+                DoubleAction.Divide(value = 3.0),
+            ),
+            doubleActions
         )
     }
 }

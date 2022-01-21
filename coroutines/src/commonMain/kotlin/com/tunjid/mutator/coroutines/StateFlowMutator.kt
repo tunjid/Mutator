@@ -22,24 +22,43 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+/**
+ * Defines a [Mutator] to convert a [Flow] of [Action] into a [StateFlow] of [State].
+ *
+ * [scope]: The [CoroutineScope] for the resulting [StateFlow]. Any [Action]s sent if there are no
+ * subscribers to the output [StateFlow] will suspend until there is as least one subscriber.
+ *
+ * [initialState]: The seed state for the resulting [StateFlow].
+ *
+ * [started]: Semantics for the "hotness" of the output [StateFlow] @see [Flow.stateIn]
+ *
+ * [stateTransform]: Further transformations o be applied to the output [StateFlow]
+ *
+ * [actionTransform]: Defines the transformations to the [Action] [Flow] to create [Mutation]s
+ * of state that will be reduced into the [initialState]. This is often achieved through the
+ * [toMutationStream] [Flow] extension function.
+ */
 fun <Action : Any, State : Any> stateFlowMutator(
     scope: CoroutineScope,
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
-    transform: (Flow<Action>) -> Flow<Mutation<State>>
+    stateTransform: (Flow<State>) -> Flow<State> = { it },
+    actionTransform: (Flow<Action>) -> Flow<Mutation<State>>
 ): Mutator<Action, StateFlow<State>> = object : Mutator<Action, StateFlow<State>> {
     var seed = initialState
     val actions = MutableSharedFlow<Action>()
 
     override val state: StateFlow<State> =
-        flow {
-            // Seed the reduction with the last produced state
-            emitAll(
-                transform(actions)
-                    .reduceInto(seed)
-                    .onEach(::seed::set)
-            )
-        }
+        stateTransform(
+            flow {
+                // Seed the reduction with the last produced state
+                emitAll(
+                    actionTransform(actions)
+                        .reduceInto(seed)
+                        .onEach(::seed::set)
+                )
+            }
+        )
             .stateIn(
                 scope = scope,
                 started = started,
@@ -55,29 +74,15 @@ fun <Action : Any, State : Any> stateFlowMutator(
     }
 }
 
-fun <State : Any, SubState : Any> Mutator<Mutation<State>, StateFlow<State>>.derived(
-    scope: CoroutineScope,
-    mapper: (State) -> SubState,
-    mutator: (State, SubState) -> State
-) = object : Mutator<Mutation<SubState>, StateFlow<SubState>> {
-    override val state: StateFlow<SubState> =
-        this@derived.state
-            .map { mapper(it) }
-            .distinctUntilChanged()
-            .stateIn(
-                scope = scope,
-                started = SharingStarted.Eagerly,
-                initialValue = mapper(this@derived.state.value)
-            )
-
-    override val accept: (Mutation<SubState>) -> Unit = { mutation ->
-        this@derived.accept(Mutation {
-            val currentState = this
-            val mapped = mapper(currentState)
-            val mutated = mutation.mutate(mapped)
-            mutator(currentState, mutated)
-        })
+/**
+ * Represents a type as a StateFlowMutator of itself with no op [Action]s.
+ *
+ * This is typically useful for testing or previews
+ */
+fun <Action : Any, State : Any> State.asNoOpStateFlowMutator(): Mutator<Action, StateFlow<State>> =
+    object : Mutator<Action, StateFlow<State>> {
+        override val accept: (Action) -> Unit = {}
+        override val state: StateFlow<State> = MutableStateFlow(this@asNoOpStateFlowMutator)
     }
-}
 
 private const val DefaultStopTimeoutMillis = 5000L
