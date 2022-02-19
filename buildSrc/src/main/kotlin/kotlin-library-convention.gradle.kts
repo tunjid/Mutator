@@ -58,6 +58,15 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
+    listOf(
+        iosX64(),
+        iosArm64(),
+    ).forEach {
+        it.binaries.framework {
+            baseName = "mutator"
+        }
+    }
+
     sourceSets {
         val commonMain by getting
         val commonTest by getting {
@@ -69,6 +78,12 @@ kotlin {
         val jvmTest by getting
         val nativeMain by getting
         val nativeTest by getting
+        val iosMain by creating {
+            dependsOn(commonMain)
+        }
+        val iosTest by creating {
+            dependsOn(commonTest)
+        }
     }
 }
 
@@ -86,7 +101,13 @@ allprojects {
     }
 }
 
-val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)
+val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
+    dokkaSourceSets {
+        named("iosTest") {
+            suppress.set(true)
+        }
+    }
+}
 
 val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
     dependsOn(dokkaHtml)

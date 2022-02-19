@@ -16,19 +16,9 @@
 
 plugins {
     `kotlin-library-convention`
-    kotlin("multiplatform")
 }
 
 kotlin {
-    listOf(
-        iosX64(),
-        iosArm64(),
-    ).forEach {
-        it.binaries.framework {
-            baseName = "mutator-coroutines"
-        }
-    }
-
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -41,20 +31,6 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.cashapp.turbine)
             }
-        }
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-        }
-        val iosX64Test by getting
-        val iosArm64Test by getting
-        val iosTest by creating {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(this)
-            iosArm64Test.dependsOn(this)
         }
         all {
             languageSettings.apply {
