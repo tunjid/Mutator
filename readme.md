@@ -123,15 +123,13 @@ val mutator = stateFlowMutator<Action, State>(
                         }
                     }
                 is Action.Sort -> action.flow
-                    .flatMapLatest { sort ->
-                        flowOf(
-                            Mutation {
-                                copy(
-                                    comparator = sort.comparator,
-                                    items = items.sortedWith(comparator)
-                                )
-                            }
-                        )
+                    .mapLatest { sort ->
+                        Mutation {
+                            copy(
+                                comparator = sort.comparator,
+                                items = items.sortedWith(comparator)
+                            )
+                        }
                     }
             }
         }
