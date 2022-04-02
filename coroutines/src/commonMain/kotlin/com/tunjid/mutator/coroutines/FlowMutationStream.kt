@@ -128,7 +128,7 @@ private data class FlowHolder<Action>(
     val exposedFlow: Flow<Action> = internalSharedFlow.onStart { emit(firstEmission) }
 }
 
-private fun Any.defaultKeySelector(): String = this::class.qualifiedName
+private fun Any.defaultKeySelector(): String = this::class.simpleName
     ?: throw IllegalArgumentException(
         "Only well defined classes can be split or specify a different key selector"
     )
