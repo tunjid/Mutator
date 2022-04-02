@@ -3,6 +3,7 @@
 [![JVM Tests](https://github.com/tunjid/Mutator/actions/workflows/tests.yml/badge.svg)](https://github.com/tunjid/Mutator/actions/workflows/tests.yml)
 ![Mutator Core](https://img.shields.io/maven-central/v/com.tunjid.mutator/core?label=mutator-core)
 ![Mutator Coroutines](https://img.shields.io/maven-central/v/com.tunjid.mutator/coroutines?label=mutator-coroutines)
+![Android Weekly Feature](https://androidweekly.net/issues/issue-510/badge)
 
 Please note, this is not an official Google repository. It is a Kotlin multiplatform experiment
 that makes no guarantees about API stability or long term support. None of the works presented here
@@ -123,15 +124,13 @@ val mutator = stateFlowMutator<Action, State>(
                         }
                     }
                 is Action.Sort -> action.flow
-                    .flatMapLatest { sort ->
-                        flowOf(
-                            Mutation {
-                                copy(
-                                    comparator = sort.comparator,
-                                    items = items.sortedWith(comparator)
-                                )
-                            }
-                        )
+                    .mapLatest { sort ->
+                        Mutation {
+                            copy(
+                                comparator = sort.comparator,
+                                items = items.sortedWith(comparator)
+                            )
+                        }
                     }
             }
         }

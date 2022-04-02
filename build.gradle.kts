@@ -33,9 +33,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        val libs = project.extensions.getByType<VersionCatalogsExtension>()
-            .named("libs") as org.gradle.accessors.dm.LibrariesForLibs
-
         classpath(libs.android.gradlePlugin)
         classpath(libs.kotlin.gradlePlugin)
         classpath(libs.dokka.gradlePlugin)
@@ -50,8 +47,4 @@ allprojects {
         google()
         mavenCentral()
     }
-}
-
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
 }
