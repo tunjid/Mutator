@@ -3,6 +3,16 @@
 [![JVM Tests](https://github.com/tunjid/Mutator/actions/workflows/tests.yml/badge.svg)](https://github.com/tunjid/Mutator/actions/workflows/tests.yml)
 ![Mutator Core](https://img.shields.io/maven-central/v/com.tunjid.mutator/core?label=mutator-core)
 ![Mutator Coroutines](https://img.shields.io/maven-central/v/com.tunjid.mutator/coroutines?label=mutator-coroutines)
+
+![badge][badge-ios]
+![badge][badge-js]
+![badge][badge-jvm]
+![badge][badge-linux]
+![badge][badge-windows]
+![badge][badge-mac]
+![badge][badge-tvos]
+![badge][badge-watchos]
+
 ![Android Weekly Feature](https://androidweekly.net/issues/issue-510/badge)
 
 Please note, this is not an official Google repository. It is a Kotlin multiplatform experiment
