@@ -159,7 +159,7 @@ Sometimes when splitting an `Action` into a `Mutation` stream, the `Action` type
 split by it's super class and not it's actual class. Take the following `Action` and `State`
 pairing:
 
-```
+```kotlin
 data class State(
     val count: Double = 0.0
 )
@@ -184,7 +184,7 @@ sealed class DoubleAction: Action() {
 By default, all 4 `Actions` will need to have their resulting `Flows` defined. To help group them
 into `Flows` of their super types, a `keySelector` can be used:
 
-```
+```kotlin
 val actions = MutableSharedFlow<Action>()
 
 actions
