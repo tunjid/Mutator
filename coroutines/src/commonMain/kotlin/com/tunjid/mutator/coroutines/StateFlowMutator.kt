@@ -19,7 +19,13 @@ package com.tunjid.mutator.coroutines
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.Mutator
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
@@ -45,25 +51,15 @@ fun <Action : Any, State : Any> stateFlowMutator(
     stateTransform: (Flow<State>) -> Flow<State> = { it },
     actionTransform: (Flow<Action>) -> Flow<Mutation<State>>
 ): Mutator<Action, StateFlow<State>> = object : Mutator<Action, StateFlow<State>> {
-    var seed = initialState
     val actions = MutableSharedFlow<Action>()
 
     override val state: StateFlow<State> =
-        stateTransform(
-            flow {
-                // Seed the reduction with the last produced state
-                emitAll(
-                    actionTransform(actions)
-                        .reduceInto(seed)
-                        .onEach(::seed::set)
-                )
-            }
+        scope.produceState(
+            initial = initialState,
+            started = started,
+            stateTransform = stateTransform,
+            mutationFlows = listOf(actionTransform(actions))
         )
-            .stateIn(
-                scope = scope,
-                started = started,
-                initialValue = initialState
-            )
 
     override val accept: (Action) -> Unit = { action ->
         scope.launch {
