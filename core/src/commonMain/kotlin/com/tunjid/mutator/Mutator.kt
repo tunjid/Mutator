@@ -16,6 +16,8 @@
 
 package com.tunjid.mutator
 
+typealias StateChange<T> = Mutation<T>
+
 interface Mutator<Action : Any, State : Any> {
     val state: State
     val accept: (Action) -> Unit
@@ -26,7 +28,22 @@ interface Mutator<Action : Any, State : Any> {
  */
 data class Mutation<T : Any>(
     val mutate: T.() -> T
-)
+) {
+    companion object {
+        /**
+         * Identity [Mutation] function; semantically a no op [Mutation]
+         */
+        fun <T : Any> identity(): Mutation<T> = Mutation { this }
+    }
+}
+
+/**
+ * Combines two [Mutation] instances into a single [Mutation]
+ */
+operator fun <T : Any> Mutation<T>.plus(other: Mutation<T>) = Mutation<T> inner@{
+    val result = this@plus.mutate(this@inner)
+    other.mutate.invoke(result)
+}
 
 fun <State : Any> Mutator<Mutation<State>, *>.accept(
     mutator: State.() -> State

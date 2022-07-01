@@ -73,6 +73,15 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+        all {
+            languageSettings.apply {
+                optIn("androidx.compose.animation.ExperimentalAnimationApi")
+                optIn("androidx.compose.foundation.ExperimentalFoundationApi")
+                optIn("androidx.compose.ui.ExperimentalComposeUiApi")
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                optIn("kotlinx.coroutines.FlowPreview")
+            }
+        }
     }
 }
 

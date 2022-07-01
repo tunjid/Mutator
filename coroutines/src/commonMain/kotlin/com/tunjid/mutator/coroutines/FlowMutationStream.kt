@@ -114,9 +114,6 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
             transform = { it }
         )
 
-fun <State : Any> Flow<Mutation<State>>.reduceInto(initialState: State): Flow<State> =
-    scan(initialState) { state, mutation -> mutation.mutate(state) }
-
 /**
  * Container for representing a [Flow] of a subtype of [Action] that has been split out from
  * a [Flow] of [Action]
