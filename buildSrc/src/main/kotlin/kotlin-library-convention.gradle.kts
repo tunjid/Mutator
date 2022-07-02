@@ -39,7 +39,7 @@ plugins {
 }
 
 kotlin {
-    js {
+    js(IR) {
         nodejs()
         browser()
     }
