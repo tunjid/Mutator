@@ -3,6 +3,16 @@
 [![JVM Tests](https://github.com/tunjid/Mutator/actions/workflows/tests.yml/badge.svg)](https://github.com/tunjid/Mutator/actions/workflows/tests.yml)
 ![Mutator Core](https://img.shields.io/maven-central/v/com.tunjid.mutator/core?label=mutator-core)
 ![Mutator Coroutines](https://img.shields.io/maven-central/v/com.tunjid.mutator/coroutines?label=mutator-coroutines)
+
+![badge][badge-ios]
+![badge][badge-js]
+![badge][badge-jvm]
+![badge][badge-linux]
+![badge][badge-windows]
+![badge][badge-mac]
+![badge][badge-tvos]
+![badge][badge-watchos]
+
 ![Android Weekly Feature](https://androidweekly.net/issues/issue-510/badge)
 
 Please note, this is not an official Google repository. It is a Kotlin multiplatform experiment
@@ -149,7 +159,7 @@ Sometimes when splitting an `Action` into a `Mutation` stream, the `Action` type
 split by it's super class and not it's actual class. Take the following `Action` and `State`
 pairing:
 
-```
+```kotlin
 data class State(
     val count: Double = 0.0
 )
@@ -174,7 +184,7 @@ sealed class DoubleAction: Action() {
 By default, all 4 `Actions` will need to have their resulting `Flows` defined. To help group them
 into `Flows` of their super types, a `keySelector` can be used:
 
-```
+```kotlin
 val actions = MutableSharedFlow<Action>()
 
 actions
@@ -215,3 +225,17 @@ the implementation of which is completely open ended.
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+[badge-android]: http://img.shields.io/badge/-android-6EDB8D.svg?style=flat
+[badge-jvm]: http://img.shields.io/badge/-jvm-DB413D.svg?style=flat
+[badge-js]: http://img.shields.io/badge/-js-F8DB5D.svg?style=flat
+[badge-js-ir]: https://img.shields.io/badge/support-[IR]-AAC4E0.svg?style=flat
+[badge-nodejs]: https://img.shields.io/badge/-nodejs-68a063.svg?style=flat
+[badge-linux]: http://img.shields.io/badge/-linux-2D3F6C.svg?style=flat 
+[badge-windows]: http://img.shields.io/badge/-windows-4D76CD.svg?style=flat
+[badge-wasm]: https://img.shields.io/badge/-wasm-624FE8.svg?style=flat
+[badge-apple-silicon]: http://img.shields.io/badge/support-[AppleSilicon]-43BBFF.svg?style=flat
+[badge-ios]: http://img.shields.io/badge/-ios-CDCDCD.svg?style=flat
+[badge-mac]: http://img.shields.io/badge/-macos-111111.svg?style=flat
+[badge-watchos]: http://img.shields.io/badge/-watchos-C0C0C0.svg?style=flat
+[badge-tvos]: http://img.shields.io/badge/-tvos-808080.svg?style=flat
