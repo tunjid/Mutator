@@ -50,6 +50,13 @@ kotlin {
                 implementation(compose.desktop.currentOs)
             }
         }
+        val jsMain by getting {
+            dependencies {
+                implementation(npm("highlight.js", "10.7.2"))
+                implementation(compose.web.core)
+                implementation(compose.runtime)
+            }
+        }
         all {
             languageSettings.apply {
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")

@@ -17,9 +17,12 @@
 package com.tunjid.mutator.demo
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,23 +41,19 @@ import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun App() {
-    val scrollableState = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .verticalScroll(scrollableState)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Snail1()
-        Snail2()
-        Snail3()
-        Snail4()
-        Snail5()
-        Snail6()
-        Snail7()
-        Snail8()
-        Snail9()
-        Snail10()
+        item { Snail1() }
+        item { Snail2() }
+        item { Snail3() }
+        item { Snail4() }
+        item { Snail5() }
+        item { Snail6() }
+        item { Snail7() }
+        item { Snail8() }
+        item { Snail9() }
+        item { Snail10() }
     }
 }
 

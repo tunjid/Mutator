@@ -14,38 +14,31 @@
  * limitations under the License.
  */
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Text
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
-import com.tunjid.mutator.demo.snails.Snail2
+import com.tunjid.mutator.demo.App
+import kotlinx.browser.document
+import kotlinx.browser.window
 import org.jetbrains.skiko.wasm.onWasmReady
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.get
 
 fun main() {
-    onWasmReady {
-        Window("Falling Balls") {
+    window.onload = {
+        val canvas = document.getElementById("ComposeTarget")
 
-            Column(modifier = Modifier.fillMaxSize()) {
+        println("window.innerWidth: ${window.innerWidth}")
+        println("window.innerHeight: ${window.innerHeight}")
+        println("Have canvas: ${canvas != null}")
 
-                val list = remember { listOf(1, 2, 3) }
-                LazyColumn {
-                    item { Text("HELLO") }
-                    items(
-                        count = list.size,
-                        itemContent = {
-                            Text("HELLO: $it")
-                        }
-                    )
-                }
+        (canvas as HTMLElement)?.style.apply {
+            width = "${window.innerWidth}px"
+        }
+//        println("canvas.clientWidth: ${canvas.clientWidth}")
+//        println("canvas.clientHeight: ${canvas.clientHeight}")
 
-                Spacer(modifier = Modifier.padding(200.dp))
-                Snail2()
+        onWasmReady {
+            Window("The state production pipeline") {
+                App()
             }
         }
     }
