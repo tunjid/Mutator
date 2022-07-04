@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 /*
  * Copyright 2021 Google LLC
@@ -31,6 +32,7 @@
  * limitations under the License.
  */
 
+
 plugins {
     kotlin("multiplatform")
     `maven-publish`
@@ -44,15 +46,7 @@ kotlin {
         browser()
     }
 
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
-        withJava()
-        testRuns["test"].executionTask.configure {
-            useJUnit()
-        }
-    }
+    jvm()
 
     ios()
     iosSimulatorArm64()
@@ -81,6 +75,11 @@ kotlin {
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 optIn("kotlinx.coroutines.FlowPreview")
             }
+        }
+    }
+    targets.withType(KotlinNativeTarget::class.java) {
+        binaries.all {
+            binaryOptions["memoryModel"] = "experimental"
         }
     }
 }

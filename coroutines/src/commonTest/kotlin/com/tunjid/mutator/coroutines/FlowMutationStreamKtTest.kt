@@ -30,7 +30,7 @@ import kotlin.test.assertEquals
 
 class FlowMutationStreamKtTest {
     @Test
-    fun `simple stream splitting`() = runTest {
+    fun simple_stream_splitting() = runTest {
         val actions = listOf(
             IntAction.Add(value = 1),
             IntAction.Add(value = 1),
@@ -51,7 +51,7 @@ class FlowMutationStreamKtTest {
     }
 
     @Test
-    fun `stream splitting with common flow operator`() = runTest {
+    fun stream_splitting_with_common_flow_operator() = runTest {
         val actions = listOf(
             IntAction.Add(value = 1),
             IntAction.Add(value = 1),
@@ -85,7 +85,7 @@ class FlowMutationStreamKtTest {
     }
 
     @Test
-    fun `stream splitting with different flow operators`() = runTest {
+    fun stream_splitting_with_different_flow_operators() = runTest {
         val actions = listOf(
             IntAction.Add(value = -1),
             IntAction.Add(value = 1),
@@ -117,7 +117,7 @@ class FlowMutationStreamKtTest {
     }
 
     @Test
-    fun `stream splitting works with custom keys`() = runTest {
+    fun stream_splitting_works_with_custom_keys() = runTest {
         val intActions = mutableListOf<IntAction>()
         val doubleActions = mutableListOf<DoubleAction>()
 

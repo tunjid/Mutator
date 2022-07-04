@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-import org.gradle.kotlin.dsl.`kotlin-dsl`
-
-repositories {
-    google()
-    mavenCentral()
-    gradlePluginPortal()
+#root {
+    width: 100%;
+    height: 100vh;
 }
 
-plugins {
-    `kotlin-dsl`
-}
-
-dependencies {
-    implementation(libs.jetbrains.compose.gradlePlugin)
-    implementation(libs.kotlin.gradlePlugin)
-    implementation(libs.dokka.gradlePlugin)
+#root > .compose-web-column > div {
+    position: relative;
 }

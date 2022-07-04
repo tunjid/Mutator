@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import org.gradle.kotlin.dsl.`kotlin-dsl`
+import androidx.compose.material.Text
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.WindowState
+import androidx.compose.ui.window.singleWindowApplication
+import com.tunjid.mutator.demo.App
 
-repositories {
-    google()
-    mavenCentral()
-    gradlePluginPortal()
-}
 
-plugins {
-    `kotlin-dsl`
-}
+fun main() =
+    singleWindowApplication(
+        title = "State",
+        state = WindowState(size = DpSize(800.dp, 800.dp))
+    ) {
+        Text("HELLO")
+        App()
+    }
 
-dependencies {
-    implementation(libs.jetbrains.compose.gradlePlugin)
-    implementation(libs.kotlin.gradlePlugin)
-    implementation(libs.dokka.gradlePlugin)
-}

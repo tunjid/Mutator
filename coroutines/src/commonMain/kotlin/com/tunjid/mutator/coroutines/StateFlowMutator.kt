@@ -48,6 +48,7 @@ fun <Action : Any, State : Any> stateFlowMutator(
     scope: CoroutineScope,
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
+    mutationFlows: List<Flow<Mutation<State>>> = listOf(),
     stateTransform: (Flow<State>) -> Flow<State> = { it },
     actionTransform: (Flow<Action>) -> Flow<Mutation<State>>
 ): Mutator<Action, StateFlow<State>> = object : Mutator<Action, StateFlow<State>> {
@@ -58,7 +59,7 @@ fun <Action : Any, State : Any> stateFlowMutator(
             initial = initialState,
             started = started,
             stateTransform = stateTransform,
-            mutationFlows = listOf(actionTransform(actions))
+            mutationFlows = mutationFlows + actionTransform(actions)
         )
 
     override val accept: (Action) -> Unit = { action ->
