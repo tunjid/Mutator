@@ -40,21 +40,37 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun App() {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
+fun App(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
     ) {
-        item { Snail1() }
-        item { Snail2() }
-        item { Snail3() }
-        item { Snail4() }
-        item { Snail5() }
-        item { Snail6() }
-        item { Snail7() }
-        item { Snail8() }
-        item { Snail9() }
-        item { Snail10() }
+        Snail1()
+        Snail2()
+        Snail3()
+        Snail4()
+        Snail5()
+        Snail6()
+        Snail7()
+        Snail8()
+        Snail9()
+        Snail10()
     }
+//    LazyColumn(
+//        modifier = modifier.fillMaxSize()
+//    ) {
+//        item { Snail1() }
+//        item { Snail2() }
+//        item { Snail3() }
+//        item { Snail4() }
+//        item { Snail5() }
+//        item { Snail6() }
+//        item { Snail7() }
+//        item { Snail8() }
+//        item { Snail9() }
+//        item { Snail10() }
+//    }
 }
 
 
