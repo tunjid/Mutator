@@ -26,6 +26,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.tunjid.mutator.demo.editor.Editor
+import com.tunjid.mutator.demo.editor.EditorView
+import com.tunjid.mutator.demo.editor.toCodeLines
 import com.tunjid.mutator.demo.snails.Snail1
 import com.tunjid.mutator.demo.snails.Snail10
 import com.tunjid.mutator.demo.snails.Snail2
@@ -48,6 +51,11 @@ fun App(
     ) {
         Snail1()
         Snail2()
+        EditorView(
+            """
+                    val a = 0
+                """.trimIndent()
+        )
         Snail3()
         Snail4()
         Snail5()
