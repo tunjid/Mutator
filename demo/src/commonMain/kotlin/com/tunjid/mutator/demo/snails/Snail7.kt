@@ -123,14 +123,16 @@ class Snail7StateHolder(
 }
 
 @Composable
-fun Snail7() {
+fun Snail7(
+modifier: Modifier = Modifier
+) {
     val scope = rememberCoroutineScope()
     val stateHolder = remember { Snail7StateHolder(scope) }
 
     val state by stateHolder.state.collectAsState()
 
     Surface(
-        modifier = Modifier.fillMaxWidth(0.8f),
+        modifier = modifier.fillMaxWidth(0.8f),
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp),

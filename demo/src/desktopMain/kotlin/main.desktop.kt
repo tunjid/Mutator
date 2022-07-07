@@ -14,20 +14,49 @@
  * limitations under the License.
  */
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import com.tunjid.mutator.demo.App
+import java.util.Base64
 
 
-fun main() =
+fun main() {
+    val fonts = listOf(
+        "jetbrainsmono_bold.ttf",
+        "jetbrainsmono_bold_italic.ttf",
+        "jetbrainsmono_extrabold.ttf",
+        "jetbrainsmono_extrabold_italic.ttf",
+        "jetbrainsmono_italic.ttf",
+        "jetbrainsmono_medium.ttf",
+        "jetbrainsmono_medium_italic.ttf",
+        "jetbrainsmono_regular.ttf",
+    )
+    val contextClassLoader = Thread.currentThread().contextClassLoader!!
+
+    println(fonts.map { font ->
+        val resourceName = "font/$font"
+        val resource = contextClassLoader.getResourceAsStream(resourceName)
+            ?: error("Can't load font from $resourceName")
+
+        val bytes = resource.use { it.readBytes() }
+        val base64 = String(Base64.getEncoder().encode(bytes))
+        base64
+    })
+
     singleWindowApplication(
         title = "State",
         state = WindowState(size = DpSize(800.dp, 800.dp))
     ) {
-        Text("HELLO")
-        App()
+        val scrollState = rememberScrollState()
+        App(
+            modifier = Modifier
+        )
     }
+}
 

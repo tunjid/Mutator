@@ -16,16 +16,45 @@
 
 package com.tunjid.mutator.demo.platform
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import kotlinx.browser.document
+import kotlinx.browser.window
+import org.w3c.files.File
+import org.w3c.files.FileReaderSync
+
+private val fontNames = listOf(
+    "jetbrainsmono_bold.ttf",
+    "jetbrainsmono_bold_italic.ttf",
+    "jetbrainsmono_extrabold.ttf",
+    "jetbrainsmono_extrabold_italic.ttf",
+    "jetbrainsmono_italic.ttf",
+    "jetbrainsmono_medium.ttf",
+    "jetbrainsmono_medium_italic.ttf",
+    "jetbrainsmono_regular.ttf",
+)
+
+
+private val fontMap = fontNames.zip(fonts.split(",")).toMap()
 
 @Composable
-actual fun Font(name: String, res: String, weight: FontWeight, style: FontStyle): Font =
-       androidx.compose.ui.text.platform.Font(
-            identity =   "font/$res.ttf",
-              data = "font/$res.ttf",
-              weight,
-              style
-       )
+actual fun Font(name: String, res: String, weight: FontWeight, style: FontStyle): Font {
+//   val reader = FileReaderSync()
+//    reader.readAsArrayBuffer(File())
+
+    println("READING $res")
+    val base64 = fontMap.getValue("$res.ttf")
+    val decoded = window.atob(base64)
+    decoded.map { it.code.toByte() }.toByteArray()
+
+    return androidx.compose.ui.text.platform.Font(
+        identity = name,
+//        data = decoded.encodeToByteArray(),
+        data = decoded.map { it.code.toByte() }.toByteArray(),
+        weight,
+        style
+    )
+}

@@ -16,33 +16,23 @@
 
 package com.tunjid.mutator.demo.editor
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 
-class Editor(
-    val lines: Lines,
+data class Line(val number: Int, val content: Content)
+
+data class Lines(
+    val data: List<String>
 ) {
+    val size: Int = data.size
+    val lineNumberDigitCount: Int = size.toString().length
 
-    class Line(val number: Int, val content: Content)
-
-    interface Lines {
-        val lineNumberDigitCount: Int get() = size.toString().length
-        val size: Int
-        operator fun get(index: Int): Line
-    }
-
-
-    class Content(val value: State<String>, val isCode: Boolean)
-}
-
-
-fun String.toCodeLines() = object : Editor.Lines {
-    val split = split("\n")
-    override val size: Int
-        get() = split.size
-
-    override fun get(index: Int): Editor.Line = Editor.Line(
+    operator fun get(index: Int): Line = Line(
         number = index,
-        content = Editor.Content(mutableStateOf(split[index]), true)
+        content = Content(data[index], true)
     )
 }
+
+
+data class Content(val value: String, val isCode: Boolean)
+
+
+fun String.toCodeLines() = Lines(split("\n"))

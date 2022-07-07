@@ -94,7 +94,9 @@ class Snail3StateHolder(
 }
 
 @Composable
-fun Snail3() {
+fun Snail3(
+modifier: Modifier = Modifier
+) {
     val scope = rememberCoroutineScope()
     val stateHolder = remember { Snail3StateHolder(scope) }
 

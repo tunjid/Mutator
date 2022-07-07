@@ -49,21 +49,23 @@ class Snail1StateHolder(
 }
 
 @Composable
-fun Snail1() {
+fun Snail1(
+    modifier: Modifier = Modifier
+) {
     val scope = rememberCoroutineScope()
     val stateHolder = remember { Snail1StateHolder(scope) }
 
     val state by stateHolder.progress.collectAsState()
 
     Surface(
-        modifier = Modifier.fillMaxWidth(0.8f),
+        modifier = modifier.fillMaxWidth(0.8f),
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp),
         ) {
             Text(
                 modifier = Modifier.padding(vertical = 8.dp),
-                text ="Snail1"
+                text = "Snail1"
             )
             Slider(
                 valueRange = 0f..100f,

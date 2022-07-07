@@ -18,9 +18,8 @@ package com.tunjid.mutator.demo.editor
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -46,7 +45,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.tunjid.mutator.demo.common.Fonts
-import org.jetbrains.codeviewer.ui.common.AppTheme
+import com.tunjid.mutator.demo.common.AppTheme
 import com.tunjid.mutator.demo.common.Settings
 import kotlin.text.Regex.Companion.fromLiteral
 
@@ -61,7 +60,7 @@ fun EditorView(content: String, settings: Settings = Settings()) = key(content) 
                 val lines = content.toCodeLines()
 
                 Box {
-                    Lines(lines!!, settings)
+                    Lines(lines, settings)
                     Box(
                         Modifier
                             .offset(
@@ -78,29 +77,23 @@ fun EditorView(content: String, settings: Settings = Settings()) = key(content) 
 }
 
 @Composable
-private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.current) {
+private fun Lines(lines: Lines, settings: Settings) = with(LocalDensity.current) {
     val maxNum = remember(lines.lineNumberDigitCount) {
         (1..lines.lineNumberDigitCount).joinToString(separator = "") { "9" }
     }
-
-    Box(Modifier.fillMaxWidth()) {
-        val scrollState = rememberLazyListState()
-
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            state = scrollState
-        ) {
-            items(lines.size) { index ->
-                Box(Modifier.height(settings.fontSize.toDp() * 1.6f)) {
-                    Line(Modifier.align(Alignment.CenterStart), maxNum, lines[index], settings)
-                }
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        repeat(lines.size) { index ->
+            Box(Modifier.height(settings.fontSize.toDp() * 1.6f)) {
+                Line(
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    maxNum = maxNum,
+                    line = lines[index],
+                    settings = settings
+                )
             }
         }
-
-//        VerticalScrollbar(
-//            Modifier.align(Alignment.CenterEnd),
-//            scrollState
-//        )
     }
 }
 
@@ -108,20 +101,20 @@ private fun Lines(lines: Editor.Lines, settings: Settings) = with(LocalDensity.c
 // دعم اللغة العربية
 // 中文支持
 @Composable
-private fun Line(modifier: Modifier, maxNum: String, line: Editor.Line, settings: Settings) {
+private fun Line(modifier: Modifier, maxNum: String, line: Line, settings: Settings) {
     Row(modifier = modifier) {
-        DisableSelection {
-            Box {
-                LineNumber(maxNum, Modifier.alpha(0f), settings)
-                LineNumber(line.number.toString(), Modifier.align(Alignment.CenterEnd), settings)
-            }
+        Box {
+            LineNumber(maxNum, Modifier.alpha(0f), settings)
+            LineNumber(line.number.toString(), Modifier.align(Alignment.CenterEnd), settings)
         }
+
         LineContent(
             line.content,
             modifier = Modifier
                 .weight(1f)
 //                .withoutWidthConstraints()
-                .padding(start = 28.dp, end = 12.dp),
+                .padding(start = 28.dp, end = 12.dp)
+            ,
             settings = settings
         )
     }
@@ -137,21 +130,23 @@ private fun LineNumber(number: String, modifier: Modifier, settings: Settings) =
 )
 
 @Composable
-private fun LineContent(content: Editor.Content, modifier: Modifier, settings: Settings) = Text(
-    text = if (content.isCode) {
-        codeString(content.value.value)
-    } else {
+private fun LineContent(content: Content, modifier: Modifier, settings: Settings) {
+    Text(
+        text = if (content.isCode) {
+        codeString(content.value)
+        } else {
         buildAnnotatedString {
             withStyle(AppTheme.code.simple) {
-                append(content.value.value)
+                append(content.value)
             }
         }
-    },
+        },
     fontSize = settings.fontSize,
     fontFamily = Fonts.jetbrainsMono(),
     modifier = modifier,
     softWrap = false
-)
+    )
+}
 
 private fun codeString(str: String) = buildAnnotatedString {
     withStyle(AppTheme.code.simple) {

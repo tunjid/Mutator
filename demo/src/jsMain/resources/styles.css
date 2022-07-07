@@ -33,3 +33,43 @@ canvas {
 #root > .compose-web-column > div {
     position: relative;
 }
+
+@font-face {
+    font-family: 'Myjetbrainsmono_bold';
+    src: url('font/jetbrainsmono_bold.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: 'Myjetbrainsmono_bold_italic';
+    src: url('font/jetbrainsmono_bold_italic.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: 'Myjetbrainsmono_extrabold';
+    src: url('font/jetbrainsmono_extrabold.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: 'Myjetbrainsmono_extrabold_italic';
+    src: url('font/jetbrainsmono_extrabold_italic.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: 'Myjetbrainsmono_italic';
+    src: url('font/jetbrainsmono_italic.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: 'Myjetbrainsmono_medium';
+    src: url('font/jetbrainsmono_medium.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: 'Myjetbrainsmono_medium_italic';
+    src: url('font/jetbrainsmono_medium_italic.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: 'Myjetbrainsmono_regular';
+    src: url('font/jetbrainsmono_regular.ttf') format('ttf');
+}

@@ -16,6 +16,7 @@
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import com.tunjid.mutator.demo.App
@@ -36,37 +38,48 @@ import kotlin.math.max
 
 fun main() {
     var scrollOffset by mutableStateOf(0)
+    var dimensions by mutableStateOf(800 to 600)
     window.onload = {
         resize()
-        onWasmReady {
-            Window("The state production pipeline") {
-                App(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .onGloballyPositioned {
-                            it.size
-                            println("WIDTH: ${it.size.width}")
-                            println("HEIGHT: ${it.size.height}")
-
-                        }
-//                        .offset(y = scrollOffset.dp)
-                )
-            }
-        }
     }
 //    window.addEventListener(type = "resize", callback = {
 //        resize()
 //    })
 
-//    window.addEventListener(type = "wheel", callback = { event ->
-//        event.preventDefault()
-//        val wheelEvent = event as WheelEvent
-////        println("dy: ${wheelEvent.deltaY}; y: ${wheelEvent.y}")
-////        scrollOffset = max(0, scrollOffset + wheelEvent.deltaY.toInt())
-//        scrollOffset += wheelEvent.deltaY.toInt()
-//        println("scrollOffset: $scrollOffset")
+    window.addEventListener(type = "wheel", callback = { event ->
+        event.preventDefault()
+        val wheelEvent = event as WheelEvent
+//        println("dy: ${wheelEvent.deltaY}; y: ${wheelEvent.y}")
+//        scrollOffset = max(0, scrollOffset + wheelEvent.deltaY.toInt())
+        scrollOffset += wheelEvent.deltaY.toInt()
+        println("scrollOffset: $scrollOffset")
+
+    })
+
+
+    onWasmReady {
+        Window("The state production pipeline") {
+            with(LocalDensity.current) {
+                App(
+                    modifier = Modifier
+                        .sizeIn(dimensions.first.toDp(), dimensions.second.toDp())
+//                        .layout { measurable, constraints ->
+//                            val placeable = measurable.measure(constraints)
 //
-//    })
+//                            layout(constraints.maxWidth, constraints.maxHeight * 10){
+//                                placeable.placeRelative(0, 0)
+//                            }
+//                        }
+                        .onGloballyPositioned {
+                            it.size
+                            println("WIDTH: ${it.size.width}")
+                            println("HEIGHT: ${it.size.height}")
+                        }
+                        .offset(y = scrollOffset.dp)
+                )
+            }
+        }
+    }
 }
 
 private val canvas get() = document.getElementById("ComposeTarget") as HTMLCanvasElement
@@ -76,5 +89,5 @@ private fun resize() {
     println("Have canvas: ${canvas != null}")
 
     canvas.width = window.innerWidth
-    canvas.height = 10_000
+    canvas.height = window.innerHeight
 }
