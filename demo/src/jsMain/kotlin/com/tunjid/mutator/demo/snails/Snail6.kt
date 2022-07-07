@@ -17,25 +17,29 @@
 package com.tunjid.mutator.demo.snails
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.tunjid.mutator.demo.intervalFlow
-import com.tunjid.mutator.demo.toProgress
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import org.jetbrains.compose.web.attributes.InputType
+import org.jetbrains.compose.web.attributes.max
+import org.jetbrains.compose.web.attributes.min
+import org.jetbrains.compose.web.dom.Input
 
-class Snail1StateHolder(
-    scope: CoroutineScope
-) {
-    val progress: StateFlow<Float> = intervalFlow(500)
-        .toProgress()
-        .stateIn(
-            scope = scope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = 0f
-        )
-}
 @Composable
-expect fun Snail1()
+actual fun Snail6() {
+    val scope = rememberCoroutineScope()
+    val stateHolder = remember { Snail6StateHolder(scope) }
+    val state by stateHolder.state.collectAsState()
+
+    Input(
+        type = InputType.Range,
+        attrs = {
+            min("0")
+            max("100")
+            value(state.progress)
+            id("TestSlider")
+        }
+    )
+}

@@ -15,20 +15,17 @@
  */
 
 #root {
+    height: 100%;
     width: 100%;
-    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-canvas {
-    display: block;
-    height: 100%;
-    left: 0;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    top: 0;
-    width: 100%
+#container {
+    max-width: 800px;
 }
+
 
 #root > .compose-web-column > div {
     position: relative;

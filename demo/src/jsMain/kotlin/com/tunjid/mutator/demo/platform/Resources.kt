@@ -16,15 +16,11 @@
 
 package com.tunjid.mutator.demo.platform
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import kotlinx.browser.document
 import kotlinx.browser.window
-import org.w3c.files.File
-import org.w3c.files.FileReaderSync
 
 private val fontNames = listOf(
     "jetbrainsmono_bold.ttf",

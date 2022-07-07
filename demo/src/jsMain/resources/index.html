@@ -19,13 +19,17 @@
 <head>
     <meta charset="UTF-8">
     <title>compose multiplatform web demo</title>
-    <script src="skiko.js"> </script>
-    <link type="text/css" rel="stylesheet" href="styles.css" />
+    <script src="skiko.js"></script>
+    <link type="text/css" rel="stylesheet" href="styles.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/hljs.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div>
-        <canvas id="ComposeTarget"></canvas>
+    <div id="root">
+        <div id="container"></div>
     </div>
-    <script src="demo.js"> </script>
 </body>
+<script src="demo.js"></script>
 </html>

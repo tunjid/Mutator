@@ -16,7 +16,23 @@
 
 package com.tunjid.mutator.demo.editor
 
-import androidx.compose.runtime.Composable
 
-@Composable
-expect fun EditorView(content: String)
+data class Line(val number: Int, val content: Content)
+
+data class Lines(
+    val data: List<String>
+) {
+    val size: Int = data.size
+    val lineNumberDigitCount: Int = size.toString().length
+
+    operator fun get(index: Int): Line = Line(
+        number = index,
+        content = Content(data[index], true)
+    )
+}
+
+
+data class Content(val value: String, val isCode: Boolean)
+
+
+fun String.toCodeLines() = Lines(split("\n"))

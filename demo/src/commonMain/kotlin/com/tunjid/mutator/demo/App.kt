@@ -16,26 +16,9 @@
 
 package com.tunjid.mutator.demo
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.tunjid.mutator.demo.common.AppTheme
-import com.tunjid.mutator.demo.editor.EditorView
-import com.tunjid.mutator.demo.editor.toCodeLines
+import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.sections.Section1
-import com.tunjid.mutator.demo.snails.Snail1
 import com.tunjid.mutator.demo.snails.Snail10
 import com.tunjid.mutator.demo.snails.Snail2
 import com.tunjid.mutator.demo.snails.Snail3
@@ -50,51 +33,18 @@ import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun App(
-    modifier: Modifier = Modifier
 ) {
-    AppTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .widthIn(0.dp, 600.dp)
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.Center)
-            ) {
-                Section1()
-                Snail2()
-
-                Snail3()
-                Snail4()
-                Snail5()
-                Snail6()
-                Snail7()
-                Snail8()
-                Snail9()
-                Snail10()
-            }
-//            LazyColumn(
-//                modifier = modifier
-//                    .fillMaxSize()
-//                    .widthIn(0.dp, 600.dp)
-//                    .padding(horizontal = 16.dp)
-//                    .align(Alignment.Center)
-//            ) {
-//                item { Section1() }
-//                item { Snail2() }
-//                item { Snail3() }
-//                item { Snail4() }
-//                item { Snail5() }
-//                item { Snail6() }
-//                item { Snail7() }
-//                item { Snail8() }
-//                item { Snail9() }
-//                item { Snail10() }
-//            }
-        }
+    VerticalLayout {
+        Section1()
+        Snail2()
+        Snail3()
+        Snail4()
+        Snail5()
+        Snail6()
+        Snail7()
+        Snail8()
+        Snail9()
+        Snail10()
     }
 }
 

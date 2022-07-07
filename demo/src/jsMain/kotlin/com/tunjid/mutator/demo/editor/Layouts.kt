@@ -17,6 +17,12 @@
 package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
+import org.jetbrains.compose.web.dom.Div
 
 @Composable
-expect fun EditorView(content: String)
+actual fun VerticalLayout(content: @Composable () -> Unit) {
+    Div({
+    }) {
+        content()
+    }
+}

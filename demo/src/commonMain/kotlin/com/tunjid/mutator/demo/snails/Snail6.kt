@@ -16,26 +16,10 @@
 
 package com.tunjid.mutator.demo.snails
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.coroutines.emit
 import com.tunjid.mutator.coroutines.produceState
@@ -50,10 +34,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
@@ -107,54 +88,4 @@ class Snail6StateHolder(
 }
 
 @Composable
-fun Snail6(
-modifier: Modifier = Modifier
-) {
-    val scope = rememberCoroutineScope()
-    val stateHolder = remember { Snail6StateHolder(scope) }
-
-    val state by stateHolder.state.collectAsState()
-
-    Surface(
-        modifier = modifier.fillMaxWidth(0.8f),
-    ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp),
-        ) {
-            Text(
-                modifier = Modifier.padding(vertical = 8.dp),
-                text ="Snail6"
-            )
-            Slider(
-                valueRange = 0f..100f,
-                value = state.progress,
-                colors = SliderDefaults.colors(
-                    thumbColor = state.color,
-                    activeTrackColor = state.color
-                ),
-                onValueChange = { stateHolder.setProgress(it) }
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.Center
-            ) {
-                state.colors.forEach { color ->
-                    Button(
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        colors = ButtonDefaults.buttonColors(backgroundColor = color),
-                        onClick = {
-                            stateHolder.setSnailColor(color)
-                        },
-                        content = {
-                        },
-                    )
-                }
-            }
-
-            Text(
-                modifier = Modifier.padding(vertical = 8.dp),
-                text = "Progress: ${state.progress}; Speed: ${state.speed}"
-            )
-        }
-    }
-}
+expect fun Snail6()

@@ -19,4 +19,4 @@ package com.tunjid.mutator.demo.editor
 import androidx.compose.runtime.Composable
 
 @Composable
-expect fun EditorView(content: String)
+expect fun VerticalLayout(content: @Composable () -> Unit)

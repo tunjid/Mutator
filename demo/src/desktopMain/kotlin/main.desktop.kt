@@ -15,8 +15,6 @@
  */
 
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -53,10 +51,7 @@ fun main() {
         title = "State",
         state = WindowState(size = DpSize(800.dp, 800.dp))
     ) {
-        val scrollState = rememberScrollState()
-        App(
-            modifier = Modifier
-        )
+        App()
     }
 }
 
