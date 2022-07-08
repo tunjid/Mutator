@@ -81,6 +81,7 @@ actual fun ColorSwatch(
 
 @Composable
 actual fun ToggleButton(
+    progress: Float,
     onClicked: () -> Unit
 ) {
     Button(

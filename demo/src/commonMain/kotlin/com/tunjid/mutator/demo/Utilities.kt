@@ -43,25 +43,31 @@ fun intervalFlow(intervalMillis: Long) = flow {
     }
 }
 
-fun CoroutineScope.speedFlow() = intervalFlow(4000)
-    .map { Speed.values().random() }
-    .shareIn(this, SharingStarted.WhileSubscribed())
+fun CoroutineScope.speedFlow() =
+    intervalFlow(4000)
+        .map { Speed.values().random() }
+        .shareIn(this, SharingStarted.WhileSubscribed())
 
-fun Flow<Speed>.toInterval() = flatMapLatest {
-    intervalFlow(SPEED / it.multiplier)
-}
+fun Flow<Speed>.toInterval(): Flow<Long> =
+    flatMapLatest {
+        intervalFlow(SPEED / it.multiplier)
+    }
 
-fun <T> Flow<T>.toProgress() =
+fun <T> Flow<T>.toProgress(): Flow<Float> =
     scan(0f) { progress, _ -> (progress + 1) % 100 }
 
+data class ColorInterpolationProgress(
+    val progress: Float,
+    val colors: List<Color>
+)
 fun interpolateColors(
     startColors: IntArray,
     endColors: IntArray
-) = (0..100).asFlow()
+): Flow<ColorInterpolationProgress> = (0..100).asFlow()
     .onEach { delay(50) }
     .map { percentage ->
         val fraction = percentage.toFloat() / 100F
-        startColors
+        val colors = startColors
             .zip(endColors)
             .map { (start, end) ->
                 interpolateColors(
@@ -71,4 +77,9 @@ fun interpolateColors(
                 )
             }
             .map(::Color)
+
+        ColorInterpolationProgress(
+            progress = fraction,
+            colors = colors,
+        )
     }

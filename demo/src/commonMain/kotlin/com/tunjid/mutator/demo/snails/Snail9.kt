@@ -48,6 +48,7 @@ data class Snail9State(
     val speed: Speed = Speed.One,
     val isDark: Boolean = false,
     val colorIndex: Int = 0,
+    val colorInterpolationProgress: Float = 0F,
     val colors: List<Color> = MutedColors.colors(false).map(::Color)
 )
 
@@ -99,8 +100,8 @@ class Snail9StateHolder(
             interpolateColors(
                 startColors = state.value.colors.map(Color::toArgb).toIntArray(),
                 endColors = MutedColors.colors(isDark)
-            ).collect {
-                userChanges.emit { copy(colors = it) }
+            ).collect { (progress, colors) ->
+                userChanges.emit { copy(colorInterpolationProgress = progress, colors = colors) }
             }
         }
     }

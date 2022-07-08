@@ -40,5 +40,6 @@ expect fun ColorSwatch(
 
 @Composable
 expect fun ToggleButton(
+    progress: Float,
     onClicked: () -> Unit = {}
 )

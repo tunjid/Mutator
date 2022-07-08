@@ -193,7 +193,19 @@ class Snail10StateHolder(
 
     private fun Flow<Action.SetProgress>.progressMutations() = …
 
-    private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail10State>> =...    
+    private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail10State>> =
+        flatMapLatest { (isDark, startColors) ->
+            flow {
+                emit(Mutation { copy(isDark = isDark) })
+                emitAll(
+                    interpolateColors(
+                        startColors = startColors.map(Color::toArgb).toIntArray(),
+                        endColors = MutedColors.colors(isDark)
+                    )
+                        .map { Mutation { copy(colors = it) } }
+                )
+            }
+        }   
 """.trimIndent()
 
 private val nineMarkdown = """

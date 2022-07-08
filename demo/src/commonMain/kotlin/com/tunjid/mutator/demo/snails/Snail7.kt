@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.coroutines.emit
 import com.tunjid.mutator.coroutines.mutateState
+import com.tunjid.mutator.demo.ColorInterpolationProgress
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
@@ -47,6 +48,7 @@ data class Snail7State(
     val speed: Speed = Speed.One,
     val isDark: Boolean = false,
     val colorIndex: Int = 0,
+    val colorInterpolationProgress: Float = 0F,
     val colors: List<Color> = MutedColors.colors(false).map(::Color)
 )
 
@@ -95,8 +97,8 @@ class Snail7StateHolder(
             interpolateColors(
                 startColors = state.value.colors.map(Color::toArgb).toIntArray(),
                 endColors = MutedColors.colors(isDark)
-            ).collect {
-                userChanges.emit { copy(colors = it) }
+            ).collect { (progress, colors) ->
+                userChanges.emit { copy(colorInterpolationProgress = progress, colors = colors) }
             }
         }
     }
