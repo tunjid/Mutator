@@ -17,6 +17,7 @@
 package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
+import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
@@ -28,6 +29,7 @@ fun Section2() {
         Markdown(oneMarkdown)
         EditorView(twoCode)
         Snail3()
+        CallToAction("Tap on a color to change the snail's color.")
         Markdown(threeMarkdown)
     }
 }

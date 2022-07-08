@@ -17,6 +17,7 @@
 package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
+import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
@@ -29,6 +30,7 @@ fun Section5() = SectionLayout {
     Markdown(threeMarkdown)
     EditorView(fourCode)
     Snail6()
+    CallToAction("Snail6 is identical to Snail5; just with a formalized state production approach.")
 }
 
 private val oneMarkdown = """

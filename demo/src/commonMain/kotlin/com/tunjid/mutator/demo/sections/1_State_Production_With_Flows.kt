@@ -17,6 +17,7 @@
 package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
+import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
@@ -29,11 +30,13 @@ fun Section1() {
         Markdown(introMarkdown)
         EditorView(snail1Code)
         Snail1()
+        CallToAction("The snail's progress is dependent only on time.")
         Markdown(threeMarkdown)
         EditorView(fourCode)
         Markdown(fiveMarkdown)
         EditorView(sixCode)
         Snail2()
+        CallToAction("The snail's state is now dependent on its progress and its speed.")
         Markdown(sevenMarkdown)
     }
 }

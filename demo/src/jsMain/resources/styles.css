@@ -55,11 +55,21 @@
     margin: 10px;
 }
 
+.cta {
+    width: 80%;
+    margin: 16px;
+    padding: 8px;
+    border-radius: 8px;
+    color: #00579B;
+    background-color: #E1F4FE;
+}
+
 .card {
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     width: 80%;
     padding: 16px;
+    margin: 20px;
 }
 
 .card:hover {

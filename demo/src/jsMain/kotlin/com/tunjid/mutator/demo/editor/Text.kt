@@ -50,6 +50,19 @@ actual fun Markdown(content: String) = Div(
 )
 
 @Composable
+actual fun CallToAction(text: String) = Div(
+    attrs = {
+        classes("cta", "horizontallyCentered")
+    }
+){
+    P(
+        content = {
+            Text(value = text)
+        }
+    )
+}
+
+@Composable
 private fun ElementScope<HTMLElement>.UseReactEffect(
     key: Any?,
     content: ReactElement<*>

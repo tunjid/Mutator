@@ -17,6 +17,7 @@
 package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
+import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
@@ -27,6 +28,10 @@ fun Section6() = SectionLayout {
     Markdown(oneMarkdown)
     EditorView(twoCode)
     Snail7()
+    CallToAction(
+        "Tap the toggle button to switch between light and dark modes for the snail. " +
+            "Notice that tapping in quick succession will cause the UI to flicker as state changes conflict."
+    )
     Markdown(threeMarkdown)
 }
 

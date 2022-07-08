@@ -41,6 +41,11 @@ actual fun Markdown(content: String) {
 }
 
 @Composable
+actual fun CallToAction(text: String) {
+
+}
+
+@Composable
 private fun StyledText(
     text: String,
     style: TextStyle,

@@ -23,3 +23,6 @@ expect fun Paragraph(text: String)
 
 @Composable
 expect fun Markdown(content: String)
+
+@Composable
+expect fun CallToAction(text: String)

@@ -17,6 +17,7 @@
 package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
+import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
@@ -26,15 +27,17 @@ import com.tunjid.mutator.demo.snails.Snail5
 @Composable
 fun Section4() = SectionLayout {
     Markdown(oneMarkdown)
-    Markdown(twoGreenNotice)
+    CallToAction(twoCta)
     Markdown(threeMarkdown)
     EditorView(fourCode)
     Markdown(fiveMarkdown)
     EditorView(sixCode)
     Snail4()
+    CallToAction("Snail4 is identical to Snail3; just with different state production semantics.")
     Markdown(sevenMarkdown)
     EditorView(eightCode)
     Snail5()
+    CallToAction("Drag the snail to place it anywhere on its track.")
     Markdown(nineMarkdown)
 }
 
@@ -44,7 +47,7 @@ private val oneMarkdown = """
 We've established that state production fundamentally is introducing changes to state over time. That is the new state is the old state plus the change in state. Expressing this mathematically becomes:    
 """.trimIndent()
 
-private val twoGreenNotice = """
+private val twoCta = """
 newState = oldState + Δstate    
 """.trimIndent()
 
