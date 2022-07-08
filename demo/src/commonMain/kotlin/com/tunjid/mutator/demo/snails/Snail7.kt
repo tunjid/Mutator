@@ -130,6 +130,7 @@ fun Snail7() {
                 text = "Progress: ${state.progress}; Speed: ${state.speed}"
             )
             ToggleButton(
+                progress = state.colorInterpolationProgress,
                 onClicked = { stateHolder.setMode(!state.isDark) }
             )
         }
