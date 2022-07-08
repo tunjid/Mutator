@@ -26,7 +26,9 @@ import org.jetbrains.compose.web.css.height
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.css.maxHeight
 import org.jetbrains.compose.web.css.overflow
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.pt
+import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Code
 import org.jetbrains.compose.web.dom.Pre
 import org.w3c.dom.HTMLElement
@@ -41,6 +43,7 @@ fun FormattedCodeSnippet(code: String, language: String = "kotlin") {
     Pre({
         style {
             maxHeight(25.em)
+            width(100.percent)
             overflow("auto")
             height(auto)
         }

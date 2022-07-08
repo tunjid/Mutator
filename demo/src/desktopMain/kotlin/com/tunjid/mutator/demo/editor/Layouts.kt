@@ -40,7 +40,7 @@ import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.common.AppTheme
 
 @Composable
-actual fun SectionLayout(content: @Composable () -> Unit) {
+actual fun ContainerLayout(content: @Composable () -> Unit) {
     val scrollState = rememberScrollState()
     AppTheme {
         Box(
@@ -60,6 +60,14 @@ actual fun SectionLayout(content: @Composable () -> Unit) {
             }
         }
     }
+}
+@Composable
+actual fun SectionLayout(content: @Composable () -> Unit) {
+    Column(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        content = { content() }
+    )
 }
 
 @Composable

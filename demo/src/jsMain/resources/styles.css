@@ -26,6 +26,12 @@
     max-width: 800px;
 }
 
+.sectionLayout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .verticalLayout {
     display: flex;
     flex-direction: column;

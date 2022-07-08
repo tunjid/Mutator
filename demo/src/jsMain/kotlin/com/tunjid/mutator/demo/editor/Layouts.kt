@@ -32,8 +32,12 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Input
 
 @Composable
+actual fun ContainerLayout(content: @Composable () -> Unit) {
+    StyledDiv(content, "container")
+}
+@Composable
 actual fun SectionLayout(content: @Composable () -> Unit) {
-    StyledDiv(content, "verticalLayout")
+    StyledDiv(content, "sectionLayout")
 }
 
 @Composable
