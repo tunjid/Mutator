@@ -132,7 +132,9 @@ actual fun ToggleButton(
             title("Toggle mode")
             onClick { onClicked() }
         },
-        content = { }
+        content = {
+            Paragraph("Toggle mode")
+        }
     )
 }
 
