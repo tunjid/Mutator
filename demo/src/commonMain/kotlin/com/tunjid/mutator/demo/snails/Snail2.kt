@@ -21,21 +21,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.tunjid.mutator.demo.SPEED
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.Snail
 import com.tunjid.mutator.demo.editor.SnailCard
 import com.tunjid.mutator.demo.editor.VerticalLayout
-import com.tunjid.mutator.demo.intervalFlow
 import com.tunjid.mutator.demo.speedFlow
+import com.tunjid.mutator.demo.toInterval
 import com.tunjid.mutator.demo.toProgress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 
 
@@ -50,11 +48,8 @@ class Snail2StateHolder(
     private val speed: Flow<Speed> = scope.speedFlow()
 
     private val progress: Flow<Float> = speed
-        .flatMapLatest {
-            intervalFlow(SPEED * it.multiplier)
-        }
+        .toInterval()
         .toProgress()
-
 
     val state: StateFlow<Snail2State> = combine(
         progress,

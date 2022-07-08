@@ -27,7 +27,6 @@ import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.coroutines.emit
 import com.tunjid.mutator.coroutines.produceState
 import com.tunjid.mutator.demo.MutedColors
-import com.tunjid.mutator.demo.SPEED
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.ColorSwatch
 import com.tunjid.mutator.demo.editor.Paragraph
@@ -36,15 +35,14 @@ import com.tunjid.mutator.demo.editor.SnailCard
 import com.tunjid.mutator.demo.editor.ToggleButton
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.interpolateColors
-import com.tunjid.mutator.demo.intervalFlow
 import com.tunjid.mutator.demo.speedFlow
+import com.tunjid.mutator.demo.toInterval
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -71,9 +69,7 @@ class Snail9StateHolder(
         .map { Mutation { copy(speed = it) } }
 
     private val progressChanges: Flow<Mutation<Snail9State>> = speed
-        .flatMapLatest {
-            intervalFlow(SPEED * it.multiplier)
-        }
+        .toInterval()
         .map { Mutation { copy(progress = (progress + 1) % 100) } }
 
     private val userChanges = MutableSharedFlow<Mutation<Snail9State>>()
