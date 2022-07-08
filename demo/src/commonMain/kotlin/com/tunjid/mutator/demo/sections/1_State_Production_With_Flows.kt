@@ -30,7 +30,7 @@ fun Section1() {
     SectionLayout {
         Heading2(
             text =
-            "The UI State Production Pipeline"
+            "State Production With Flows"
         )
         Paragraph(
             text =

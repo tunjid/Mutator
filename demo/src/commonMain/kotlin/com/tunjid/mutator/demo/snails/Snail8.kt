@@ -37,6 +37,7 @@ import com.tunjid.mutator.demo.editor.ToggleButton
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.interpolateColors
 import com.tunjid.mutator.demo.intervalFlow
+import com.tunjid.mutator.demo.speedFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -63,9 +64,7 @@ class Snail8StateHolder(
     private val scope: CoroutineScope
 ) {
 
-    private val speed: Flow<Speed> = intervalFlow(2000)
-        .map { Speed.values().random() }
-        .shareIn(scope, SharingStarted.WhileSubscribed())
+    private val speed: Flow<Speed> = scope.speedFlow()
 
     private val speedChanges: Flow<Mutation<Snail8State>> = speed
         .map { Mutation { copy(speed = it) } }

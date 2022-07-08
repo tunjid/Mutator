@@ -17,13 +17,16 @@
 package com.tunjid.mutator.demo
 
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.flow.shareIn
 
 const val SPEED = 500L
 
@@ -38,6 +41,10 @@ fun intervalFlow(intervalMillis: Long) = flow {
         delay(intervalMillis)
     }
 }
+
+fun CoroutineScope.speedFlow() = intervalFlow(5000)
+    .map { Speed.values().random() }
+    .shareIn(this, SharingStarted.WhileSubscribed())
 
 fun <T> Flow<T>.toProgress() =
     scan(0f) { progress, _ -> (progress + 1) % 100 }
