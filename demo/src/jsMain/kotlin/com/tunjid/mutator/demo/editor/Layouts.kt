@@ -138,26 +138,6 @@ actual fun ToggleButton(
 }
 
 @Composable
-actual fun Markdown(content: String) {
-    Div(
-        attrs = {
-            style {
-            }
-        },
-        content = {
-            console.log("REACT MARK DOWN", reactMarkdown)
-
-            UseReactEffect(
-                content,
-                reactMarkdown.create {
-                    children = content
-                }
-            )
-        }
-    )
-}
-
-@Composable
 private fun StyledDiv(
     content: @Composable () -> Unit,
     vararg classNames: String

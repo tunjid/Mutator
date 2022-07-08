@@ -55,8 +55,8 @@ How do we express the functional declaration above in code though? Fortunately K
 """.trimIndent()
 
 private val fourCode = """
-data class Mutation<T : Any>(
-    val mutate: T.() -> T
+data class Mutation<State : Any>(
+    val mutate: State.() -> State
 )    
 """.trimIndent()
 

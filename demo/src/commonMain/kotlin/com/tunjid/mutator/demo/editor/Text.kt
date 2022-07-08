@@ -17,17 +17,8 @@
 package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
-
-@Composable
-expect fun Heading1(text: String)
-
-@Composable
-expect fun Heading2(text: String)
-
-@Composable
-expect fun Heading3(text: String)
-
 @Composable
 expect fun Paragraph(text: String)
 
-
+@Composable
+expect fun Markdown(content: String)

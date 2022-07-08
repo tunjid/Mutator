@@ -56,6 +56,3 @@ expect fun ColorSwatch(
 expect fun ToggleButton(
     onClicked: () -> Unit = {}
 )
-
-@Composable
-expect fun Markdown(content: String)

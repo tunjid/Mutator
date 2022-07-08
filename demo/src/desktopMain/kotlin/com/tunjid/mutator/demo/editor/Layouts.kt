@@ -139,11 +139,6 @@ actual fun ColorSwatch(
 }
 
 @Composable
-actual fun Markdown(content: String) {
-
-}
-
-@Composable
 actual fun ToggleButton(
     onClicked: () -> Unit
 ) {

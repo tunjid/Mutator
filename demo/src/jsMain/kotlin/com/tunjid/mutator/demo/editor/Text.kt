@@ -17,90 +17,40 @@
 package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
+import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.ElementScope
-import org.jetbrains.compose.web.dom.H2
-import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLElement
 import react.FC
 import react.Props
 import react.ReactElement
+import react.create
 import react.dom.render
 import react.dom.unmountComponentAtNode
 
-@Composable
-actual fun Heading1(text: String) {
-    H3(
-        attrs = {
-        },
-        content = {
-            Text(
-                value = text
-            )
-        }
-    )
-}
 
 @Composable
-actual fun Heading2(text: String) {
-    H2(
-        attrs = {
-        },
-        content = {
-            Text(
-                value = text
-            )
-        }
-    )
-}
+actual fun Paragraph(text: String) = P(
+    content = {
+        Text(value = text)
+    }
+)
 
 @Composable
-actual fun Heading3(text: String) {
-    H3(
-        attrs = {
-        },
-        content = {
-            Text(
-                value = text
-            )
-        }
-    )
-}
+actual fun Markdown(content: String) = Div(
+    content = {
+        UseReactEffect(
+            content,
+            reactMarkdown.create {
+                children = content
+            }
+        )
+    }
+)
 
 @Composable
-actual fun Paragraph(text: String) {
-
-    P(
-        attrs = {
-        },
-        content = {
-            Text(
-                value = text
-            )
-        }
-    )
-
-
-//    Div {
-//        P(
-//            attrs = {
-//            },
-//            content = {
-//                Text(
-//                    value = "HHH"
-//                )
-//            }
-//        )
-//        UseReactEffect(text) {
-//            reactMarkdown(ImutableReactMarkdownProps(text))
-//        }
-//    }
-}
-
-
-@Composable
-fun ElementScope<HTMLElement>.UseReactEffect(
+private fun ElementScope<HTMLElement>.UseReactEffect(
     key: Any?,
     content: ReactElement<*>
 ) {
@@ -117,7 +67,6 @@ fun ElementScope<HTMLElement>.UseReactEffect(
         }
     }
 }
-
 
 @JsName("ReactMarkdown")
 @JsModule("react-markdown")

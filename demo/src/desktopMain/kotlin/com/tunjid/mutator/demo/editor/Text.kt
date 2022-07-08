@@ -25,38 +25,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
 @Composable
-actual fun Heading1(text: String) {
-    StyledText(
-        text = text,
-        style = MaterialTheme.typography.h3.copy(
-            MaterialTheme.colors.onSurface
-        )
-    )
-}
-
-@Composable
-actual fun Heading2(text: String) {
-    StyledText(
-        modifier = Modifier.padding(vertical = 8.dp),
-        text = text,
-        style = MaterialTheme.typography.h4.copy(
-            MaterialTheme.colors.onSurface
-        )
-    )
-}
-
-@Composable
-actual fun Heading3(text: String) {
-    StyledText(
-        modifier = Modifier.padding(vertical = 8.dp),
-        text = text,
-        style = MaterialTheme.typography.h5.copy(
-            MaterialTheme.colors.onSurface
-        )
-    )
-}
-
-@Composable
 actual fun Paragraph(text: String) {
     StyledText(
         modifier = Modifier.padding(vertical = 8.dp),
@@ -67,6 +35,10 @@ actual fun Paragraph(text: String) {
     )
 }
 
+@Composable
+actual fun Markdown(content: String) {
+
+}
 
 @Composable
 private fun StyledText(

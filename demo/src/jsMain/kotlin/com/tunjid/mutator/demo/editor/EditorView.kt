@@ -42,7 +42,6 @@ actual fun EditorView(content: String) = key(content) {
 fun FormattedCodeSnippet(code: String, language: String = "kotlin") {
     Pre({
         style {
-            maxHeight(25.em)
             width(100.percent)
             overflow("auto")
             height(auto)
