@@ -110,10 +110,6 @@
     cursor: pointer;
 }
 
-.toggleButton {
-    border-radius: 5px;
-}
-
 .horizontallyCentered {
     margin: 0 auto;
 }

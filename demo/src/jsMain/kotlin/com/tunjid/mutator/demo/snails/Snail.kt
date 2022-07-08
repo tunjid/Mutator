@@ -29,7 +29,6 @@ import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.rgb
 import org.jetbrains.compose.web.css.width
-import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Input
 
@@ -105,7 +104,6 @@ actual fun ToggleButton(
         Div(
             attrs = {
                 classes("btn")
-                onClick { onClicked() }
             },
             content = {
                 "Toggle mode"
@@ -115,7 +113,6 @@ actual fun ToggleButton(
             attrs = {
                 classes("progress")
                 style { width((progress * 100).toInt().percent) }
-                onClick { onClicked() }
             }
         )
     }
