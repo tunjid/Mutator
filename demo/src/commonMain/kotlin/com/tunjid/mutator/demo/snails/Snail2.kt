@@ -23,8 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
-import com.tunjid.mutator.demo.editor.Snail
-import com.tunjid.mutator.demo.editor.SnailCard
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
 import com.tunjid.mutator.demo.toInterval

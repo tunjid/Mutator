@@ -19,7 +19,6 @@ package com.tunjid.mutator.demo.sections
 import androidx.compose.runtime.Composable
 import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Markdown
-import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.snails.Snail1
 import com.tunjid.mutator.demo.snails.Snail2

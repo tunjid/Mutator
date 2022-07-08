@@ -21,10 +21,6 @@ import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.snails.Snail10
-import com.tunjid.mutator.demo.snails.Snail4
-import com.tunjid.mutator.demo.snails.Snail5
-import com.tunjid.mutator.demo.snails.Snail6
-import com.tunjid.mutator.demo.snails.Snail7
 import com.tunjid.mutator.demo.snails.Snail8
 import com.tunjid.mutator.demo.snails.Snail9
 

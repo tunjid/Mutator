@@ -24,10 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
-import com.tunjid.mutator.demo.editor.ColorSwatch
 import com.tunjid.mutator.demo.editor.Paragraph
-import com.tunjid.mutator.demo.editor.Snail
-import com.tunjid.mutator.demo.editor.SnailCard
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
 import com.tunjid.mutator.demo.toInterval

@@ -17,8 +17,6 @@
 package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import com.tunjid.mutator.demo.Speed
 
 @Composable
 expect fun ContainerLayout(content: @Composable () -> Unit)
@@ -33,26 +31,4 @@ expect fun VerticalLayout(content: @Composable () -> Unit)
 expect fun HorizontalLayout(
     centerOnMainAxis: Boolean = false,
     content: @Composable () -> Unit
-)
-
-@Composable
-expect fun SnailCard(content: @Composable () -> Unit)
-
-@Composable
-expect fun Snail(
-    progress: Float,
-    speed: Speed = Speed.One,
-    color: Color = Color.Cyan,
-    onValueChange: (Float) -> Unit = {}
-)
-
-@Composable
-expect fun ColorSwatch(
-    colors: List<Color> = listOf(),
-    onColorClicked: (Int) -> Unit = {}
-)
-
-@Composable
-expect fun ToggleButton(
-    onClicked: () -> Unit = {}
 )

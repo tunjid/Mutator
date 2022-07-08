@@ -20,11 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.backgroundColor
-import org.jetbrains.compose.web.css.em
 import org.jetbrains.compose.web.css.fontSize
 import org.jetbrains.compose.web.css.height
 import org.jetbrains.compose.web.css.keywords.auto
-import org.jetbrains.compose.web.css.maxHeight
 import org.jetbrains.compose.web.css.overflow
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.pt
