@@ -22,7 +22,10 @@ import com.tunjid.mutator.demo.Speed
 
 
 @Composable
-expect fun SnailCard(content: @Composable () -> Unit)
+expect fun SnailCard(
+    color: Color = Color.White,
+    content: @Composable () -> Unit
+)
 
 @Composable
 expect fun Snail(

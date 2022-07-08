@@ -33,7 +33,10 @@ import androidx.compose.ui.unit.dp
 import com.tunjid.mutator.demo.Speed
 
 @Composable
-actual fun SnailCard(content: @Composable () -> Unit) {
+actual fun SnailCard(
+    color: Color,
+    content: @Composable () -> Unit
+) {
     Surface(
         modifier = Modifier.fillMaxWidth(0.8f), content = { content() },
     )

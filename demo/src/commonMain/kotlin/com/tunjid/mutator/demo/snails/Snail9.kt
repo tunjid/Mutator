@@ -54,6 +54,8 @@ data class Snail9State(
 
 val Snail9State.color get() = colors[colorIndex]
 
+val Snail9State.cardColor: Color get() = colors.last()
+
 class Snail9StateHolder(
     private val scope: CoroutineScope
 ) {
@@ -114,7 +116,7 @@ fun Snail9() {
     val stateHolder = remember { Snail9StateHolder(scope) }
     val state by stateHolder.state.collectAsState()
 
-    SnailCard {
+    SnailCard(state.cardColor) {
         VerticalLayout {
             Paragraph(
                 text = "Snail9"

@@ -55,6 +55,8 @@ data class Snail10State(
 
 val Snail10State.color get() = colors[colorIndex]
 
+val Snail10State.cardColor: Color get() = colors.last()
+
 sealed class Action {
     data class SetColor(
         val index: Int
@@ -143,7 +145,7 @@ fun Snail10() {
     val stateHolder = remember { Snail10StateHolder(scope) }
     val state by stateHolder.state.collectAsState()
 
-    SnailCard {
+    SnailCard(state.cardColor) {
         VerticalLayout {
             Paragraph(
                 text = "Snail10"

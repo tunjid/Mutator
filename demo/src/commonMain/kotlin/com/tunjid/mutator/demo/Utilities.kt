@@ -67,7 +67,7 @@ fun interpolateColors(
 ): Flow<ColorInterpolationProgress> = (0..100).asFlow()
     .onEach { delay(50) }
     .map { percentage ->
-        val fraction = (percentage % 100).toFloat() / 100F
+        val fraction = percentage.toFloat() / 100F
         val colors = startColors
             .zip(endColors)
             .map { (start, end) ->

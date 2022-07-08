@@ -17,21 +17,22 @@
 package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
+import org.jetbrains.compose.web.css.StyleScope
 import org.jetbrains.compose.web.dom.Div
 
 @Composable
 actual fun ContainerLayout(content: @Composable () -> Unit) {
-    StyledDiv(content, "container")
+    StyledDiv(content = content, classNames = listOf("container"))
 }
 
 @Composable
 actual fun SectionLayout(content: @Composable () -> Unit) {
-    StyledDiv(content, "sectionLayout")
+    StyledDiv(content = content, classNames = listOf("sectionLayout"))
 }
 
 @Composable
 actual fun VerticalLayout(content: @Composable () -> Unit) {
-    StyledDiv(content, "verticalLayout")
+    StyledDiv(content = content, classNames = listOf("verticalLayout"))
 }
 
 @Composable
@@ -40,23 +41,24 @@ actual fun HorizontalLayout(
     content: @Composable () -> Unit
 ) {
     StyledDiv(
-        content,
-        *listOfNotNull(
+        content = content,
+        classNames = listOfNotNull(
             "horizontalLayout",
             "horizontallyCentered".takeIf { centerOnMainAxis }
         )
-            .toTypedArray()
     )
 }
 
 @Composable
 fun StyledDiv(
+    styles: StyleScope.() -> Unit = {},
     content: @Composable () -> Unit,
-    vararg classNames: String
+    classNames: List<String>
 ) {
     Div(
         attrs = {
-            classes(*classNames)
+            style(styles)
+            classes(*classNames.toTypedArray())
         },
         content = {
             content()

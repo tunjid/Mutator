@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.toArgb
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.coroutines.emit
 import com.tunjid.mutator.coroutines.mutateState
-import com.tunjid.mutator.demo.ColorInterpolationProgress
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
@@ -53,6 +52,8 @@ data class Snail7State(
 )
 
 val Snail7State.color get() = colors[colorIndex]
+
+val Snail7State.cardColor: Color get() = colors.last()
 
 class Snail7StateHolder(
     private val scope: CoroutineScope
@@ -110,7 +111,7 @@ fun Snail7() {
     val stateHolder = remember { Snail7StateHolder(scope) }
     val state by stateHolder.state.collectAsState()
 
-    SnailCard {
+    SnailCard(state.cardColor) {
         VerticalLayout {
             Paragraph(
                 text = "Snail7"

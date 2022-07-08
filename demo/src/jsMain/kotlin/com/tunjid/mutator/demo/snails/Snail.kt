@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.HorizontalLayout
-import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.StyledDiv
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.max
@@ -33,8 +32,17 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Input
 
 @Composable
-actual fun SnailCard(content: @Composable () -> Unit) {
-    StyledDiv(content, "card")
+actual fun SnailCard(
+    color: Color,
+    content: @Composable () -> Unit
+) {
+    StyledDiv(
+        content = content,
+        classNames = listOf("card"),
+        styles = {
+            backgroundColor(color.rgb())
+        }
+    )
 }
 
 @Composable
@@ -49,11 +57,7 @@ actual fun Snail(
         attrs = {
             classes("snail", "horizontallyCentered")
             style {
-                val r = (color.red * 255).toInt().toHexString()
-                val g = (color.green * 255).toInt().toHexString()
-                val b = (color.blue * 255).toInt().toHexString()
-                val hex = "#$r$g$b"
-                property("--snailColor", hex)
+                property("--snailColor", color.hex())
             }
             min("0")
             max("100")
@@ -75,11 +79,7 @@ actual fun ColorSwatch(
                     classes("colorSwatch")
                     style {
                         backgroundColor(
-                            rgb(
-                                r = (color.red * 255).toInt(),
-                                g = (color.green * 255).toInt(),
-                                b = (color.blue * 255).toInt(),
-                            )
+                            color.rgb()
                         )
                     }
                     onClick { onColorClicked(index) }
@@ -112,11 +112,24 @@ actual fun ToggleButton(
         Div(
             attrs = {
                 classes("progress")
-                style { width((progress * 100).toInt().percent) }
+                style { width(((progress % 100) * 100).toInt().percent) }
             }
         )
     }
 )
+
+private fun Color.rgb() = rgb(
+    r = (red * 255).toInt(),
+    g = (green * 255).toInt(),
+    b = (blue * 255).toInt(),
+)
+
+private fun Color.hex(): String {
+    val r = (red * 255).toInt().toHexString()
+    val g = (green * 255).toInt().toHexString()
+    val b = (blue * 255).toInt().toHexString()
+    return "#$r$g$b"
+}
 
 private fun Int.toHexString(): String {
     val hex = this.toString(16)
