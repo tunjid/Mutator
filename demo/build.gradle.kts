@@ -60,7 +60,7 @@ kotlin {
                 implementation(npm("react", "17.0.2"))
                 implementation(npm("react-dom", "17.0.2"))
                 implementation(npm("highlight.js", "10.7.2"))
-                implementation(npm("react-markdown", "8.0.2"))
+                implementation(npm("react-markdown", "6.0.3"))
 
             }
         }

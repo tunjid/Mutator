@@ -18,7 +18,6 @@ package com.tunjid.mutator.demo
 
 import androidx.compose.runtime.Composable
 import com.tunjid.mutator.demo.editor.ContainerLayout
-import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.sections.Section1
 import com.tunjid.mutator.demo.sections.Section2
 import com.tunjid.mutator.demo.sections.Section3

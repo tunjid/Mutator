@@ -22,6 +22,7 @@ import com.tunjid.mutator.demo.Speed
 
 @Composable
 expect fun ContainerLayout(content: @Composable () -> Unit)
+
 @Composable
 expect fun SectionLayout(content: @Composable () -> Unit)
 
@@ -55,3 +56,6 @@ expect fun ColorSwatch(
 expect fun ToggleButton(
     onClicked: () -> Unit = {}
 )
+
+@Composable
+expect fun Markdown(content: String)

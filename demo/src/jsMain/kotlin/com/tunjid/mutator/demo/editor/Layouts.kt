@@ -18,26 +18,25 @@ package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import com.tunjid.mutator.demo.Speed
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.max
 import org.jetbrains.compose.web.attributes.min
 import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.css.height
-import org.jetbrains.compose.web.css.marginLeft
-import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.rgb
-import org.jetbrains.compose.web.css.rgba
 import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Input
+import react.create
 
 @Composable
 actual fun ContainerLayout(content: @Composable () -> Unit) {
     StyledDiv(content, "container")
 }
+
 @Composable
 actual fun SectionLayout(content: @Composable () -> Unit) {
     StyledDiv(content, "sectionLayout")
@@ -99,7 +98,7 @@ actual fun ColorSwatch(
     colors: List<Color>,
     onColorClicked: (Int) -> Unit
 ) {
-    HorizontalLayout (centerOnMainAxis = true){
+    HorizontalLayout(centerOnMainAxis = true) {
         colors.forEachIndexed { index, color ->
             Button(
                 attrs = {
@@ -139,6 +138,28 @@ actual fun ToggleButton(
 }
 
 @Composable
+actual fun Markdown(content: String) {
+    Div(
+        attrs = {
+            style {
+                width(50.percent)
+                height(50.percent)
+            }
+        },
+        content = {
+            console.log("REACT MARK DOWN", reactMarkdown)
+
+            UseReactEffect(
+                content,
+                reactMarkdown.create {
+                    children = content
+                }
+            )
+        }
+    )
+}
+
+@Composable
 private fun StyledDiv(
     content: @Composable () -> Unit,
     vararg classNames: String
@@ -155,5 +176,5 @@ private fun StyledDiv(
 
 private fun Int.toHexString(): String {
     val hex = this.toString(16)
-    return if(hex.length == 1) "0$hex" else hex
+    return if (hex.length == 1) "0$hex" else hex
 }

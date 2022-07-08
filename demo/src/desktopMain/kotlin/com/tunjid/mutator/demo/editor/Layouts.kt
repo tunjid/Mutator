@@ -61,6 +61,7 @@ actual fun ContainerLayout(content: @Composable () -> Unit) {
         }
     }
 }
+
 @Composable
 actual fun SectionLayout(content: @Composable () -> Unit) {
     Column(
@@ -85,7 +86,7 @@ actual fun HorizontalLayout(
 ) {
     Row(
         modifier = Modifier.padding(horizontal = 8.dp),
-        horizontalArrangement = if(centerOnMainAxis) Arrangement.Center else Arrangement.Start,
+        horizontalArrangement = if (centerOnMainAxis) Arrangement.Center else Arrangement.Start,
         content = { content() }
     )
 }
@@ -135,6 +136,11 @@ actual fun ColorSwatch(
             )
         }
     }
+}
+
+@Composable
+actual fun Markdown(content: String) {
+
 }
 
 @Composable
