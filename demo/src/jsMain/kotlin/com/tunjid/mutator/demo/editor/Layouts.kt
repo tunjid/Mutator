@@ -18,6 +18,7 @@ package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import com.tunjid.mutator.demo.Speed
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.max
@@ -25,6 +26,7 @@ import org.jetbrains.compose.web.attributes.min
 import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.css.height
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.rgb
 import org.jetbrains.compose.web.css.rgba
 import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Button
@@ -66,6 +68,13 @@ actual fun Snail(
         type = InputType.Range,
         attrs = {
             classes("snail")
+            style {
+                val r = (color.red * 255).toInt().toHexString()
+                val g = (color.green * 255).toInt().toHexString()
+                val b = (color.blue * 255).toInt().toHexString()
+                val hex = "#$r$g$b"
+                property("--snailColor", hex)
+            }
             min("0")
             max("100")
             value(progress)
@@ -81,17 +90,16 @@ actual fun ColorSwatch(
 ) {
     HorizontalLayout {
         colors.forEachIndexed { index, color ->
-            Div(
+            Button(
                 attrs = {
                     style {
-                        height(100.px)
-                        width(100.px)
+                        height(20.px)
+                        width(20.px)
                         backgroundColor(
-                            rgba(
-                                r = color.red,
-                                g = color.green,
-                                b = color.blue,
-                                a = color.alpha
+                            rgb(
+                                r = (color.red * 255).toInt(),
+                                g = (color.green * 255).toInt(),
+                                b = (color.blue * 255).toInt(),
                             )
                         )
                     }
@@ -130,4 +138,9 @@ private fun StyledDiv(
             content()
         }
     )
+}
+
+private fun Int.toHexString(): String {
+    val hex = this.toString(16)
+    return if(hex.length == 1) "0$hex" else hex
 }
