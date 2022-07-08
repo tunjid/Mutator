@@ -55,7 +55,7 @@ fun <Action : Any, State : Any> stateFlowMutator(
     val actions = MutableSharedFlow<Action>()
 
     override val state: StateFlow<State> =
-        scope.produceState(
+        scope.mutateState(
             initial = initialState,
             started = started,
             stateTransform = stateTransform,

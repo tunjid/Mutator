@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.coroutines.emit
-import com.tunjid.mutator.coroutines.produceState
+import com.tunjid.mutator.coroutines.mutateState
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.ColorSwatch
@@ -74,7 +74,7 @@ class Snail9StateHolder(
 
     private val userChanges = MutableSharedFlow<Mutation<Snail9State>>()
 
-    val state: StateFlow<Snail9State> = scope.produceState(
+    val state: StateFlow<Snail9State> = scope.mutateState(
         initial = Snail9State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(

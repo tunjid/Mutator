@@ -35,7 +35,7 @@ fun Section6() = SectionLayout {
 private val oneMarkdown = """
 # Conflicts in state production
 
-So far, all sources of state change have been relatively harmonious. That is, they don't conflict or compete with each other. Sometimes however, especially with asynchronous data sources, state changes can compete with each other. This most often occurs when user events trigger a set of cascading state changes.
+So far, all sources of state change have been relatively harmonious. That is, they don't conflict or compete with each other. Sometimes however, especially with asynchronous data sources, state changes can clash. This most often occurs when user events trigger a set of cascading state changes.
 
 This is best illustrated with an example. Say we wanted to expose our snail to the experience of day and day and night. Not only that, we want the experience to animate smoothly. We can do this by adding a new method:
 """.trimIndent()

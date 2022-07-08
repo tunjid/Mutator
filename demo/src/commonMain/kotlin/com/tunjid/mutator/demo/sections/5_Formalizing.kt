@@ -27,7 +27,7 @@ import com.tunjid.mutator.demo.snails.Snail6
 @Composable
 fun Section5() = SectionLayout {
     Markdown(oneMarkdown)
-    Markdown(twoCode)
+    EditorView(twoCode)
     Markdown(threeMarkdown)
     EditorView(fourCode)
     Snail6()
@@ -40,7 +40,7 @@ The merge approach can be formalized into a function on the `CoroutineScope` the
 """.trimIndent()
 
 private val twoCode = """
-fun <State : Any> CoroutineScope.produceState(
+fun <State : Any> CoroutineScope.mutateState(
     initial: State,
     started: SharingStarted,
     mutationFlows: List<Flow<Mutation<State>>>
@@ -62,7 +62,7 @@ class Snail6StateHolder(
 
     private val userChanges = MutableSharedFlow<Mutation<Snail6State>>()
 
-    val state: StateFlow<Snail6State> = scope.produceState(
+    val state: StateFlow<Snail6State> = scope.mutateState(
         initial = Snail6State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(

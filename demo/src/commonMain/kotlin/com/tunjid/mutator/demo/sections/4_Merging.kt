@@ -68,18 +68,15 @@ To produce state then, we simply have to start with an initial state, and increm
 Expressing this in code with `Flows` is very concise and requires just two operators:
 
 
-* `merge`: Used to merge all sources of `Mutation&lt;T>` (Δstate) into a single stream
-* `scan`: Used to reduce the stream of `Mutation&lt;T>` into an initial state.
+* `merge`: Used to merge all sources of `Mutation<State>` (Δstate) into a single stream
+* `scan`: Used to reduce the stream of `Mutation<State>` into an initial state.
 
 In our snail example, we can express the same state production pipeline with user actions as:    
 """.trimIndent()
 
 private val sixCode = """
 data class Snail4State(
-    val progress: Float = 0f,
-    val speed: Speed = Speed.One,
-    val color: Color = Color.Blue,
-    val isDark: Boolean = false,
+    ...,
 )
 
 class Snail4StateHolder(
@@ -137,6 +134,8 @@ class Snail5StateHolder(
 
    private val progressChanges: Flow<Mutation<Snail5State>> = …
     …
+
+    private val userChanges = MutableSharedFlow<Mutation<Snail5State>>()
 
    fun setProgress(progress: Float) {
         scope.launch {
