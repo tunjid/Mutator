@@ -117,3 +117,42 @@
 .horizontallyCentered {
     margin: 0 auto;
 }
+
+.progress-btn {
+    position: relative;
+    width: 150px;
+    height: 50px;
+    display: inline-block;
+    background: #A7C7E7;
+    font-family: "RobotoDraft","Roboto",sans-serif;
+    color: #fff;
+    font-weight: normal;
+    font-size: 20px;
+}
+.progress-btn:not(.active) {
+    cursor: pointer;
+}
+
+.progress-btn .btn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    line-height: 50px;
+    text-align: center;
+    z-index: 5;
+}
+
+.progress-btn .progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+    z-index: 10;
+    background: #2a639c;
+}
+
+
