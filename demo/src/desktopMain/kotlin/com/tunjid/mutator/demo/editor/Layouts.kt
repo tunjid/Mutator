@@ -79,9 +79,13 @@ actual fun VerticalLayout(content: @Composable () -> Unit) {
 }
 
 @Composable
-actual fun HorizontalLayout(content: @Composable () -> Unit) {
+actual fun HorizontalLayout(
+    centerOnMainAxis: Boolean,
+    content: @Composable () -> Unit
+) {
     Row(
         modifier = Modifier.padding(horizontal = 8.dp),
+        horizontalArrangement = if(centerOnMainAxis) Arrangement.Center else Arrangement.Start,
         content = { content() }
     )
 }

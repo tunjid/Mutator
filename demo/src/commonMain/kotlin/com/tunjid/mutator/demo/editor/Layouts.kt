@@ -29,7 +29,10 @@ expect fun SectionLayout(content: @Composable () -> Unit)
 expect fun VerticalLayout(content: @Composable () -> Unit)
 
 @Composable
-expect fun HorizontalLayout(content: @Composable () -> Unit)
+expect fun HorizontalLayout(
+    centerOnMainAxis: Boolean = false,
+    content: @Composable () -> Unit
+)
 
 @Composable
 expect fun SnailCard(content: @Composable () -> Unit)

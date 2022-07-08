@@ -25,6 +25,7 @@ import org.jetbrains.compose.web.attributes.max
 import org.jetbrains.compose.web.attributes.min
 import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.css.height
+import org.jetbrains.compose.web.css.marginLeft
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.rgb
 import org.jetbrains.compose.web.css.rgba
@@ -48,8 +49,18 @@ actual fun VerticalLayout(content: @Composable () -> Unit) {
 }
 
 @Composable
-actual fun HorizontalLayout(content: @Composable () -> Unit) {
-    StyledDiv(content, "horizontalLayout")
+actual fun HorizontalLayout(
+    centerOnMainAxis: Boolean,
+    content: @Composable () -> Unit
+) {
+    StyledDiv(
+        content,
+        *listOfNotNull(
+            "horizontalLayout",
+            "horizontallyCentered".takeIf { centerOnMainAxis }
+        )
+            .toTypedArray()
+    )
 }
 
 @Composable
@@ -67,7 +78,7 @@ actual fun Snail(
     Input(
         type = InputType.Range,
         attrs = {
-            classes("snail")
+            classes("snail", "horizontallyCentered")
             style {
                 val r = (color.red * 255).toInt().toHexString()
                 val g = (color.green * 255).toInt().toHexString()
@@ -88,13 +99,12 @@ actual fun ColorSwatch(
     colors: List<Color>,
     onColorClicked: (Int) -> Unit
 ) {
-    HorizontalLayout {
+    HorizontalLayout (centerOnMainAxis = true){
         colors.forEachIndexed { index, color ->
             Button(
                 attrs = {
+                    classes("colorSwatch")
                     style {
-                        height(20.px)
-                        width(20.px)
                         backgroundColor(
                             rgb(
                                 r = (color.red * 255).toInt(),
@@ -118,6 +128,7 @@ actual fun ToggleButton(
 ) {
     Button(
         attrs = {
+            classes("toggleButton", "horizontallyCentered")
             title("Toggle mode")
             onClick { onClicked() }
         },
