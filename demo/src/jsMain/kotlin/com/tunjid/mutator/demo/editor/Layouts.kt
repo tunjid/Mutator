@@ -142,8 +142,6 @@ actual fun Markdown(content: String) {
     Div(
         attrs = {
             style {
-                width(50.percent)
-                height(50.percent)
             }
         },
         content = {

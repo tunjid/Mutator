@@ -22,15 +22,9 @@ import com.tunjid.mutator.demo.sections.Section1
 import com.tunjid.mutator.demo.sections.Section2
 import com.tunjid.mutator.demo.sections.Section3
 import com.tunjid.mutator.demo.sections.Section4
-import com.tunjid.mutator.demo.snails.Snail10
-import com.tunjid.mutator.demo.snails.Snail2
-import com.tunjid.mutator.demo.snails.Snail3
-import com.tunjid.mutator.demo.snails.Snail4
-import com.tunjid.mutator.demo.snails.Snail5
-import com.tunjid.mutator.demo.snails.Snail6
-import com.tunjid.mutator.demo.snails.Snail7
-import com.tunjid.mutator.demo.snails.Snail8
-import com.tunjid.mutator.demo.snails.Snail9
+import com.tunjid.mutator.demo.sections.Section5
+import com.tunjid.mutator.demo.sections.Section6
+import com.tunjid.mutator.demo.sections.Section7
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 
@@ -42,16 +36,9 @@ fun App(
         Section2()
         Section3()
         Section4()
-
-        Snail2()
-        Snail3()
-        Snail4()
-        Snail5()
-        Snail6()
-        Snail7()
-        Snail8()
-        Snail9()
-        Snail10()
+        Section5()
+        Section6()
+        Section7()
     }
 }
 

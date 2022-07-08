@@ -19,28 +19,28 @@ package com.tunjid.mutator.demo.sections
 import androidx.compose.runtime.Composable
 import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Heading2
+import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.SectionLayout
 
 @Composable
 fun Section3() {
     SectionLayout {
-        Heading2(
-            text =
-            "Combining as a method of state production"
-        )
-        Paragraph(
-            text =
-            """
-                    Combining sources of state as a general means of state production is rather robust and it lends itself to a wide range of cases, and works well for simple to moderate state production pipelines. It also scales linearly, that is each source of state change will need to be added to the `combine` function. This poses a problem for states with more than 5 sources of change as the `combine` function allows for at most 5 flows. This is called the arity of the `combine` function.
+        Markdown(oneMarkdown)
+        EditorView(twoCode)
+        Markdown(threeMarkdown)
+    }
+}
 
-One way around this is to combine the sources of state change into intermediate states, before combining them again into the final state.
+private val oneMarkdown = """
+# Combining as a method of state production
 
-                """.trimIndent()
-        )
-        EditorView(
-            content =
-            """
+Combining sources of state as a general means of state production is rather robust and it lends itself to a wide range of cases, and works well for simple to moderate state production pipelines. It also scales linearly, that is each source of state change will need to be added to the `combine` function. This poses a problem for states with more than 5 sources of change as the `combine` function allows for at most 5 flows. This is called the arity of the `combine` function.
+
+One way around this is to combine the sources of state change into intermediate states, before combining them again into the final state.    
+""".trimIndent()
+
+private val twoCode = """
 data class LargeState(
     val property1: Int,
     val property2: Int,
@@ -100,14 +100,9 @@ class LargeStateHolder {
             state2.property7,
         )
     }
-}
-            """.trimIndent()
-        )
-        Paragraph(
-            text =
-            """
-                    The above works, but can be difficult to maintain. As new sources of state are added or removed over time, the signatures of the `IntermediateState` instances will need to change to accommodate the arity of the `combine` function causings cascading changes. This brings us to another state production approach, merging sources of change.
-                """.trimIndent()
-        )
-    }
-}
+}    
+""".trimIndent()
+
+private val threeMarkdown = """
+The above works, but can be difficult to maintain. As new sources of state are added or removed over time, the signatures of the `IntermediateState` instances will need to change to accommodate the arity of the `combine` function causings cascading changes. This brings us to another state production approach, merging sources of change.
+""".trimIndent()
