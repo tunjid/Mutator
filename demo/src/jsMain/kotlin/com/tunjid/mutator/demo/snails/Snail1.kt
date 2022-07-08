@@ -35,6 +35,7 @@ actual fun Snail1() {    val scope = rememberCoroutineScope()
     Input(
         type = InputType.Range,
         attrs = {
+            classes("snail")
             min("0")
             max("100")
             value(state)

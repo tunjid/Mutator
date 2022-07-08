@@ -17,10 +17,19 @@
 package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.ElementScope
 import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.HTMLElement
+import react.Component
+import react.Props
+import react.ReactElement
+import react.State
+import react.dom.render
+import react.dom.unmountComponentAtNode
 
 @Composable
 actual fun Heading1(text: String) {
@@ -63,6 +72,7 @@ actual fun Heading3(text: String) {
 
 @Composable
 actual fun Paragraph(text: String) {
+
     P(
         attrs = {
         },
@@ -72,5 +82,56 @@ actual fun Paragraph(text: String) {
             )
         }
     )
+
+
+    Div {
+        P(
+            attrs = {
+            },
+            content = {
+                Text(
+                    value = "HHH"
+                )
+            }
+        )
+        UseReactEffect(text) {
+            reactMarkdown(ImutableReactMarkdownProps(text))
+        }
+    }
 }
 
+
+@Composable
+private fun ElementScope<HTMLElement>.UseReactEffect(
+    key: Any?,
+    content: () -> ReactElement<*>
+) {
+    DomSideEffect(key = key) { htmlElement ->
+        render(
+            element = content(),
+            container = htmlElement
+        )
+    }
+
+    DisposableRefEffect { htmlElement ->
+        onDispose {
+            unmountComponentAtNode(htmlElement)
+        }
+    }
+}
+
+
+@JsName("ReactMarkdownm")
+@JsModule("react-markdown")
+@JsNonModule
+external val reactMarkdown: (ReactMarkdownProps) -> ReactElement<ReactMarkdownProps>
+
+external interface ReactMarkdownProps : Props {
+    var children: String
+}
+
+external interface ReactMarkdownState: State
+
+data class ImutableReactMarkdownProps(
+    override var children: String
+): ReactMarkdownProps

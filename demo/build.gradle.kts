@@ -52,9 +52,16 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation(npm("highlight.js", "10.7.2"))
                 implementation(compose.web.core)
                 implementation(compose.runtime)
+
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:17.0.2-pre.316-kotlin-1.6.10")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:17.0.2-pre.316-kotlin-1.6.10")
+                implementation(npm("react", "17.0.2"))
+                implementation(npm("react-dom", "17.0.2"))
+                implementation(npm("highlight.js", "10.7.2"))
+                implementation(npm("react-markdown", "8.0.2"))
+
             }
         }
         all {

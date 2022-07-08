@@ -19,6 +19,7 @@ package com.tunjid.mutator.demo.sections
 import androidx.compose.runtime.Composable
 import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Heading1
+import com.tunjid.mutator.demo.editor.Heading2
 import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.snails.Snail1
@@ -27,7 +28,7 @@ import com.tunjid.mutator.demo.snails.Snail2
 @Composable
 fun Section1() {
     VerticalLayout {
-        Heading1(
+        Heading2(
             text =
             "The UI State Production Pipeline"
         )

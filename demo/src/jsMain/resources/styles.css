@@ -31,42 +31,37 @@
     position: relative;
 }
 
-@font-face {
-    font-family: 'Myjetbrainsmono_bold';
-    src: url('font/jetbrainsmono_bold.ttf') format('ttf');
+.snail {
+
 }
 
-@font-face {
-    font-family: 'Myjetbrainsmono_bold_italic';
-    src: url('font/jetbrainsmono_bold_italic.ttf') format('ttf');
+.snail {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
 }
 
-@font-face {
-    font-family: 'Myjetbrainsmono_extrabold';
-    src: url('font/jetbrainsmono_extrabold.ttf') format('ttf');
+.snail:hover {
+    opacity: 1;
 }
 
-@font-face {
-    font-family: 'Myjetbrainsmono_extrabold_italic';
-    src: url('font/jetbrainsmono_extrabold_italic.ttf') format('ttf');
+.snail::-webkit-snail-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #04AA6D;
+    cursor: pointer;
 }
 
-@font-face {
-    font-family: 'Myjetbrainsmono_italic';
-    src: url('font/jetbrainsmono_italic.ttf') format('ttf');
-}
-
-@font-face {
-    font-family: 'Myjetbrainsmono_medium';
-    src: url('font/jetbrainsmono_medium.ttf') format('ttf');
-}
-
-@font-face {
-    font-family: 'Myjetbrainsmono_medium_italic';
-    src: url('font/jetbrainsmono_medium_italic.ttf') format('ttf');
-}
-
-@font-face {
-    font-family: 'Myjetbrainsmono_regular';
-    src: url('font/jetbrainsmono_regular.ttf') format('ttf');
+.snail::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #04AA6D;
+    cursor: pointer;
 }
