@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.scan
 
 const val SPEED = 500L
 
-enum class Speed(val multiplier: Int){
+enum class Speed(val multiplier: Int) {
     One(1), Two(2), Three(3), Four(4)
 }
 
@@ -40,7 +40,7 @@ fun intervalFlow(intervalMillis: Long) = flow {
 }
 
 fun <T> Flow<T>.toProgress() =
-    scan(0f) { progress, _ -> (progress + 1) % 100}
+    scan(0f) { progress, _ -> (progress + 1) % 100 }
 
 fun interpolateColors(
     startColors: IntArray,

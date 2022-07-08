@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
 import com.tunjid.mutator.demo.App
-import kotlinx.browser.document
-import kotlinx.browser.window
 import org.jetbrains.compose.web.renderComposable
-import org.jetbrains.skiko.wasm.onWasmReady
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.events.WheelEvent
 
 fun main() {
     renderComposable(rootElementId = "container") {

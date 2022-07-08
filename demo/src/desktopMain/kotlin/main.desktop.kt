@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowState

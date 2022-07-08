@@ -28,13 +28,8 @@ import org.jetbrains.compose.web.css.maxHeight
 import org.jetbrains.compose.web.css.overflow
 import org.jetbrains.compose.web.css.pt
 import org.jetbrains.compose.web.dom.Code
-import org.jetbrains.compose.web.dom.ElementScope
 import org.jetbrains.compose.web.dom.Pre
 import org.w3c.dom.HTMLElement
-import react.Props
-import react.ReactElement
-import react.dom.render
-import react.dom.unmountComponentAtNode
 
 @Composable
 actual fun EditorView(content: String) = key(content) {

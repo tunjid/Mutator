@@ -103,6 +103,7 @@ class FlowMutationStreamKtTest {
                     is IntAction.Add -> type.flow
                         .filter { it.value > 0 && it.value % 2 == 0 }
                         .map { it.mutation }
+
                     is IntAction.Subtract -> type.flow
                         .filter { it.value > 0 && it.value % 2 != 0 }
                         .map { it.mutation }
@@ -143,6 +144,7 @@ class FlowMutationStreamKtTest {
                     is IntAction -> type.flow
                         .onEach { intActions.add(it) }
                         .map { it.mutation }
+
                     is DoubleAction -> type.flow
                         .onEach { doubleActions.add(it) }
                         .map { it.mutation }

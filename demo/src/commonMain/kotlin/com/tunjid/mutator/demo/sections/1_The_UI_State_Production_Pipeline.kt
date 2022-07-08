@@ -21,13 +21,13 @@ import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Heading1
 import com.tunjid.mutator.demo.editor.Heading2
 import com.tunjid.mutator.demo.editor.Paragraph
-import com.tunjid.mutator.demo.editor.VerticalLayout
+import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.snails.Snail1
 import com.tunjid.mutator.demo.snails.Snail2
 
 @Composable
 fun Section1() {
-    VerticalLayout {
+    SectionLayout {
         Heading2(
             text =
             "The UI State Production Pipeline"
@@ -65,9 +65,9 @@ fun Section1() {
         )
         EditorView(
             content =
-                "enum class Speed(val multiplier: Int){\n" +
-                        "    One(1), Two(2), Three(3), Four(4)\n" +
-                        "}\n"
+            "enum class Speed(val multiplier: Int){\n" +
+                    "    One(1), Two(2), Three(3), Four(4)\n" +
+                    "}\n"
         )
         Paragraph(
             text =

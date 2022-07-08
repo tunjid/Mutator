@@ -15,6 +15,7 @@
  */
 
 package com.tunjid.mutator.coroutines
+
 import com.tunjid.mutator.Mutation
 
 data class State(
@@ -23,14 +24,14 @@ data class State(
 
 sealed class Action
 
-sealed class IntAction: Action() {
+sealed class IntAction : Action() {
     abstract val value: Int
 
     data class Add(override val value: Int) : IntAction()
     data class Subtract(override val value: Int) : IntAction()
 }
 
-sealed class DoubleAction: Action() {
+sealed class DoubleAction : Action() {
     abstract val value: Double
 
     data class Divide(override val value: Double) : DoubleAction()

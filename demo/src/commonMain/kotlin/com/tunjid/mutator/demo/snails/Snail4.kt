@@ -17,6 +17,8 @@
 package com.tunjid.mutator.demo.snails
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
@@ -25,6 +27,11 @@ import com.tunjid.mutator.coroutines.emit
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.SPEED
 import com.tunjid.mutator.demo.Speed
+import com.tunjid.mutator.demo.editor.ColorSwatch
+import com.tunjid.mutator.demo.editor.Paragraph
+import com.tunjid.mutator.demo.editor.Snail
+import com.tunjid.mutator.demo.editor.SnailCard
+import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.intervalFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -78,12 +85,37 @@ class Snail4StateHolder(
             initialValue = Snail4State()
         )
 
-    fun setSnailColor(color: Color) {
+    fun setSnailColor(index: Int) {
         scope.launch {
-            userChanges.emit { copy(color = color) }
+            userChanges.emit { copy(color = colors[index]) }
         }
     }
 }
 
 @Composable
-expect fun Snail4()
+fun Snail4() {
+    val scope = rememberCoroutineScope()
+    val stateHolder = remember { Snail4StateHolder(scope) }
+    val state by stateHolder.state.collectAsState()
+
+    SnailCard {
+        VerticalLayout {
+            Paragraph(
+                text = "Snail4"
+            )
+            Snail(
+                progress = state.progress,
+                color = state.color,
+            )
+            ColorSwatch(
+                colors = state.colors,
+                onColorClicked = {
+                    stateHolder.setSnailColor(it)
+                }
+            )
+            Paragraph(
+                text = "Progress: ${state.progress}; Speed: ${state.speed}"
+            )
+        }
+    }
+}

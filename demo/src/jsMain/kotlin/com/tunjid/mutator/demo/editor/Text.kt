@@ -24,7 +24,6 @@ import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLElement
-import react.Component
 import react.Props
 import react.ReactElement
 import react.State
@@ -84,20 +83,20 @@ actual fun Paragraph(text: String) {
     )
 
 
-    Div {
-        P(
-            attrs = {
-            },
-            content = {
-                Text(
-                    value = "HHH"
-                )
-            }
-        )
-        UseReactEffect(text) {
-            reactMarkdown(ImutableReactMarkdownProps(text))
-        }
-    }
+//    Div {
+//        P(
+//            attrs = {
+//            },
+//            content = {
+//                Text(
+//                    value = "HHH"
+//                )
+//            }
+//        )
+//        UseReactEffect(text) {
+//            reactMarkdown(ImutableReactMarkdownProps(text))
+//        }
+//    }
 }
 
 
@@ -130,8 +129,8 @@ external interface ReactMarkdownProps : Props {
     var children: String
 }
 
-external interface ReactMarkdownState: State
+external interface ReactMarkdownState : State
 
 data class ImutableReactMarkdownProps(
     override var children: String
-): ReactMarkdownProps
+) : ReactMarkdownProps

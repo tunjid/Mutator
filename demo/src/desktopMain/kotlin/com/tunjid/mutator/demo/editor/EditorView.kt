@@ -108,8 +108,7 @@ private fun Line(modifier: Modifier, maxNum: String, line: Line, settings: Setti
             modifier = Modifier
                 .weight(1f)
 //                .withoutWidthConstraints()
-                .padding(start = 28.dp, end = 12.dp)
-            ,
+                .padding(start = 28.dp, end = 12.dp),
             settings = settings
         )
     }
@@ -128,18 +127,18 @@ private fun LineNumber(number: String, modifier: Modifier, settings: Settings) =
 private fun LineContent(content: Content, modifier: Modifier, settings: Settings) {
     Text(
         text = if (content.isCode) {
-        codeString(content.value)
+            codeString(content.value)
         } else {
-        buildAnnotatedString {
-            withStyle(AppTheme.code.simple) {
-                append(content.value)
+            buildAnnotatedString {
+                withStyle(AppTheme.code.simple) {
+                    append(content.value)
+                }
             }
-        }
         },
-    fontSize = settings.fontSize,
-    fontFamily = Fonts.jetbrainsMono(),
-    modifier = modifier,
-    softWrap = false
+        fontSize = settings.fontSize,
+        fontFamily = Fonts.jetbrainsMono(),
+        modifier = modifier,
+        softWrap = false
     )
 }
 

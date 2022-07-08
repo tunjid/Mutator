@@ -17,10 +17,16 @@
 package com.tunjid.mutator.demo.snails
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.demo.SPEED
 import com.tunjid.mutator.demo.Speed
+import com.tunjid.mutator.demo.editor.Paragraph
+import com.tunjid.mutator.demo.editor.Snail
+import com.tunjid.mutator.demo.editor.SnailCard
+import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.intervalFlow
 import com.tunjid.mutator.demo.toProgress
 import kotlinx.coroutines.CoroutineScope
@@ -66,4 +72,22 @@ class Snail2StateHolder(
 }
 
 @Composable
-expect fun Snail2()
+fun Snail2() {
+    val scope = rememberCoroutineScope()
+    val stateHolder = remember { Snail2StateHolder(scope) }
+    val state by stateHolder.state.collectAsState()
+
+    SnailCard {
+        VerticalLayout {
+            Paragraph(
+                text = "Snail2"
+            )
+            Snail(
+                progress = state.progress,
+            )
+            Paragraph(
+                text = "Progress: ${state.progress}; Speed: ${state.speed}"
+            )
+        }
+    }
+}

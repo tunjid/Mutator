@@ -20,11 +20,11 @@ import androidx.compose.runtime.Composable
 import com.tunjid.mutator.demo.editor.EditorView
 import com.tunjid.mutator.demo.editor.Heading2
 import com.tunjid.mutator.demo.editor.Paragraph
-import com.tunjid.mutator.demo.editor.VerticalLayout
+import com.tunjid.mutator.demo.editor.SectionLayout
 
 @Composable
 fun Section2() {
-    VerticalLayout {
+    SectionLayout {
         Heading2(
             text =
             "User actions"

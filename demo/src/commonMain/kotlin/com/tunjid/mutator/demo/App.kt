@@ -17,7 +17,7 @@
 package com.tunjid.mutator.demo
 
 import androidx.compose.runtime.Composable
-import com.tunjid.mutator.demo.editor.VerticalLayout
+import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.sections.Section1
 import com.tunjid.mutator.demo.sections.Section2
 import com.tunjid.mutator.demo.sections.Section3
@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 fun App(
 ) {
-    VerticalLayout {
+    SectionLayout {
         Section1()
         Section2()
         Section3()
