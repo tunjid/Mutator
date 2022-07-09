@@ -102,11 +102,7 @@ class Snail2StateHolder(
         speed,
         ::Snail2State
     )
-        .stateIn(
-            scope = scope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = Snail2State()
-        )
+        .stateIn(...)
 }
 """.trimIndent()
 
