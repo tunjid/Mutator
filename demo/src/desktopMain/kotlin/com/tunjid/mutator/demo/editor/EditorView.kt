@@ -42,8 +42,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.tunjid.mutator.demo.common.AppTheme
-import com.tunjid.mutator.demo.common.Fonts
-import com.tunjid.mutator.demo.common.Settings
+import com.tunjid.mutator.demo.editor.Settings
 import kotlin.text.Regex.Companion.fromLiteral
 
 @Composable

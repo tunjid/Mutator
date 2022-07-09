@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tunjid.mutator.demo.common
+package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily

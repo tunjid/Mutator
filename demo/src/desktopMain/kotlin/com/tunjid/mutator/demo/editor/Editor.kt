@@ -16,6 +16,13 @@
 
 package com.tunjid.mutator.demo.editor
 
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
+
+data class Settings(
+    val fontSize: TextUnit  = 13.sp,
+    val maxLineSymbols: Int = 120
+)
 
 data class Line(val number: Int, val content: Content)
 
