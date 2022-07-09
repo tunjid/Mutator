@@ -217,5 +217,11 @@ class Snail10StateHolder(
 private val nineMarkdown = """
 # Choosing a state production pipeline
 
-The above highlights a common motif in this document; the state production pipeline is only as complicated as the kind of state changes that can occur. Simple states require simple pipelines, and complicated states often require abstractions that bring convenience at the cost of complexity.    
+The above highlights a common motif in this document; the state production pipeline is only as complicated as the kind of state changes that can occur. Simple states require simple pipelines, and complicated states often require abstractions that bring convenience at the cost of complexity.
+   
+Depending on the particulars of your state production pipeline, you may opt to
+
+* `combine` sources that contribute to your State
+* `merge` mutations to state into an initial starting state
+* Model your state changes with a `Flow` to allow for tighter control of sources of change to mitigate conflicts that can arise.
 """.trimIndent()

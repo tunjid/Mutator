@@ -44,12 +44,15 @@ fun Section1() {
 private val introMarkdown = """
 # Producing State with Flows
 
-State is what is. A declaration of things known at a certain point in time. As time passes however, state changes as data sources are updated and events happen. In mobile apps this presents a challenge; defining a convenient and concise means to produce state over time.
+State is what is. A declaration of things known at a certain point in time. As time passes however, state changes as data sources backing the state are updated and events happen. In mobile apps this presents a challenge; defining a convenient and concise means to produce state over time.
 
+This page is a [Jetpack Compose](https://developer.android.com/jetpack/compose?gclid=Cj0KCQjwzqSWBhDPARIsAK38LY-nnY_1sTpVvpENJZD5ek-tE18e3MvzE1hXlILdw7uYx1Y47zsvcXkaAlGJEALw_wcB&gclsrc=aw.ds) for [web](https://compose-web.ui.pages.jetbrains.team/) powered interactive experience that highlights various ways of producing state with a [Flow](https://kotlinlang.org/docs/flow.html). At the end of it, you should have a mental framework to help choose a state production pipeline that is most beneficial to your use cases.
+
+Code for the examples demonstrated, along with the source of this page can be found [here](https://github.com/tunjid/Mutator).
 
 # Producing state
 
-Producing state is at its core, is nothing more than combining sources of change and applying them. While a simple statement, there's a bit more to it than meets the eye. Let's start simple. In the following we have a Snail along a track. It has a single source of state change; time. Using a Flow, we can easily define the state for it.
+Producing state is at its core, is nothing more than consolidating sources of changes to state. While a simple statement, there's a bit more to it than meets the eye. Let's start simple. In the following we have a Snail along a track. It has a single source of state change; time. Using a Flow, we can easily define the state for it.
 """.trimIndent()
 
 private val snail1Code = """
