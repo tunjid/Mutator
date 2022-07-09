@@ -71,7 +71,7 @@ Where the latest version is indicated by the badge at the top of this file.
 
 ## Examples and sample code
 
-Please refer to the project [website](https://tunjid.github.io/Mutator/) for a walk through of the problem space this library operates in.
+Please refer to the project [website](https://tunjid.github.io/Mutator/) for an interactive walk through of the problem space this library operates in and visual examples.
 
 
 ### `CoroutineScope.mutateStateWith`
