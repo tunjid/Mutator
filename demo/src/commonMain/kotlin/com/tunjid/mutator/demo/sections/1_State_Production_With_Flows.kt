@@ -48,7 +48,7 @@ State is what is. A declaration of things known at a certain point in time. As t
 
 This page is a [Jetpack Compose](https://developer.android.com/jetpack/compose?gclid=Cj0KCQjwzqSWBhDPARIsAK38LY-nnY_1sTpVvpENJZD5ek-tE18e3MvzE1hXlILdw7uYx1Y47zsvcXkaAlGJEALw_wcB&gclsrc=aw.ds) for [web](https://compose-web.ui.pages.jetbrains.team/) powered interactive experience that highlights various ways of producing state with a [Flow](https://kotlinlang.org/docs/flow.html). At the end of it, you should have a mental framework to help choose a state production pipeline that is most beneficial to your use cases.
 
-Code for the examples demonstrated, along with the source of this page can be found [here](https://github.com/tunjid/Mutator).
+Code for the examples demonstrated, along with the source of this page and coordinates to a [kotlin multiplatform library](https://kotlinlang.org/docs/multiplatform.html) for the techniques shown can be found [here](https://github.com/tunjid/Mutator).
 
 # Producing state
 
