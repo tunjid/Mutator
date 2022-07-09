@@ -29,7 +29,6 @@ import com.tunjid.mutator.coroutines.emit
 import com.tunjid.mutator.coroutines.mutateState
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
-import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.interpolateColors
 import com.tunjid.mutator.demo.speedFlow
@@ -57,7 +56,7 @@ val Snail9State.color get() = colors[colorIndex]
 
 val Snail9State.cardColor: Color get() = colors.last()
 
-val Snail9State.textColor: Color get() = if (cardColor.luminance() > 0.5) Color.Black else Color.White
+val Snail9State.textColor: Color get() = if (cardColor.luminance() > 0.5) Color.Black else Color.LightGray
 
 class Snail9StateHolder(
     private val scope: CoroutineScope
@@ -121,7 +120,8 @@ fun Snail9() {
 
     SnailCard(state.cardColor) {
         VerticalLayout {
-            Paragraph(
+            SnailText(
+                color = state.textColor,
                 text = "Snail9"
             )
             Snail(
@@ -135,7 +135,8 @@ fun Snail9() {
                     stateHolder.setSnailColor(it)
                 }
             )
-            Paragraph(
+            SnailText(
+                color = state.textColor,
                 text = "Progress: ${state.progress}; Speed: ${state.speed}"
             )
             ToggleButton(
