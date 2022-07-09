@@ -56,7 +56,7 @@ newState = oldState + Δstate
 private val threeMarkdown = """
  Where Δstate is the change in state.
 
-How do we express the functional declaration above in code though? Fortunately Kotlin has functional literals that enable us to do just that. First we define Δstate as   
+Expressing the above in Kotlin is done with functional literals. Δstate can be defined in code as:   
 """.trimIndent()
 
 private val fourCode = """
