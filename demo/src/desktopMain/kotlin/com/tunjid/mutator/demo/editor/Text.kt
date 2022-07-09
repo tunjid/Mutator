@@ -16,15 +16,21 @@
 
 package com.tunjid.mutator.demo.editor
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.halilibo.richtext.ui.RichText
 import com.halilibo.richtext.markdown.Markdown
+import com.halilibo.richtext.ui.RichText
 
 @Composable
 actual fun Paragraph(text: String) {
@@ -50,7 +56,23 @@ actual fun Markdown(content: String) {
 
 @Composable
 actual fun CallToAction(text: String) {
-
+    Box(
+        modifier = Modifier.fillMaxWidth(0.8f)
+            .background(
+                color = Color(0xE1F4FE),
+                shape = RoundedCornerShape(size = 16.dp)
+            ),
+        content = {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .align(Alignment.Center),
+                color = Color(0x00589B),
+                text = text
+            )
+        },
+    )
 }
 
 @Composable

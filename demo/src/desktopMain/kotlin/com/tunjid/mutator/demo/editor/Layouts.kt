@@ -66,6 +66,7 @@ actual fun SectionLayout(content: @Composable () -> Unit) {
 actual fun VerticalLayout(content: @Composable () -> Unit) {
     Column(
         modifier = Modifier.padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         content = { content() }
     )
 }

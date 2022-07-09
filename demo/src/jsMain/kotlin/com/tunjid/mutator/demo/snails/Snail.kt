@@ -122,7 +122,7 @@ actual fun ToggleButton(
                 classes("btn")
             },
             content = {
-                "Toggle mode"
+                Text("Toggle mode")
             }
         )
         Div(
