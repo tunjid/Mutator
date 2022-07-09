@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.tunjid.mutator.coroutines
 
 import app.cash.turbine.test
@@ -40,7 +56,7 @@ class StateProductionKtTest {
 
     @Test
     fun test_simple_state_production() = runTest {
-        val state = scope.produceState(
+        val state = scope.mutateStateWith(
             initial = State(),
             started = SharingStarted.WhileSubscribed(),
             mutationFlows = listOf(
@@ -59,7 +75,7 @@ class StateProductionKtTest {
 
     @Test
     fun test_state_production_persists_after_unsubscribing() = runTest {
-        val state = scope.produceState(
+        val state = scope.mutateStateWith(
             initial = State(),
             started = SharingStarted.WhileSubscribed(),
             mutationFlows = listOf(
@@ -85,7 +101,7 @@ class StateProductionKtTest {
 
     @Test
     fun test_state_production_with_merged_flows() = runTest {
-        val state = scope.produceState(
+        val state = scope.mutateStateWith(
             initial = State(),
             started = SharingStarted.WhileSubscribed(),
             mutationFlows = listOf(

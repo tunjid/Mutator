@@ -31,9 +31,12 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev/")
+        }
     }
     dependencies {
-        classpath(libs.android.gradlePlugin)
+        classpath(libs.jetbrains.compose.gradlePlugin)
         classpath(libs.kotlin.gradlePlugin)
         classpath(libs.dokka.gradlePlugin)
 
@@ -46,5 +49,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev/")
+        }
     }
 }
+

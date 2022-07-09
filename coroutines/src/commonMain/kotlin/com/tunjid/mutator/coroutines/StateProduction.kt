@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
  * Produces a [StateFlow] by merging [mutationFlows] and reducing them into an
  * [initial] state within [this] [CoroutineScope]
  */
-fun <State : Any> CoroutineScope.produceState(
+fun <State : Any> CoroutineScope.mutateStateWith(
     initial: State,
     started: SharingStarted,
     stateTransform: (Flow<State>) -> Flow<State> = { it },

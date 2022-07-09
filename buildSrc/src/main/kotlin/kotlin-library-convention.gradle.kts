@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 /*
  * Copyright 2021 Google LLC
@@ -31,6 +32,7 @@
  * limitations under the License.
  */
 
+
 plugins {
     kotlin("multiplatform")
     `maven-publish`
@@ -44,15 +46,7 @@ kotlin {
         browser()
     }
 
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
-        withJava()
-        testRuns["test"].executionTask.configure {
-            useJUnit()
-        }
-    }
+    jvm()
 
     ios()
     iosSimulatorArm64()
@@ -81,6 +75,11 @@ kotlin {
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 optIn("kotlinx.coroutines.FlowPreview")
             }
+        }
+    }
+    targets.withType(KotlinNativeTarget::class.java) {
+        binaries.all {
+            binaryOptions["memoryModel"] = "experimental"
         }
     }
 }
@@ -113,53 +112,53 @@ val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
     from(dokkaHtml.outputDirectory)
 }
 
-    publishing {
-        publications {
-            withType<MavenPublication> {
-                artifact(javadocJar)
-                pom {
-                    name.set(project.name)
-                    description.set("A tiny library for representing mutable states and the types that drive said mutations")
-                    url.set("https://github.com/tunjid/Mutator")
-                    licenses {
-                        license {
-                            name.set("Apache License 2.0")
-                            url.set("https://github.com/tunjid/Mutator/blob/main/LICENSE")
-                        }
-                    }
-                    developers {
-                        developer {
-                            id.set("tunjid")
-                            name.set("Adetunji Dahunsi")
-                            email.set("tjdah100@gmail.com")
-                        }
-                    }
-                    scm {
-                        connection.set("scm:git:github.com/tunjid/Mutator.git")
-                        developerConnection.set("scm:git:ssh://github.com/tunjid/Mutator.git")
-                        url.set("https://github.com/tunjid/Mutator/tree/main")
+publishing {
+    publications {
+        withType<MavenPublication> {
+            artifact(javadocJar)
+            pom {
+                name.set(project.name)
+                description.set("A tiny library for representing mutable states and the types that drive said mutations")
+                url.set("https://github.com/tunjid/Mutator")
+                licenses {
+                    license {
+                        name.set("Apache License 2.0")
+                        url.set("https://github.com/tunjid/Mutator/blob/main/LICENSE")
                     }
                 }
-
-            }
-        }
-        repositories {
-            val localProperties = parent?.ext?.get("localProps") as? java.util.Properties
-                ?: return@repositories
-
-            val publishUrl = localProperties.getProperty("publishUrl")
-            if (publishUrl != null) {
-                maven {
-                    name = localProperties.getProperty("repoName")
-                    url = uri(localProperties.getProperty("publishUrl"))
-                    credentials {
-                        username = localProperties.getProperty("username")
-                        password = localProperties.getProperty("password")
+                developers {
+                    developer {
+                        id.set("tunjid")
+                        name.set("Adetunji Dahunsi")
+                        email.set("tjdah100@gmail.com")
                     }
+                }
+                scm {
+                    connection.set("scm:git:github.com/tunjid/Mutator.git")
+                    developerConnection.set("scm:git:ssh://github.com/tunjid/Mutator.git")
+                    url.set("https://github.com/tunjid/Mutator/tree/main")
+                }
+            }
+
+        }
+    }
+    repositories {
+        val localProperties = parent?.ext?.get("localProps") as? java.util.Properties
+            ?: return@repositories
+
+        val publishUrl = localProperties.getProperty("publishUrl")
+        if (publishUrl != null) {
+            maven {
+                name = localProperties.getProperty("repoName")
+                url = uri(localProperties.getProperty("publishUrl"))
+                credentials {
+                    username = localProperties.getProperty("username")
+                    password = localProperties.getProperty("password")
                 }
             }
         }
     }
+}
 
 
 signing {

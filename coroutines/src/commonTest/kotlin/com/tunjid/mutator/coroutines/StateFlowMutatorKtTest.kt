@@ -61,6 +61,7 @@ class StateFlowMutatorKtTest {
                     when (val action = type()) {
                         is IntAction.Add -> action.flow
                             .map { it.mutation }
+
                         is IntAction.Subtract -> action.flow
                             .map { it.mutation }
                     }

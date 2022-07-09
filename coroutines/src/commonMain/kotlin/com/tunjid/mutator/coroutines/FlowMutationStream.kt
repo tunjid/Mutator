@@ -17,7 +17,12 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutation
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.onStart
 
 /**
  * Class holding the context of the [Action] emitted that is being split out into
@@ -101,6 +106,7 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
                         val mutationFlow = transform(context)
                         channel.send(mutationFlow)
                     }
+
                     else -> {
                         // Wait for downstream to be connected
                         existingHolder.internalSharedFlow.subscriptionCount.first { it > 0 }

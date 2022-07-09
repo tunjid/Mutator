@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google()
+    }
+}
 rootProject.name = "Mutator"
-include(":core", ":coroutines")
+include(
+    ":core",
+    ":coroutines",
+    ":demo",
+)
 
