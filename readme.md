@@ -21,30 +21,109 @@ are production tested, and should not be taken as anything more than its face va
 
 ## Introduction
 
-A `Mutator` is an abstract data type declaration of the form:
+Mutator is a Kotlin multiplatform library that provides a suite of tools that help with producing state. More specifically it provides implementations of the paradigm `newState = oldState + Δstate`.
+
+Where `Δstate` represents state changes over time and is expressed in Kotlin with the type:
 
 ```kotlin
-interface Mutator<Action : Any, State : Any> {
-    val state: State
-    val accept: (Action) -> Unit
-}
-```
-
-where `Action` defines an input type that yields production of the `State` output type. In other
-words, a `Mutator` represents a production pipeline of `State` which may be altered by input of
-`Action`.
-
-The unit of change for processing an `Action` into a new `State` is a `Mutation`, a data class
-hosting a lambda with the existing `State` as a receiver, that when invoked produces a
-new `State`.
-
-```kotlin
-data class Mutation<T : Any>(
-    val mutate: T.() -> T
+data class Mutation<State : Any>(
+    val mutate: State.() -> State
 )
 ```
 
-## Implementations
+At the moment, there are two implementations:
+
+```kotlin
+fun <State : Any> CoroutineScope.mutateStateWith(
+    initial: State,
+    started: SharingStarted,
+    mutationFlows: List<Flow<Mutation<State>>>
+): StateFlow<State>  
+```
+
+and 
+
+```kotlin
+fun <Action : Any, State : Any> stateFlowMutator(
+    scope: CoroutineScope,
+    initialState: State,
+    started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
+    mutationFlows: List<Flow<Mutation<State>>> = listOf(),
+    stateTransform: (Flow<State>) -> Flow<State> = { it },
+    actionTransform: (Flow<Action>) -> Flow<Mutation<State>>
+): Mutator<Action, StateFlow<State>>
+```
+
+Where a `Mutator<Action, StateFlow<State>>` exposes fields for
+* state: `StateFlow<State>`
+* action: `(Action) -> Unit`
+
+`mutateStateWith` with is well suited for MVVM style applications and `stateFlowMutator` for MVI like approaches.
+
+## Download
+
+```kotlin
+implementation("com.tunjid.mutator:core:version")
+implementation("com.tunjid.mutator:coroutines:version")
+```
+
+Where the latest version is indicated by the badge at the top of this file.
+
+## Examples and sample code
+
+Please refer to the project [website](https://tunjid.github.io/Mutator/) for a walk through of the problem space this library operates in.
+
+
+### `CoroutineScope.mutateStateWith`
+
+`CoroutineScope.mutateStateWith` is a function that allows for mutating an initial state over time, by providing a `List` of `Flows` that contribute to state changes. A simple example follows:
+
+```kotlin
+data class SnailState(
+    val progress: Float = 0f,
+    val speed: Speed = Speed.One,
+    val color: Color = Color.Blue,
+    val colors: List<Color> = MutedColors.colors(false).map(::Color)
+)
+
+class SnailStateHolder(
+    private val scope: CoroutineScope
+) {
+
+    private val speed: Flow<Speed> = scope.speedFlow()
+
+    private val speedChanges: Flow<Mutation<Snail5State>> = speed
+        .map { Mutation { copy(speed = it) } }
+
+    private val progressChanges: Flow<Mutation<Snail5State>> = speed
+        .toInterval()
+        .map { Mutation { copy(progress = (progress + 1) % 100) } }
+
+    private val userChanges = MutableSharedFlow<Mutation<Snail5State>>()
+
+    val state: StateFlow<SnailState> = scope.mutateStateWith(
+        initial = Snail6State(),
+        started = SharingStarted.WhileSubscribed(),
+        mutationFlows = listOf(
+            speedChanges,
+            progressChanges,
+            userChanges,
+        )
+    )
+
+    fun setSnailColor(index: Int) {
+        scope.launch {
+            userChanges.emit { copy(color = colors[index]) }
+        }
+    }
+
+    fun setProgress(progress: Float) {
+        scope.launch {
+            userChanges.emit { copy(progress = progress) }
+        }
+    }
+}
+```
 
 ### `stateFlowMutator`
 
