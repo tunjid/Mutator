@@ -45,7 +45,7 @@ fun Section7() = SectionLayout {
 }
 
 private val oneMarkdown = """
-# Dealing with conflicts in state production
+# Conflict resolution in state production
 
 There are two ways of dealing with the issue above:
 

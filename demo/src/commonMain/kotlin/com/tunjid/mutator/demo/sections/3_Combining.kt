@@ -31,7 +31,7 @@ fun Section3() {
 }
 
 private val oneMarkdown = """
-# Combining as a method of state production
+# Combining changes in state
 
 Combining sources of state as a general means of state production is rather robust and it lends itself to a wide range of cases, and works well for simple to moderate state production pipelines. It also scales linearly, that is each source of state change will need to be added to the `combine` function. This poses a problem for states with more than 5 sources of change as the `combine` function allows for at most 5 flows. This is called the arity of the `combine` function.
 

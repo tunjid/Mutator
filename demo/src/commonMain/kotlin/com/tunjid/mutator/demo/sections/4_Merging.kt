@@ -42,7 +42,7 @@ fun Section4() = SectionLayout {
 }
 
 private val oneMarkdown = """
-# Merging as a method of state production
+# Merging changes in state
 
 We've established that state production fundamentally is introducing changes to state over time. That is the new state is the old state plus the change in state. Expressing this mathematically becomes:    
 """.trimIndent()

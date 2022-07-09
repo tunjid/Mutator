@@ -26,6 +26,42 @@
     max-width: 800px;
 }
 
+.markdown {
+    width: 100%;
+}
+
+.markdown h1 {
+    font-family: "Muli";
+    font-size: 48px;
+    letter-spacing: 0.25px;
+    font-weight: normal;
+    line-height: 80%;
+}
+
+.markdown h2 {
+    font-family: "Muli";
+    font-size: 34px;
+    letter-spacing: 0px;
+    font-weight: lighter;
+    line-height: 80%;
+}
+
+.markdown h3 {
+    font-family: "Muli";
+    font-size: 24px;
+    letter-spacing: 0px;
+    font-weight: lighter;
+    line-height: 80%;
+}
+
+.markdown p {
+    font-family: "Muli";
+    font-size: 18px;
+    letter-spacing: 0px;
+    font-weight: normal;
+    line-height: 125%;
+}
+
 .sectionLayout {
     display: flex;
     flex-direction: column;
@@ -120,11 +156,12 @@
     height: 50px;
     display: inline-block;
     background: #A7C7E7;
-    font-family: "RobotoDraft","Roboto",sans-serif;
+    font-family: "RobotoDraft", "Roboto", sans-serif;
     color: #fff;
     font-weight: normal;
     font-size: 20px;
 }
+
 .progress-btn:not(.active) {
     cursor: pointer;
 }

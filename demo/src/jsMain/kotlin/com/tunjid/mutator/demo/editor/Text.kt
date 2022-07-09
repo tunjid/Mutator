@@ -39,6 +39,9 @@ actual fun Paragraph(text: String) = P(
 
 @Composable
 actual fun Markdown(content: String) = Div(
+    attrs = {
+        classes("markdown")
+    },
     content = {
         UseReactEffect(
             content,
@@ -54,7 +57,7 @@ actual fun CallToAction(text: String) = Div(
     attrs = {
         classes("cta", "horizontallyCentered")
     }
-){
+) {
     P(
         content = {
             Text(value = text)
