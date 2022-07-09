@@ -23,9 +23,11 @@ import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.css.fontSize
 import org.jetbrains.compose.web.css.height
 import org.jetbrains.compose.web.css.keywords.auto
+import org.jetbrains.compose.web.css.maxWidth
 import org.jetbrains.compose.web.css.overflow
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.pt
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Code
 import org.jetbrains.compose.web.dom.Pre
@@ -37,27 +39,19 @@ actual fun EditorView(content: String) = key(content) {
 }
 
 @Composable
-fun FormattedCodeSnippet(code: String, language: String = "kotlin") {
-    Pre({
+fun FormattedCodeSnippet(code: String, language: String = "kotlin") = Pre {
+    Code({
+        classes("language-$language", "hljs")
         style {
-            width(100.percent)
-            overflow("auto")
-            height(auto)
+            property("font-family", "'JetBrains Mono', monospace")
+            property("tab-size", 4)
+            fontSize(10.pt)
+            backgroundColor(Color("transparent"))
         }
     }) {
-        Code({
-            classes("language-$language", "hljs")
-            style {
-                property("font-family", "'JetBrains Mono', monospace")
-                property("tab-size", 4)
-                fontSize(10.pt)
-                backgroundColor(Color("transparent"))
-            }
-        }) {
-            @Suppress("DEPRECATION")
-            DomSideEffect(code) {
-                it.setHighlightedCode(code)
-            }
+        @Suppress("DEPRECATION")
+        DomSideEffect(code) {
+            it.setHighlightedCode(code)
         }
     }
 }
