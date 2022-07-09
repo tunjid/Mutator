@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Surface
@@ -39,6 +40,21 @@ actual fun SnailCard(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(0.8f), content = { content() },
+    )
+}
+
+@Composable
+actual fun SnailText(
+    color: Color,
+    text: String
+) {
+    Text(
+        modifier = Modifier.padding(vertical = 8.dp),
+        text = text,
+        color = color,
+        style = MaterialTheme.typography.body1.copy(
+            MaterialTheme.colors.onSurface
+        )
     )
 }
 

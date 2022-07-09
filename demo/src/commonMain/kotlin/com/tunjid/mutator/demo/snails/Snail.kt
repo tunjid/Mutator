@@ -28,6 +28,12 @@ expect fun SnailCard(
 )
 
 @Composable
+expect fun SnailText(
+    color: Color,
+    text: String
+)
+
+@Composable
 expect fun Snail(
     progress: Float,
     speed: Speed = Speed.One,

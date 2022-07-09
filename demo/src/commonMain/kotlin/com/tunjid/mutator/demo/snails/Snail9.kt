@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.coroutines.emit
@@ -55,6 +56,8 @@ data class Snail9State(
 val Snail9State.color get() = colors[colorIndex]
 
 val Snail9State.cardColor: Color get() = colors.last()
+
+val Snail9State.textColor: Color get() = if (cardColor.luminance() > 0.5) Color.Black else Color.White
 
 class Snail9StateHolder(
     private val scope: CoroutineScope

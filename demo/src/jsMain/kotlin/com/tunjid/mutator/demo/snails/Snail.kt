@@ -25,11 +25,14 @@ import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.max
 import org.jetbrains.compose.web.attributes.min
 import org.jetbrains.compose.web.css.backgroundColor
+import org.jetbrains.compose.web.css.color
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.rgb
 import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Input
+import org.jetbrains.compose.web.dom.P
+import org.jetbrains.compose.web.dom.Text
 
 @Composable
 actual fun SnailCard(
@@ -44,6 +47,19 @@ actual fun SnailCard(
         }
     )
 }
+
+@Composable
+actual fun SnailText(
+    color: Color,
+    text: String
+)= P(
+    attrs = {
+        style { color(color.rgb()) }
+    },
+    content = {
+        Text(value = text)
+    }
+)
 
 @Composable
 actual fun Snail(
@@ -112,7 +128,7 @@ actual fun ToggleButton(
         Div(
             attrs = {
                 classes("progress")
-                style { width(((progress % 100) * 100).toInt().percent) }
+                style { width(((progress * 100).toInt() % 100).percent) }
             }
         )
     }
