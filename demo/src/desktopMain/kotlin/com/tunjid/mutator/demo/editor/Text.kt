@@ -23,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.halilibo.richtext.ui.RichText
+import com.halilibo.richtext.markdown.Markdown
 
 @Composable
 actual fun Paragraph(text: String) {
@@ -37,7 +39,13 @@ actual fun Paragraph(text: String) {
 
 @Composable
 actual fun Markdown(content: String) {
-
+    RichText(
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
+        Markdown(
+            content = content
+        )
+    }
 }
 
 @Composable

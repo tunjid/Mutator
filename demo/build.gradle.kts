@@ -48,6 +48,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
+                implementation(libs.richtext.commonmark)
             }
         }
         val jsMain by getting {
@@ -55,8 +56,9 @@ kotlin {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
 
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:17.0.2-pre.316-kotlin-1.6.10")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:17.0.2-pre.316-kotlin-1.6.10")
+                implementation(libs.kotlin.wrappers.react)
+                implementation(libs.kotlin.wrappers.reactDom)
+
                 implementation(npm("react", "17.0.2"))
                 implementation(npm("react-dom", "17.0.2"))
                 implementation(npm("highlight.js", "10.7.2"))
