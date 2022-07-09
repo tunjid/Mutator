@@ -125,7 +125,7 @@ It however brings the following advantages:
 * All source flows can independently contribute their state mutations
 * All source flows at the time of introducing the state mutation can read the existing state.
 
-This advantage can be easily illustrated with an example. If the user wanted to manually move the snail to a certain position, it would simply be:    
+These advantages can be easily illustrated with an example. If the user wanted to manually move the snail to a certain position, it would simply be:    
 """.trimIndent()
 
 private val eightCode = """
