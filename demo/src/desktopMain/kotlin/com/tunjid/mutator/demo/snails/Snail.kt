@@ -31,6 +31,7 @@ import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,7 @@ actual fun SnailCard(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(0.8f),
+        color = color,
         content = { content() },
     )
 }
@@ -109,26 +111,35 @@ actual fun ToggleButton(
     onClicked: () -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxWidth(0.2F)
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Button(
+        Box(
             modifier = Modifier
-                .background(Color(0xA7C7E7)),
-            onClick = {
-                onClicked()
-            },
-            content = {
-                Text(text = "Toggle mode")
-            },
-        )
-        Button(
-            modifier = Modifier
-                .fillMaxWidth(progress)
-                .background(Color(0x2a639c)),
-            onClick = {
-                onClicked()
-            },
-            content = {},
-        )
+                .fillMaxWidth(0.25F)
+                .align(Alignment.Center)
+        ) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .background(Color(0xA7C7E7)),
+                onClick = {
+                    onClicked()
+                },
+                content = {
+                    Text(text = "Toggle mode")
+                },
+            )
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth(progress)
+                    .align(Alignment.CenterStart)
+                    .background(Color(0xA7C7E7)),
+                onClick = {
+                    onClicked()
+                },
+                content = {},
+            )
+        }
     }
 }
