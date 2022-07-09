@@ -26,6 +26,15 @@
     max-width: 720px;
 }
 
+pre {
+    width: 100%;
+    overflow: auto;
+    height: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: start;
+}
+
 .markdown {
     width: 100%;
 }
