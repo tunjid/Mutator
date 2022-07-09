@@ -33,7 +33,10 @@ fun Section4() = SectionLayout {
     Markdown(fiveMarkdown)
     EditorView(sixCode)
     Snail4()
-    CallToAction("Snail4 is identical to Snail3; just with different state production semantics.")
+    CallToAction(
+        text = "Snail4 is identical to Snail3; just with different state production semantics.",
+        centerText = true,
+    )
     Markdown(sevenMarkdown)
     EditorView(eightCode)
     Snail5()

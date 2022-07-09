@@ -25,4 +25,7 @@ expect fun Paragraph(text: String)
 expect fun Markdown(content: String)
 
 @Composable
-expect fun CallToAction(text: String)
+expect fun CallToAction(
+    text: String,
+    centerText: Boolean = false,
+)

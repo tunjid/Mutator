@@ -53,12 +53,18 @@ actual fun Markdown(content: String) = Div(
 )
 
 @Composable
-actual fun CallToAction(text: String) = Div(
+actual fun CallToAction(
+    text: String,
+    centerText: Boolean,
+) = Div(
     attrs = {
         classes("cta", "horizontallyCentered")
     }
 ) {
     P(
+        attrs = {
+            if (centerText) classes("horizontallyCentered")
+        },
         content = {
             Text(value = text)
         }

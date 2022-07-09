@@ -55,7 +55,10 @@ actual fun Markdown(content: String) {
 }
 
 @Composable
-actual fun CallToAction(text: String) {
+actual fun CallToAction(
+    text: String,
+    centerText: Boolean,
+) {
     Box(
         modifier = Modifier.fillMaxWidth(0.8f)
             .background(
@@ -67,7 +70,11 @@ actual fun CallToAction(text: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .align(Alignment.Center),
+                    .align(Alignment.Center)
+                    .let {
+                        if (centerText) it.align(Alignment.Center)
+                        else it
+                    },
                 color = Color(0x00589B),
                 text = text
             )
