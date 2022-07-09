@@ -102,11 +102,7 @@ class Snail4StateHolder(
         userChanges,
     )
         .scan(Snail4State()) { state, mutation -> mutation.mutate(state) }
-        .stateIn(
-            scope = scope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = Snail4State()
-        )
+        .stateIn(...)
 
     fun setSnailColor(color: Color) {
         scope.launch {

@@ -54,13 +54,14 @@
     line-height: 80%;
 }
 
-.markdown p {
+.markdown p, li, ul {
     font-family: "Muli";
     font-size: 18px;
     letter-spacing: 0px;
     font-weight: normal;
     line-height: 125%;
 }
+
 
 .sectionLayout {
     display: flex;

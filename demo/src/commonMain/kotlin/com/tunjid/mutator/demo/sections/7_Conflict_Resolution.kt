@@ -56,42 +56,43 @@ We can add a new boolean field to the state called `isInterpolating`. If `setMod
 """.trimIndent()
 
 private val twoCode = """
+data class Snail8State(
+    ...
+    val isInterpolating: Boolean = false,
+)
+    
 class Snail8StateHolder(
     private val scope: CoroutineScope
 ) {
 
     …
 
-   fun setMode(isDark: Boolean) {
-        if(state.value.isInterpolating) return
+    fun setMode(isDark: Boolean) {
+        if (state.value.isInterpolating) return
         scope.launch {
             userChanges.emit { copy(isDark = isDark, isInterpolating = true) }
             interpolateColors(
                 startColors = state.value.colors.map(Color::toArgb).toIntArray(),
                 endColors = MutedColors.colors(isDark)
-            ).collect {
-                userChanges.emit { copy(colors = it) }
+            ).collect { (progress, colors) ->
+                userChanges.emit { copy(colorInterpolationProgress = progress, colors = colors) }
             }
             userChanges.emit { copy(isInterpolating = false) }
         }
     }
-
 }
 """.trimIndent()
 
 private val threeMarkdown = """
 This works, but it has the unfortunate side effect of making the user wait until we're done interpolating before they can change the mode again.
 
-
 ## Eliminate the source of conflict
 
-Eliminating the source of conflict in the example above would require being able to stop collecting from `interpolateColors` each time `setMode` is invoked. There are two ways of doing this: \
-
-
+Eliminating the source of conflict in the example above would require being able to stop collecting from `interpolateColors` each time `setMode` is invoked. There are two ways of doing this:
 
 ### Cancel the job
 
-In the above `scope.launch` returns a `Job` for the suspending function that collects from `interpolateColors`. Keeping a reference to this `Job` allows for canceling `Flow` when next the `setMode` method is invoked.
+In the above `scope.launch()` returns a `Job` for the suspending function that collects from `interpolateColors`. Keeping a reference to this `Job` allows for canceling `Flow` when next the `setMode` method is invoked.
 
 """.trimIndent()
 
@@ -103,20 +104,18 @@ class Snail9StateHolder(
    private var setModeJob: Job? = null
     …
 
-   fun setMode(isDark: Boolean) {
+    fun setMode(isDark: Boolean) {
         setModeJob?.cancel()
         setModeJob = scope.launch {
-            userChanges.emit { copy(isDark = isDark, isInterpolating = true) }
+            userChanges.emit { copy(isDark = isDark) }
             interpolateColors(
                 startColors = state.value.colors.map(Color::toArgb).toIntArray(),
                 endColors = MutedColors.colors(isDark)
-            ).collect {
-                userChanges.emit { copy(colors = it) }
+            ).collect { (progress, colors) ->
+                userChanges.emit { copy(colorInterpolationProgress = progress, colors = colors) }
             }
-            userChanges.emit { copy(isInterpolating = false) }
         }
     }
-
 }
 """.trimIndent()
 
@@ -202,10 +201,17 @@ class Snail10StateHolder(
                         startColors = startColors.map(Color::toArgb).toIntArray(),
                         endColors = MutedColors.colors(isDark)
                     )
-                        .map { Mutation { copy(colors = it) } }
+                        .map { (progress, colors) ->
+                            Mutation {
+                                copy(
+                                    colorInterpolationProgress = progress,
+                                    colors = colors
+                                )
+                            }
+                        }
                 )
             }
-        }   
+        }  
 """.trimIndent()
 
 private val nineMarkdown = """

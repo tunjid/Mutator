@@ -40,7 +40,7 @@ private val oneMarkdown = """
 
 So far, all sources of state change have been relatively harmonious. That is, they don't conflict or compete with each other. Sometimes however, especially with asynchronous data sources, state changes can clash. This most often occurs when user events trigger a set of cascading state changes.
 
-This is best illustrated with an example. Say we wanted to expose our snail to the experience of day and day and night. Not only that, we want the experience to animate smoothly. We can do this by adding a new method:
+This is best illustrated with an example. Say we wanted to expose our snail to the experience of day and night. Not only that, we want the experience to animate smoothly. We can do this by adding a new method:
 """.trimIndent()
 
 private val twoCode = """
@@ -50,18 +50,18 @@ class Snail7StateHolder(
 
     …
 
-   fun setMode(isDark: Boolean) {
+    fun setMode(isDark: Boolean) {
         scope.launch {
             userChanges.emit { copy(isDark = isDark) }
+            // Collect from a flow that animates color changes
             interpolateColors(
                 startColors = state.value.colors.map(Color::toArgb).toIntArray(),
                 endColors = MutedColors.colors(isDark)
-            ).collect {
-                userChanges.emit { copy(colors = it) }
+            ).collect { (progress, colors) ->
+                userChanges.emit { copy(colorInterpolationProgress = progress, colors = colors) }
             }
         }
     }
-
 }   
 """.trimIndent()
 
