@@ -17,6 +17,10 @@
 package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
+import org.jetbrains.compose.web.css.keywords.auto
+import org.jetbrains.compose.web.css.margin
+import org.jetbrains.compose.web.css.textAlign
+import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.ElementScope
 import org.jetbrains.compose.web.dom.P
@@ -63,7 +67,9 @@ actual fun CallToAction(
 ) {
     P(
         attrs = {
-            if (centerText) classes("horizontallyCentered")
+            if (centerText) {
+                style { textAlign("center") }
+            }
         },
         content = {
             Text(value = text)

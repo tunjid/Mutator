@@ -27,15 +27,14 @@ import com.tunjid.mutator.demo.snails.Snail5
 @Composable
 fun Section4() = SectionLayout {
     Markdown(oneMarkdown)
-    CallToAction(twoCta)
+    CallToAction(twoCta, centerText = true)
     Markdown(threeMarkdown)
     EditorView(fourCode)
     Markdown(fiveMarkdown)
     EditorView(sixCode)
     Snail4()
     CallToAction(
-        text = "Snail4 is identical to Snail3; just with different state production semantics.",
-        centerText = true,
+        "Snail4 is identical to Snail3; just with different state production semantics.",
     )
     Markdown(sevenMarkdown)
     EditorView(eightCode)
