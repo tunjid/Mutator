@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +42,7 @@ actual fun ContainerLayout(content: @Composable () -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-//                    .verticalScroll(scrollState)
+                    .verticalScroll(scrollState)
                     .widthIn(0.dp, 600.dp)
                     .padding(horizontal = 16.dp)
                     .align(Alignment.Center),
@@ -57,6 +58,7 @@ actual fun ContainerLayout(content: @Composable () -> Unit) {
 actual fun SectionLayout(content: @Composable () -> Unit) {
     Column(
         modifier = Modifier.padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         content = { content() }
     )
@@ -66,7 +68,7 @@ actual fun SectionLayout(content: @Composable () -> Unit) {
 actual fun VerticalLayout(content: @Composable () -> Unit) {
     Column(
         modifier = Modifier.padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         content = { content() }
     )
 }

@@ -16,10 +16,13 @@
 
 package com.tunjid.mutator.demo.snails
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
@@ -39,7 +42,8 @@ actual fun SnailCard(
     content: @Composable () -> Unit
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth(0.8f), content = { content() },
+        modifier = Modifier.fillMaxWidth(0.8f),
+        content = { content() },
     )
 }
 
@@ -82,6 +86,7 @@ actual fun ColorSwatch(
     onColorClicked: (index: Int) -> Unit
 ) {
     Row(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
         colors.forEachIndexed { index, color ->
@@ -103,13 +108,27 @@ actual fun ToggleButton(
     progress: Float,
     onClicked: () -> Unit
 ) {
-    Button(
-        modifier = Modifier.padding(horizontal = 8.dp),
-        onClick = {
-            onClicked()
-        },
-        content = {
-            Text(text = "Toggle mode")
-        },
-    )
+    Box(
+        modifier = Modifier.fillMaxWidth(0.2F)
+    ) {
+        Button(
+            modifier = Modifier
+                .background(Color(0xA7C7E7)),
+            onClick = {
+                onClicked()
+            },
+            content = {
+                Text(text = "Toggle mode")
+            },
+        )
+        Button(
+            modifier = Modifier
+                .fillMaxWidth(progress)
+                .background(Color(0x2a639c)),
+            onClick = {
+                onClicked()
+            },
+            content = {},
+        )
+    }
 }
