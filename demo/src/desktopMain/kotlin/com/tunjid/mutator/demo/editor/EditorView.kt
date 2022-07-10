@@ -46,7 +46,7 @@ import com.tunjid.mutator.demo.editor.Settings
 import kotlin.text.Regex.Companion.fromLiteral
 
 @Composable
-actual fun EditorView(content: String) = key(content) {
+actual fun CodeBlock(content: String) = key(content) {
     val settings = remember { Settings() }
     with(LocalDensity.current) {
         SelectionContainer {

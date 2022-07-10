@@ -18,7 +18,7 @@ package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
 import com.tunjid.mutator.demo.editor.CallToAction
-import com.tunjid.mutator.demo.editor.EditorView
+import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.snails.Snail4
@@ -29,9 +29,9 @@ fun Section4() = SectionLayout {
     Markdown(oneMarkdown)
     CallToAction(twoCta, centerText = true)
     Markdown(threeMarkdown)
-    EditorView(fourCode)
+    CodeBlock(fourCode)
     Markdown(fiveMarkdown)
-    EditorView(sixCode)
+    CodeBlock(sixCode)
     CallToAction(userActionsCta)
     Snail4()
     CallToAction(
@@ -40,7 +40,7 @@ fun Section4() = SectionLayout {
     Markdown(sevenMarkdown)
     CallToAction(orderCta)
     Markdown(advantages)
-    EditorView(eightCode)
+    CodeBlock(eightCode)
     Snail5()
     CallToAction(
         "Drag the snail to place it anywhere on its track. Also, try to hold it in place and see what happens."

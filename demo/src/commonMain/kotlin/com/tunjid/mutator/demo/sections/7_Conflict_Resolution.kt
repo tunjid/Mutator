@@ -18,7 +18,7 @@ package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
 import com.tunjid.mutator.demo.editor.CallToAction
-import com.tunjid.mutator.demo.editor.EditorView
+import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.snails.Snail10
@@ -28,17 +28,17 @@ import com.tunjid.mutator.demo.snails.Snail9
 @Composable
 fun Section7() = SectionLayout {
     Markdown(oneMarkdown)
-    EditorView(twoCode)
+    CodeBlock(twoCode)
     Snail8()
     CallToAction("Tap the toggle button many times again. Notice that it ignores the toggle event while animation is running.")
     Markdown(threeMarkdown)
-    EditorView(fourCode)
+    CodeBlock(fourCode)
     Snail9()
     CallToAction("Tap the toggle button many times. Notice that with each tap colors reverse their changes.")
     Markdown(fiveMarkdown)
-    EditorView(sixCode)
+    CodeBlock(sixCode)
     Markdown(sevenMarkdown)
-    EditorView(eightCode)
+    CodeBlock(eightCode)
     Snail10()
     CallToAction("Snail10 is identical to Snail9; just with different state production semantics.")
     Markdown(nineMarkdown)

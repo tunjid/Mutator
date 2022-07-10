@@ -17,7 +17,7 @@
 package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
-import com.tunjid.mutator.demo.editor.EditorView
+import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
 
@@ -25,7 +25,7 @@ import com.tunjid.mutator.demo.editor.SectionLayout
 fun Section3() {
     SectionLayout {
         Markdown(oneMarkdown)
-        EditorView(twoCode)
+        CodeBlock(twoCode)
         Markdown(threeMarkdown)
     }
 }

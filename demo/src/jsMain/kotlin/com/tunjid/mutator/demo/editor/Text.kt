@@ -17,13 +17,16 @@
 package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.web.css.keywords.auto
-import org.jetbrains.compose.web.css.margin
-import org.jetbrains.compose.web.css.textAlign
-import org.jetbrains.compose.web.css.width
+import androidx.compose.runtime.key
+import org.jetbrains.compose.web.css.Color
+import org.jetbrains.compose.web.css.backgroundColor
+import org.jetbrains.compose.web.css.fontSize
+import org.jetbrains.compose.web.css.pt
+import org.jetbrains.compose.web.dom.Code
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.ElementScope
 import org.jetbrains.compose.web.dom.P
+import org.jetbrains.compose.web.dom.Pre
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLElement
 import react.FC
@@ -80,6 +83,26 @@ actual fun CallToAction(
 }
 
 @Composable
+actual fun CodeBlock(content: String) = key(content) {
+    Pre {
+        Code({
+            classes("language-kotlin", "hljs")
+            style {
+                property("font-family", "'JetBrains Mono', monospace")
+                property("tab-size", 4)
+                fontSize(10.pt)
+                backgroundColor(Color("transparent"))
+            }
+        }) {
+            @Suppress("DEPRECATION")
+            DomSideEffect(content) {
+                it.setHighlightedCode(content)
+            }
+        }
+    }
+}
+
+@Composable
 private fun ElementScope<HTMLElement>.UseReactEffect(
     key: Any?,
     content: ReactElement<*>
@@ -105,4 +128,18 @@ external val reactMarkdown: FC<ReactMarkdownProps>
 
 external interface ReactMarkdownProps : Props {
     var children: String
+}
+
+@JsName("hljs")
+@JsModule("highlight.js")
+@JsNonModule
+external class HighlightJs {
+    companion object {
+        fun highlightElement(block: HTMLElement)
+    }
+}
+
+private fun HTMLElement.setHighlightedCode(code: String) {
+    innerText = code
+    HighlightJs.highlightElement(this)
 }
