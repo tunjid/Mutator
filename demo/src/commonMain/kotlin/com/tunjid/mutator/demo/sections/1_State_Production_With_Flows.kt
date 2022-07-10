@@ -85,7 +85,7 @@ Next, we define a state for the snail, and a state holder that produces its stat
 
 private val sixCode = """
 data class Snail2State(
-    val progress: Float = 0f,
+    ...,
     val speed: Speed = Speed.One,
 )
 

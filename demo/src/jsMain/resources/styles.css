@@ -89,6 +89,9 @@ pre {
     flex-direction: row;
     align-items: center;
 }
+.centerText {
+    text-align: center;
+}
 
 #root > .compose-web-column > div {
     position: relative;
@@ -195,7 +198,7 @@ pre {
     bottom: 0;
     width: 50%;
     z-index: 10;
-    background: #2a639c;
+    background: #2a639ccc;
 }
 
 

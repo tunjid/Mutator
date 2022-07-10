@@ -105,7 +105,12 @@ class Snail9StateHolder(
                 startColors = state.value.colors.map(Color::toArgb).toIntArray(),
                 endColors = MutedColors.colors(isDark)
             ).collect { (progress, colors) ->
-                userChanges.emit { copy(colorInterpolationProgress = progress, colors = colors) }
+                userChanges.emit {
+                    copy(
+                        colorInterpolationProgress = progress,
+                        colors = colors
+                    )
+                }
             }
         }
     }

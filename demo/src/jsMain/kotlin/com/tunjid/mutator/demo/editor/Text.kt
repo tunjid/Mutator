@@ -62,17 +62,19 @@ actual fun CallToAction(
     centerText: Boolean,
 ) = Div(
     attrs = {
-        classes("cta", "horizontallyCentered")
+        classes(
+            listOfNotNull(
+                "cta",
+                "horizontallyCentered",
+                "centerText".takeIf { centerText },
+            )
+        )
     }
 ) {
-    P(
-        attrs = {
-            if (centerText) {
-                style { textAlign("center") }
-            }
-        },
-        content = {
-            Text(value = text)
+    UseReactEffect(
+        text,
+        reactMarkdown.create {
+            children = text
         }
     )
 }

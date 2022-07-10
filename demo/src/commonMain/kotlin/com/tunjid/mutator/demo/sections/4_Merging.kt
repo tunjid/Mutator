@@ -32,11 +32,14 @@ fun Section4() = SectionLayout {
     EditorView(fourCode)
     Markdown(fiveMarkdown)
     EditorView(sixCode)
+    CallToAction(userActionsCta)
     Snail4()
     CallToAction(
         "Snail4 is identical to Snail3; just with different state production semantics.",
     )
     Markdown(sevenMarkdown)
+    CallToAction(orderCta)
+    Markdown(advantages)
     EditorView(eightCode)
     Snail5()
     CallToAction("Drag the snail to place it anywhere on its track.")
@@ -114,18 +117,31 @@ class Snail4StateHolder(
 }    
 """.trimIndent()
 
+private val userActionsCta = """
+Notice that user actions are now propagated with a [MutableSharedFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-shared-flow/) instead of a [MutableStateFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-state-flow/). This is because `StateFlow` conflates emissions which can make it prioritize only the latest events when shared amongst between methods invoked by user events.   
+""".trimIndent()
+
 private val sevenMarkdown = """
 This example has all the functionality the combine approach did, but with a slight complexity cost.
 
 It however brings the following advantages:
 
-
-
-* All user actions that change state can share the same source flow `userChanges`
+* All user actions that change state can share the same source flow `userChanges` a [`MutableSharedFlow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-shared-flow/).
 * All source flows can independently contribute their state mutations
 * All source flows at the time of introducing the state mutation can read the existing state.
 
-These advantages can be easily illustrated with an example. If the user wanted to manually move the snail to a certain position, it would simply be:    
+The switch to the `MutableSharedFlow` is because `StateFlow` conflates emissions. If two separate methods attempted to use the same `MutableStateFlow` to emit a `Mutation` of state, the `StateFlow` may only emit the latest `Mutation`. That is `MutableStateFlow` does not guarantee that every update to its `value` property is seen by its collectors.
+
+`MutableSharedFlow` on the other hand has an `emit` method which suspends until the `Mutation` is delivered. This means that multiple coroutines can be launched and call `emit` on the same `MutableShared` `Flow` and none of them will cancel out the other. The order in which they are applied also don't matter as `Mutation` instances just describe changes to state; they are designed to be independent.
+   
+""".trimIndent()
+
+private val orderCta = """
+If the emission order of `Mutation` instances across multiple user events matter to you, keep reading until the _Conflicts in state production_ and _Conflict resolution in state production_ sections.   
+""".trimIndent()
+
+private val advantages = """
+These advantages can be easily illustrated with an example. If the user wanted to manually move the snail to a certain position, it would simply be:     
 """.trimIndent()
 
 private val eightCode = """
@@ -133,11 +149,17 @@ class Snail5StateHolder(
     private val scope: CoroutineScope
 ) {
 
-   private val progressChanges: Flow<Mutation<Snail5State>> = …
+    private val progressChanges: Flow<Mutation<Snail5State>> = …
     …
 
     private val userChanges = MutableSharedFlow<Mutation<Snail5State>>()
 
+    fun setSnailColor(color: Color) {
+        scope.launch {
+            userChanges.emit { copy(color = color) }
+        }
+    }
+    
    fun setProgress(progress: Float) {
         scope.launch {
             userChanges.emit { copy(progress = progress) }
@@ -147,5 +169,7 @@ class Snail5StateHolder(
 """.trimIndent()
 
 private val nineMarkdown = """
-That is, we can simply introduce a state change to the `progress` property of the state despite the `progessChanges` flow also contributing to a change of the same property. This is something that would be non trivial with the `combine` approach.    
+That is, we can simply introduce a state change to the `progress` property of the state despite the `progessChanges` flow also contributing to a change of the same property. This is something that would be rather difficult with the `combine` approach. This is because the combine approach only lets you set state properties of state to create new state. The `merge` approach instead lets you `mutate` or change properties of state and apply them to the existing state.  
+  
+ Furthermore both `setSnailColor` and `setProgress` contribute their changes to state using the same  `MutableSharedFlow`: `userChanges`. This approach scales well because no mater how many methods are added that change the `State` from user events, they don't need any more variables to be declared in the state holder class. 
 """.trimIndent()

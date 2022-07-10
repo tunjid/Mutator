@@ -37,6 +37,7 @@ fun Section7() = SectionLayout {
     CallToAction("Tap the toggle button many times. Notice that with each tap colors reverse their changes.")
     Markdown(fiveMarkdown)
     EditorView(sixCode)
+    CallToAction(composeAnimationApiCta)
     Markdown(sevenMarkdown)
     EditorView(eightCode)
     Snail10()
@@ -72,10 +73,11 @@ class Snail8StateHolder(
         scope.launch {
             userChanges.emit { copy(isDark = isDark, isInterpolating = true) }
             interpolateColors(
-                startColors = state.value.colors.map(Color::toArgb).toIntArray(),
-                endColors = MutedColors.colors(isDark)
+                ...
             ).collect { (progress, colors) ->
-                userChanges.emit { copy(colorInterpolationProgress = progress, colors = colors) }
+                userChanges.emit { 
+                    copy(...) 
+                }
             }
             userChanges.emit { copy(isInterpolating = false) }
         }
@@ -92,7 +94,7 @@ Eliminating the source of conflict in the example above would require being able
 
 ### Cancel the job
 
-In the above `scope.launch()` returns a `Job` for the suspending function that collects from `interpolateColors`. Keeping a reference to this `Job` allows for canceling `Flow` when next the `setMode` method is invoked.
+In the above `scope.launch()` returns a `Job` for the suspending function that collects from `interpolateColors`. Keeping a reference to this `Job` allows for canceling the `Flow` when next the `setMode` method is invoked.
 
 """.trimIndent()
 
@@ -109,10 +111,11 @@ class Snail9StateHolder(
         setModeJob = scope.launch {
             userChanges.emit { copy(isDark = isDark) }
             interpolateColors(
-                startColors = state.value.colors.map(Color::toArgb).toIntArray(),
-                endColors = MutedColors.colors(isDark)
+                ...
             ).collect { (progress, colors) ->
-                userChanges.emit { copy(colorInterpolationProgress = progress, colors = colors) }
+                userChanges.emit { 
+                    copy(...) 
+                }
             }
         }
     }
@@ -125,7 +128,7 @@ This works, although it has the caveat of something we've seen before; it scales
 
 ### Model changes with flows
 
-In this approach, the user event of setting the mode is modeled as a `Flow`, and using `Flow` operators the `interpolateColors` `Flow` is automatically canceled each time the `SetMode` event is triggered.
+In this approach, the user event of setting the mode is modeled as a `Flow`, and by using the `flatMapLatest` `Flow` operator, the `interpolateColors` `Flow` is automatically canceled each time the `SetMode` `Flow` emits.
 """.trimIndent()
 
 private val sixCode = """
@@ -134,7 +137,7 @@ private val sixCode = """
         val startColors: List<Color>
     )
 
-    fun Flow<SetMode>.mutations(): Flow<Mutation<Snail10State>> =
+    private fun Flow<SetMode>.mutations(): Flow<Mutation<Snail10State>> =
         flatMapLatest { (isDark, startColors) ->
             flow {
                 emit(Mutation { copy(isDark = isDark) })
@@ -147,6 +150,10 @@ private val sixCode = """
                 )
             }
         }
+""".trimIndent()
+
+private val composeAnimationApiCta = """
+In Jetpack Compose apps, animating color changes is best done with the [animateColorAsState](https://developer.android.com/reference/kotlin/androidx/compose/animation/package-summary#animateColorAsState(androidx.compose.ui.graphics.Color,androidx.compose.animation.core.AnimationSpec,kotlin.Function1)) APIs instead of manually as shown in the example above. The example is merely used to demonstrate long running operations that cause state changes, like uploading a file with a progress bar.   
 """.trimIndent()
 
 private val sevenMarkdown = """
@@ -163,7 +170,6 @@ class Snail10StateHolder(
     private val speedChanges: Flow<Mutation<Snail10State>> = …
 
     private val progressChanges: Flow<Mutation<Snail10State>> = …
-
 
     private val mutator = stateFlowMutator<Action, Snail10State>(
         scope = scope,
@@ -188,9 +194,15 @@ class Snail10StateHolder(
 
     val actions: (Action) -> Unit = mutator.accept
 
-    private fun Flow<Action.SetColor>.colorMutations() = …
+    private fun Flow<Action.SetColor>.colorMutations(): Flow<Mutation<Snail10State>> =
+        mapLatest {
+            Mutation { copy(colorIndex = it.index) }
+        }
 
-    private fun Flow<Action.SetProgress>.progressMutations() = …
+    private fun Flow<Action.SetProgress>.progressMutations(): Flow<Mutation<Snail10State>> =
+        mapLatest {
+            Mutation { copy(progress = it.progress) }
+        }
 
     private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail10State>> =
         flatMapLatest { (isDark, startColors) ->
@@ -215,6 +227,17 @@ class Snail10StateHolder(
 """.trimIndent()
 
 private val nineMarkdown = """
+    
+In the above, all there are two sources of state `Mutation`s:
+
+* Data sources in the `mutationFlows` argument; defined as `Flow<Mutation<State>>`
+* User events in the `actionTransform` argument; defined as `(Flow<Action>) -> Flow<Mutation<State>>`
+   
+Crucially the `actionTransform` takes a `Flow` of all `Action` instances, splits them out into individual `Flow`s for each `Action`, and finally applies `Flow` transformations to each `Action` `Flow` to turn them into `Flow<Mutation<State>>`:
+
+* `colorMutations` and `progressMutations` both use `mapLatest` to guarantee no conflicts because `mapLatest` automatically cancels any suspending function invoked in its lambda.
+* `modeMutations` does the same as the above but uses `flatMapLatest` and the `flow { }` builder because it collects from a `Flow` instead of just invoking a `suspend` function.
+
 # Choosing a state production pipeline
 
 The above highlights a common motif in this document; the state production pipeline is only as complicated as the kind of state changes that can occur. Simple states require simple pipelines, and complicated states often require abstractions that bring convenience at the cost of complexity.

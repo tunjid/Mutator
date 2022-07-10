@@ -37,13 +37,12 @@ fun Section2() {
 private val oneMarkdown = """
 # User actions
 
-These sources of change mentioned above can be from anything that can be modeled as a flow, be it reading data from a database or user actions. Imagine if we want to be able to change the snail's color on a whim. We can add a `MutableStateFlow` for color of the snail to our state holder class, and then `combine` it with the rest of the flows to produce the state.    
+These sources of change mentioned above can be from anything that can be modeled as a flow, be it reading data from a database or user actions. Imagine if we want to be able to change the snail's color on a whim. We can add a [`MutableSharedFlow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-shared-flow/) for the color of the snail to our state holder class, and then `combine` it with the rest of the flows to produce the state.    
 """.trimIndent()
 
 private val twoCode = """
 data class Snail3State(
     ...,
-    val color: Color = Color.Blue,
     val colors: List<Color> = MutedColors.colors(false).map(::Color)
 )
 

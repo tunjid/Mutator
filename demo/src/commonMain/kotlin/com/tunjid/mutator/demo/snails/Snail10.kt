@@ -111,13 +111,15 @@ class Snail10StateHolder(
 
     val actions: (Action) -> Unit = mutator.accept
 
-    private fun Flow<Action.SetColor>.colorMutations() = mapLatest {
-        Mutation<Snail10State> { copy(colorIndex = it.index) }
-    }
+    private fun Flow<Action.SetColor>.colorMutations(): Flow<Mutation<Snail10State>> =
+        mapLatest {
+            Mutation { copy(colorIndex = it.index) }
+        }
 
-    private fun Flow<Action.SetProgress>.progressMutations() = mapLatest {
-        Mutation<Snail10State> { copy(progress = it.progress) }
-    }
+    private fun Flow<Action.SetProgress>.progressMutations(): Flow<Mutation<Snail10State>> =
+        mapLatest {
+            Mutation { copy(progress = it.progress) }
+        }
 
     private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail10State>> =
         flatMapLatest { (isDark, startColors) ->
