@@ -30,7 +30,7 @@ fun Section7() = SectionLayout {
     Markdown(oneMarkdown)
     EditorView(twoCode)
     Snail8()
-    CallToAction("Tap the toggle button many times again. Notice that it does nothing while animation is running.")
+    CallToAction("Tap the toggle button many times again. Notice that it ignores the toggle event while animation is running.")
     Markdown(threeMarkdown)
     EditorView(fourCode)
     Snail9()
@@ -235,7 +235,7 @@ Crucially the `actionTransform` takes a `Flow` of all `Action` instances, splits
 
 # Choosing a state production pipeline
 
-The above highlights a common motif in this document; the state production pipeline is only as complicated as the kind of state changes that can occur. Simple states require simple pipelines, and complicated states often require abstractions that bring convenience at the cost of complexity.
+The above highlights a common motif in this document; the state production pipeline is only as complicated as the kind of state produced, and the state changes that can occur. Simple states require simple pipelines, and complicated states often require higher level abstractions that enforce guarantees in state production. These guarantees often come with a complexity cost.
    
 Depending on the particulars of your state production pipeline, a rule of thumb that can be applied is:
 
@@ -247,8 +247,8 @@ For intermediate states that have lots of different kinds of user events, `merge
 
  ### Large and complex state production pipelines 
  For state production pipelines that:
- * Have multiple contributors to the same state properties that may conflict
- * Have user events that cause multiple mutations of state
+ * Have multiple contributors to the same state property that may conflict
+ * Have user events that can cause multiple mutations of state to occur
  * Have state changes that involve collecting from other `Flow`s
  
  Model your state production pipeline as a `Flow` to allow for tighter control of sources of change, and use a library that offers ergonomic APIs for your transformations.

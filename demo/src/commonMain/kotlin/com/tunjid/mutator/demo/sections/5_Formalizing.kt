@@ -36,7 +36,7 @@ fun Section5() = SectionLayout {
 private val oneMarkdown = """
 # Formalizing state production
 
-The merge approach can be formalized into a extension function on the `CoroutineScope` the state is produced in:
+The merge approach can be formalized into an extension function on the `CoroutineScope` the state is produced in:
 """.trimIndent()
 
 private val twoCode = """
