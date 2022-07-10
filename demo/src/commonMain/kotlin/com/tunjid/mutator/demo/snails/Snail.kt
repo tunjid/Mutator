@@ -18,6 +18,7 @@ package com.tunjid.mutator.demo.snails
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 
 
@@ -37,7 +38,7 @@ expect fun SnailText(
 expect fun Snail(
     progress: Float,
     speed: Speed = Speed.One,
-    color: Color = Color(0x0FF2980b9),
+    color: Color = Color(MutedColors.colors(isDark = false).first()),
     onValueChange: (Float) -> Unit = {}
 )
 

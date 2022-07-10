@@ -105,7 +105,6 @@ class Snail2StateHolder(
 
     private val progress: Flow<Float> = …
 
-
     val state: StateFlow<Snail2State> = combine(
         progress,
         speed,

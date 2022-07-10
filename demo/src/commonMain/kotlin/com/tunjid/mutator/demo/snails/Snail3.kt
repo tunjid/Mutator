@@ -55,8 +55,9 @@ class Snail3StateHolder(
         .toInterval()
         .toProgress()
 
-    private val color: MutableStateFlow<Color> = MutableStateFlow(Color.Cyan)
-
+    private val color: MutableStateFlow<Color> = MutableStateFlow(
+        Color(MutedColors.colors(isDark = false).first())
+    )
 
     val state: StateFlow<Snail3State> = combine(
         progress,

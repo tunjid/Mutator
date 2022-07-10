@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import kotlin.math.pow
 import kotlin.math.roundToInt
-import kotlin.random.Random
 
 object MutedColors {
     private val mutedColors = intArrayOf(
