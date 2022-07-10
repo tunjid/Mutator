@@ -42,28 +42,7 @@ object MutedColors {
     )
 
     fun colors(isDark: Boolean) = if (isDark) darkerMutedColors else mutedColors
-
-    fun colorAt(isDark: Boolean, index: Int) = palette(isDark).circular(index)
-
-    fun random(isDark: Boolean): Int = palette(isDark).random()
-
-    fun interpolate(index: Int, percentage: Float) =
-        interpolateColors(
-            percentage / 100f,
-            startValue = mutedColors.circular(index),
-            endValue = mutedColors.circular(index + 1),
-        )
-
-
-    private fun palette(isDark: Boolean): IntArray = when (isDark) {
-        true -> mutedColors
-        else -> darkerMutedColors
-    }
 }
-
-private fun IntArray.circular(index: Int) = this[index % size]
-
-private fun IntArray.random() = this[(Random.Default.nextInt(size))]
 
 fun interpolateColors(fraction: Float, startValue: Int, endValue: Int): Int {
     val startA = (startValue shr 24 and 0xff) / 255.0f
