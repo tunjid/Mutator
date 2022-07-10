@@ -37,7 +37,6 @@ fun Section7() = SectionLayout {
     CallToAction("Tap the toggle button many times. Notice that with each tap colors reverse their changes.")
     Markdown(fiveMarkdown)
     EditorView(sixCode)
-    CallToAction(composeAnimationApiCta)
     Markdown(sevenMarkdown)
     EditorView(eightCode)
     Snail10()
@@ -123,7 +122,7 @@ class Snail9StateHolder(
 """.trimIndent()
 
 private val fiveMarkdown = """
-This works, although it has the caveat of something we've seen before; it scales linearly. Each method invocation that could have potential conflicts in state by virtue of it causing multiple changes in state will need a `Job` reference.
+This works, although it has the caveat of something we've seen before; it scales linearly. Each method invocation that could have potential conflicts in state by virtue of it causing multiple changes in state will need a `Job` reference to allow for cancelling collection.
 
 
 ### Model changes with flows
@@ -150,10 +149,6 @@ private val sixCode = """
                 )
             }
         }
-""".trimIndent()
-
-private val composeAnimationApiCta = """
-In Jetpack Compose apps, animating color changes is best done with the [animateColorAsState](https://developer.android.com/reference/kotlin/androidx/compose/animation/package-summary#animateColorAsState(androidx.compose.ui.graphics.Color,androidx.compose.animation.core.AnimationSpec,kotlin.Function1)) APIs instead of manually as shown in the example above. The example is merely used to demonstrate long running operations that cause state changes, like uploading a file with a progress bar.   
 """.trimIndent()
 
 private val sevenMarkdown = """
@@ -242,9 +237,19 @@ Crucially the `actionTransform` takes a `Flow` of all `Action` instances, splits
 
 The above highlights a common motif in this document; the state production pipeline is only as complicated as the kind of state changes that can occur. Simple states require simple pipelines, and complicated states often require abstractions that bring convenience at the cost of complexity.
    
-Depending on the particulars of your state production pipeline, you may opt to
+Depending on the particulars of your state production pipeline, a rule of thumb that can be applied is:
 
-* `combine` sources that contribute to your State
-* `merge` mutations to state into an initial starting state
-* Model your state changes with a `Flow` to allow for tighter control of sources of change to mitigate conflicts that can arise.
+### Simple state production pipelines
+For small and simple states, `combine` sources that contribute to your state. No library is required.
+
+### Intermediate state production pipelines
+For intermediate states that have lots of different kinds of user events, `merge` changes to state so you do not have to create multiple `MutableStateFlow` instances to manage each user event. You may opt to use a library, or roll out a small custom implementation of the techniques described in the *merge* section above.
+
+ ### Large and complex state production pipelines 
+ For state production pipelines that:
+ * Have multiple contributors to the same state properties that may conflict
+ * Have user events that cause multiple mutations of state
+ * Have state changes that involve collecting from other `Flow`s
+ 
+ Model your state production pipeline as a `Flow` to allow for tighter control of sources of change, and use a library that offers ergonomic APIs for your transformations.
 """.trimIndent()

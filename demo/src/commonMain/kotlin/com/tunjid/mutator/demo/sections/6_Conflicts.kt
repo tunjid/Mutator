@@ -27,6 +27,7 @@ import com.tunjid.mutator.demo.snails.Snail7
 fun Section6() = SectionLayout {
     Markdown(oneMarkdown)
     EditorView(twoCode)
+    CallToAction(composeAnimationApiCta)
     Snail7()
     CallToAction(
         "Tap the toggle button to switch between light and dark modes for the snail. " +
@@ -68,6 +69,10 @@ class Snail7StateHolder(
         }
     }
 }   
+""".trimIndent()
+
+private val composeAnimationApiCta = """
+In Jetpack Compose apps, animating color changes is best done with the [animateColorAsState](https://developer.android.com/reference/kotlin/androidx/compose/animation/package-summary#animateColorAsState(androidx.compose.ui.graphics.Color,androidx.compose.animation.core.AnimationSpec,kotlin.Function1)) APIs instead of manually as shown in the example above. The example is merely used to demonstrate long running operations that cause state changes, like uploading a file with a progress bar.   
 """.trimIndent()
 
 private val threeMarkdown = """

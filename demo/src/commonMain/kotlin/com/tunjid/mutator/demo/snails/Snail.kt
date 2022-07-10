@@ -37,7 +37,7 @@ expect fun SnailText(
 expect fun Snail(
     progress: Float,
     speed: Speed = Speed.One,
-    color: Color = Color.Cyan,
+    color: Color = Color(0x0FF2980b9),
     onValueChange: (Float) -> Unit = {}
 )
 

@@ -42,7 +42,9 @@ fun Section4() = SectionLayout {
     Markdown(advantages)
     EditorView(eightCode)
     Snail5()
-    CallToAction("Drag the snail to place it anywhere on its track.")
+    CallToAction(
+        "Drag the snail to place it anywhere on its track. Also, try to hold it in place and see what happens."
+    )
     Markdown(nineMarkdown)
 }
 
@@ -137,7 +139,7 @@ The switch to the `MutableSharedFlow` is because `StateFlow` conflates emissions
 """.trimIndent()
 
 private val orderCta = """
-If the emission order of `Mutation` instances across multiple user events matter to you, keep reading until the _Conflicts in state production_ and _Conflict resolution in state production_ sections.   
+If the emission order of `Mutation` instances across multiple user events matter to you, keep reading until the *Conflicts in state production* and *Conflict resolution in state production* sections.   
 """.trimIndent()
 
 private val advantages = """

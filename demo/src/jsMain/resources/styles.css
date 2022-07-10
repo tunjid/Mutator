@@ -44,7 +44,7 @@ pre {
     font-size: 48px;
     letter-spacing: 0.25px;
     font-weight: normal;
-    line-height: 80%;
+    line-height: 90%;
 }
 
 .markdown h2 {
@@ -52,7 +52,7 @@ pre {
     font-size: 34px;
     letter-spacing: 0px;
     font-weight: lighter;
-    line-height: 80%;
+    line-height: 90%;
 }
 
 .markdown h3 {
