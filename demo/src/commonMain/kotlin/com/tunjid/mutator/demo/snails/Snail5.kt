@@ -21,9 +21,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.graphics.Color
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.coroutines.emit
+import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
@@ -45,8 +45,8 @@ import kotlinx.coroutines.launch
 data class Snail5State(
     val progress: Float = 0f,
     val speed: Speed = Speed.One,
-    val color: Color = Color.Blue,
-    val colors: List<Color> = MutedColors.colors(false).map(::Color)
+    val color: Color = MutedColors.colors(false).first(),
+    val colors: List<Color> = MutedColors.colors(false)
 )
 
 class Snail5StateHolder(

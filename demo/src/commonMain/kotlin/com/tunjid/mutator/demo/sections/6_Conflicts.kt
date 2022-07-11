@@ -56,8 +56,8 @@ class Snail7StateHolder(
             userChanges.emit { copy(isDark = isDark) }
             /* Collect from a flow that animates color changes */
             interpolateColors(
-                startColors = state.value.colors.map(Color::toArgb).toIntArray(),
-                endColors = MutedColors.colors(isDark)
+                startColors = state.value.colors.map(Color::argb).toIntArray(),
+                endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
             ).collect { (progress, colors) ->
                 userChanges.emit { 
                     copy(

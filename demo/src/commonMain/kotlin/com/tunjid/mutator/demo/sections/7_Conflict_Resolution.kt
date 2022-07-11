@@ -30,7 +30,7 @@ fun Section7() = SectionLayout {
     Markdown(oneMarkdown)
     CodeBlock(twoCode)
     Snail8()
-    CallToAction("Tap the toggle button many times again. Notice that it ignores the toggle event while animation is running.")
+    CallToAction("Tap the toggle button many times again. Notice that it ignores the toggle event while the animation is running.")
     Markdown(threeMarkdown)
     CodeBlock(fourCode)
     Snail9()
@@ -205,8 +205,8 @@ class Snail10StateHolder(
                 emit(Mutation { copy(isDark = isDark) })
                 emitAll(
                     interpolateColors(
-                        startColors = startColors.map(Color::toArgb).toIntArray(),
-                        endColors = MutedColors.colors(isDark)
+                        startColors = startColors.map(Color::argb).toIntArray(),
+                        endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
                     )
                         .map { (progress, colors) ->
                             Mutation {

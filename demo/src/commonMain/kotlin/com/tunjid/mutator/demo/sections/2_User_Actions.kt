@@ -43,7 +43,7 @@ These sources of change mentioned above can be from anything that can be modeled
 private val twoCode = """
 data class Snail3State(
     ...,
-    val colors: List<Color> = MutedColors.colors(false).map(::Color)
+    val color: Color = MutedColors.colors(false).first(),
 )
 
 class Snail3StateHolder(

@@ -29,27 +29,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.tunjid.mutator.demo.common.AppTheme
 
 @Composable
 actual fun ContainerLayout(content: @Composable () -> Unit) {
     val scrollState = rememberScrollState()
-    AppTheme {
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
+                .widthIn(0.dp, 600.dp)
+                .padding(horizontal = 16.dp)
+                .align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-                    .widthIn(0.dp, 600.dp)
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                content()
-            }
+            content()
         }
     }
 }

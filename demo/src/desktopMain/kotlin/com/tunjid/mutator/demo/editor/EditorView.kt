@@ -35,13 +35,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.tunjid.mutator.demo.common.AppTheme
 import com.tunjid.mutator.demo.editor.Settings
 import kotlin.text.Regex.Companion.fromLiteral
 
@@ -181,4 +181,25 @@ private fun AnnotatedString.Builder.addStyle(style: SpanStyle, text: String, reg
     for (result in regexp.findAll(text)) {
         addStyle(style, result.range.first, result.range.last + 1)
     }
+}
+
+object AppTheme {
+        val colors: Colors = Colors()
+
+        val code: Code = Code()
+
+        class Colors(
+            val backgroundDark: Color = Color(0xFF2B2B2B),
+            val backgroundMedium: Color = Color(0xFF3C3F41),
+            val backgroundLight: Color = Color(0xFF4E5254),
+        )
+
+        class Code(
+            val simple: SpanStyle = SpanStyle(Color(0xFFA9B7C6)),
+            val value: SpanStyle = SpanStyle(Color(0xFF6897BB)),
+            val keyword: SpanStyle = SpanStyle(Color(0xFFCC7832)),
+            val punctuation: SpanStyle = SpanStyle(Color(0xFFA1C17E)),
+            val annotation: SpanStyle = SpanStyle(Color(0xFFBBB529)),
+            val comment: SpanStyle = SpanStyle(Color(0xFF808080))
+        )
 }

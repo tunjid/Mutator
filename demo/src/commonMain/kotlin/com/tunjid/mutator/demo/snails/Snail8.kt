@@ -21,12 +21,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.graphics.toArgb
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.coroutines.emit
 import com.tunjid.mutator.coroutines.mutateStateWith
+import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.VerticalLayout
@@ -49,14 +47,14 @@ data class Snail8State(
     val colorIndex: Int = 0,
     val isInterpolating: Boolean = false,
     val colorInterpolationProgress: Float = 0F,
-    val colors: List<Color> = MutedColors.colors(false).map(::Color)
+    val colors: List<Color> = MutedColors.colors(false)
 )
 
 val Snail8State.color get() = colors[colorIndex]
 
 val Snail8State.cardColor: Color get() = colors.last()
 
-val Snail8State.textColor: Color get() = if (cardColor.luminance() > 0.5) Color.Black else Color.LightGray
+val Snail8State.textColor: Color get() = if (cardColor.isBright()) Color.Black else Color.LightGray
 
 class Snail8StateHolder(
     private val scope: CoroutineScope
@@ -100,8 +98,8 @@ class Snail8StateHolder(
         scope.launch {
             userChanges.emit { copy(isDark = isDark, isInterpolating = true) }
             interpolateColors(
-                startColors = state.value.colors.map(Color::toArgb).toIntArray(),
-                endColors = MutedColors.colors(isDark)
+                startColors = state.value.colors.map(Color::argb).toIntArray(),
+                endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
             ).collect { (progress, colors) ->
                 userChanges.emit {
                     copy(

@@ -16,7 +16,6 @@
 
 package com.tunjid.mutator.demo
 
-import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -77,6 +76,7 @@ fun interpolateColors(
                     endValue = end
                 )
             }
+            .map(Int::toLong)
             .map(::Color)
 
         ColorInterpolationProgress(

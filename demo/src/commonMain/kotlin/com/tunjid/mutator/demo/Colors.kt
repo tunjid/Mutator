@@ -16,28 +16,40 @@
 
 package com.tunjid.mutator.demo
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
+expect class Color(color: Long) {
+     val argb: Int
+     val r: Int
+     val g: Int
+     val b: Int
+
+     fun isBright(): Boolean
+     companion object {
+         val Black : Color
+         val LightGray : Color
+     }
+}
+
+
 object MutedColors {
-    private val mutedColors = intArrayOf(
-        Color(0xFF2980b9).toArgb(), // Belize Hole
-        Color(0xFF2c3e50).toArgb(), // Midnight Blue
-        Color(0xFFc0392b).toArgb(), // Pomegranate
-        Color(0xFF16a085).toArgb(), // Green Sea
-        Color(0xFF7f8c8d).toArgb(), // Concrete
-        Color(0xFFFFFF).toArgb(),
+    private val mutedColors = listOf(
+        Color(0xFF2980b9), // Belize Hole
+        Color(0xFF2c3e50), // Midnight Blue
+        Color(0xFFc0392b), // Pomegranate
+        Color(0xFF16a085), // Green Sea
+        Color(0xFF7f8c8d), // Concrete
+        Color(0xFFFFFF),
     )
 
-    private val darkerMutedColors = intArrayOf(
-        Color(0xFF304233).toArgb(),
-        Color(0xFF353b45).toArgb(),
-        Color(0xFF392e3a).toArgb(),
-        Color(0xFF3e2a2a).toArgb(),
-        Color(0xFF474747).toArgb(),
-        Color(0x292929).toArgb()
+    private val darkerMutedColors = listOf(
+        Color(0xFF304233),
+        Color(0xFF353b45),
+        Color(0xFF392e3a),
+        Color(0xFF3e2a2a),
+        Color(0xFF474747),
+        Color(0x292929)
     )
 
     fun colors(isDark: Boolean) = if (isDark) darkerMutedColors else mutedColors
