@@ -32,13 +32,13 @@ fun Section1() {
         Markdown(producingState)
         CodeBlock(snail1Code)
         Snail1()
-        CallToAction("The snail's progress is dependent only on time.")
+        CallToAction(snail1Cta)
         Markdown(threeMarkdown)
         CodeBlock(fourCode)
         Markdown(fiveMarkdown)
         CodeBlock(sixCode)
         Snail2()
-        CallToAction("The snail's state is now dependent on its progress and its speed.")
+        CallToAction(snail2Cta)
         Markdown(sevenMarkdown)
     }
 }
@@ -78,6 +78,10 @@ class Snail1StateHolder(
 }
 """.trimIndent()
 
+private val snail1Cta = """"
+The snail's progress is dependent only on time.
+""".trimMargin()
+
 private val threeMarkdown = """
 This works well since there's just a single source of state change. Things get a little more complicated if we have multiple sources that attempt to change state. First we introduce a new property to the snail; it's speed:
 """.trimIndent()
@@ -112,6 +116,10 @@ class Snail2StateHolder(
     )
         .stateIn(...)
 }
+""".trimIndent()
+
+private val snail2Cta = """
+The snail's state is now dependent on its progress and its speed.    
 """.trimIndent()
 
 private val sevenMarkdown = """

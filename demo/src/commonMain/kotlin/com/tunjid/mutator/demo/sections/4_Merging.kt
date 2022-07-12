@@ -34,17 +34,13 @@ fun Section4() = SectionLayout {
     CodeBlock(sixCode)
     CallToAction(userActionsCta)
     Snail4()
-    CallToAction(
-        "Snail4 is identical to Snail3; just with different state production semantics.",
-    )
+    CallToAction(snail4To3Cta)
     Markdown(sevenMarkdown)
     CallToAction(orderCta)
     Markdown(advantages)
     CodeBlock(eightCode)
     Snail5()
-    CallToAction(
-        "Drag the snail to place it anywhere on its track. Also, try to hold it in place and see what happens."
-    )
+    CallToAction(snail5Cta)
     Markdown(nineMarkdown)
 }
 
@@ -123,12 +119,17 @@ private val userActionsCta = """
 Notice that user actions are now propagated with a [MutableSharedFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-shared-flow/) instead of a [MutableStateFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-state-flow/). This is because `StateFlow` conflates emissions which can make it prioritize only the latest events when shared amongst between methods invoked by user events.   
 """.trimIndent()
 
+private val snail4To3Cta = """
+Snail4 is identical to Snail3; just with different state production semantics.    
+""".trimIndent()
+
 private val sevenMarkdown = """
 This example has all the functionality the combine approach did, but with a slight complexity cost.
 
 It however brings the following advantages:
 
-* All user actions that change state can share the same source flow `userChanges` a [`MutableSharedFlow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-shared-flow/).
+* `merge` has no arity limits; you can merge as many `Flow`s as you want.
+* All user actions that change state can share the same source `Flow`: `userChanges` a [`MutableSharedFlow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-shared-flow/).
 * All source flows can independently contribute their state mutations
 * All source flows at the time of introducing the state mutation can read the existing state.
 
@@ -168,6 +169,10 @@ class Snail5StateHolder(
         }
     }
 }    
+""".trimIndent()
+
+private val snail5Cta = """
+Drag the snail to place it anywhere on its track. Also, try to hold it in place and see what happens.    
 """.trimIndent()
 
 private val nineMarkdown = """

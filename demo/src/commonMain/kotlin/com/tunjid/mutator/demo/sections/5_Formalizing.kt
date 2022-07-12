@@ -30,7 +30,7 @@ fun Section5() = SectionLayout {
     Markdown(threeMarkdown)
     CodeBlock(fourCode)
     Snail6()
-    CallToAction("Snail6 is identical to Snail5; just with a formalized state production approach.")
+    CallToAction(snail6Cta)
 }
 
 private val oneMarkdown = """
@@ -80,4 +80,8 @@ class Snail6StateHolder(
         …
     }
 } 
+""".trimIndent()
+
+private val snail6Cta = """
+Snail6 is identical to Snail5; just with a formalized state production approach.    
 """.trimIndent()

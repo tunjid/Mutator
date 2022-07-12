@@ -56,7 +56,6 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(compose.web.core)
-                implementation(compose.runtime)
 
                 implementation(libs.kotlin.wrappers.react)
                 implementation(libs.kotlin.wrappers.reactDom)

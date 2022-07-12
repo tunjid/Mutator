@@ -30,17 +30,17 @@ fun Section7() = SectionLayout {
     Markdown(oneMarkdown)
     CodeBlock(twoCode)
     Snail8()
-    CallToAction("Tap the toggle button many times again. Notice that it ignores the toggle event while the animation is running.")
+    CallToAction(snail8Cta)
     Markdown(threeMarkdown)
     CodeBlock(fourCode)
     Snail9()
-    CallToAction("Tap the toggle button many times. Notice that with each tap colors reverse their changes.")
+    CallToAction(snail9Cta)
     Markdown(fiveMarkdown)
     CodeBlock(sixCode)
     Markdown(sevenMarkdown)
     CodeBlock(eightCode)
     Snail10()
-    CallToAction("Snail10 is identical to Snail9; just with different state production semantics.")
+    CallToAction(snail10Cta)
     Markdown(nineMarkdown)
 }
 
@@ -84,6 +84,10 @@ class Snail8StateHolder(
 }
 """.trimIndent()
 
+private val snail8Cta = """
+Tap the toggle button many times again. Notice that it ignores the toggle event while the animation is running.    
+""".trimIndent()
+
 private val threeMarkdown = """
 This works, but it has the unfortunate side effect of making the user wait until we're done interpolating before they can change the mode again.
 
@@ -119,6 +123,10 @@ class Snail9StateHolder(
         }
     }
 }
+""".trimIndent()
+
+private val snail9Cta = """
+Tap the toggle button many times. Notice that with each tap, the colors reverse their changes.   
 """.trimIndent()
 
 private val fiveMarkdown = """
@@ -219,6 +227,10 @@ class Snail10StateHolder(
                 )
             }
         }  
+""".trimIndent()
+
+private val snail10Cta = """
+Snail10 is identical to Snail9; just with different state production semantics.    
 """.trimIndent()
 
 private val nineMarkdown = """

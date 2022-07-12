@@ -29,7 +29,7 @@ fun Section2() {
         Markdown(oneMarkdown)
         CodeBlock(twoCode)
         Snail3()
-        CallToAction("Tap on a color to change the snail's color.")
+        CallToAction(snail3Cta)
         Markdown(threeMarkdown)
     }
 }
@@ -68,6 +68,10 @@ class Snail3StateHolder(
         this.color.value = color
     }
 }    
+""".trimIndent()
+
+private val snail3Cta = """
+Tap on a color to change the snail's color.    
 """.trimIndent()
 
 private val threeMarkdown = """
