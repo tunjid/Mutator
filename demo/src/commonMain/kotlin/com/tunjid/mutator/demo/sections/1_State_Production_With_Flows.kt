@@ -21,12 +21,15 @@ import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
+import com.tunjid.mutator.demo.snails.Snail0
 import com.tunjid.mutator.demo.snails.Snail1
 import com.tunjid.mutator.demo.snails.Snail2
 
 @Composable
 fun Section1() {
     SectionLayout {
+        Markdown(headingMarkdown)
+        Snail0()
         Markdown(introMarkdown)
         CallToAction(disclaimerCta)
         Markdown(producingState)
@@ -43,8 +46,11 @@ fun Section1() {
     }
 }
 
-private val introMarkdown = """
+private val headingMarkdown = """
 # Producing State with Flows
+""".trimIndent()
+
+private val introMarkdown = """
 
 State is what is. A declaration of things known at a certain point in time. As time passes however, state changes as data sources backing the state are updated and events happen. In mobile apps this presents a challenge; defining a convenient and concise means to produce state over time.
 

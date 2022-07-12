@@ -133,7 +133,7 @@ It however brings the following advantages:
 * All source flows can independently contribute their state mutations
 * All source flows at the time of introducing the state mutation can read the existing state.
 
-The switch to `MutableSharedFlow` from `MutableStateFlow` for propergating user actions is because `StateFlow` conflates emissions. If two separate methods attempted to use the same `MutableStateFlow` to emit a `Mutation` of state, the `StateFlow` may only emit the latest `Mutation`. That is `MutableStateFlow` does not guarantee that every update to its `value` property is seen by its collectors.
+The switch to `MutableSharedFlow` from `MutableStateFlow` for propagating user actions is because `StateFlow` conflates emissions. If two separate methods attempted to use the same `MutableStateFlow` to emit a `Mutation` of state, the `StateFlow` may only emit the latest `Mutation`. That is `MutableStateFlow` does not guarantee that every update to its `value` property is seen by its collectors.
 
 `MutableSharedFlow` on the other hand has an `emit` method which suspends until the `Mutation` is delivered. This means that multiple coroutines can be launched across several method invocations and call `emit` on the same `MutableShared` `Flow` and none of them will cancel out the other. The order in which they are applied also don't matter as `Mutation` instances just describe changes to state; they are designed to be independent.
    
