@@ -93,10 +93,6 @@ pre {
     text-align: center;
 }
 
-#root > .compose-web-column > div {
-    position: relative;
-}
-
 .colorSwatch {
     width: 25px;
     height: 25px;
@@ -148,6 +144,11 @@ pre {
     height: 25px;
     border-radius: 50%;
     background: var(--snailColor);
+    background-image: url('snail.svg');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 15px;
     cursor: pointer;
 }
 
@@ -156,6 +157,11 @@ pre {
     height: 25px;
     border-radius: 50%;
     background: var(--snailColor);
+    background-image: url('snail.svg');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 15px;
     cursor: pointer;
 }
 

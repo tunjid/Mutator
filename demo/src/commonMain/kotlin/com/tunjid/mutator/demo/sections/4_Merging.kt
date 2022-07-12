@@ -57,7 +57,7 @@ newState = oldState + Δstate
 private val threeMarkdown = """
  Where Δstate is the change in state.
 
-Expressing the above in Kotlin is done with functional literals. Δstate can be defined in code as:   
+Expressing the above in Kotlin is done with function literals. Δstate can be defined in code as:   
 """.trimIndent()
 
 private val fourCode = """
@@ -124,18 +124,18 @@ Snail4 is identical to Snail3; just with different state production semantics.
 """.trimIndent()
 
 private val sevenMarkdown = """
-This example has all the functionality the combine approach did, but with a slight complexity cost.
+This example has all the functionality the `combine` approach did, but with a slight complexity cost.
 
 It however brings the following advantages:
 
-* `merge` has no arity limits; you can merge as many `Flow`s as you want.
+* `merge` is an n-ary function; it has no arity limits; you can merge as many `Flow`s as you want.
 * All user actions that change state can share the same source `Flow`: `userChanges` a [`MutableSharedFlow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-shared-flow/).
 * All source flows can independently contribute their state mutations
 * All source flows at the time of introducing the state mutation can read the existing state.
 
-The switch to the `MutableSharedFlow` is because `StateFlow` conflates emissions. If two separate methods attempted to use the same `MutableStateFlow` to emit a `Mutation` of state, the `StateFlow` may only emit the latest `Mutation`. That is `MutableStateFlow` does not guarantee that every update to its `value` property is seen by its collectors.
+The switch to `MutableSharedFlow` from `MutableStateFlow` for propergating user actions is because `StateFlow` conflates emissions. If two separate methods attempted to use the same `MutableStateFlow` to emit a `Mutation` of state, the `StateFlow` may only emit the latest `Mutation`. That is `MutableStateFlow` does not guarantee that every update to its `value` property is seen by its collectors.
 
-`MutableSharedFlow` on the other hand has an `emit` method which suspends until the `Mutation` is delivered. This means that multiple coroutines can be launched and call `emit` on the same `MutableShared` `Flow` and none of them will cancel out the other. The order in which they are applied also don't matter as `Mutation` instances just describe changes to state; they are designed to be independent.
+`MutableSharedFlow` on the other hand has an `emit` method which suspends until the `Mutation` is delivered. This means that multiple coroutines can be launched across several method invocations and call `emit` on the same `MutableShared` `Flow` and none of them will cancel out the other. The order in which they are applied also don't matter as `Mutation` instances just describe changes to state; they are designed to be independent.
    
 """.trimIndent()
 
