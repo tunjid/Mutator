@@ -84,7 +84,7 @@ class Snail1StateHolder(
 }
 """.trimIndent()
 
-private val snail1Cta = """"
+private val snail1Cta = """
 The snail's progress is dependent only on time.
 """.trimMargin()
 
