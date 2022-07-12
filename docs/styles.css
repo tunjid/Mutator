@@ -93,15 +93,11 @@ pre {
     text-align: center;
 }
 
-#root > .compose-web-column > div {
-    position: relative;
-}
-
 .colorSwatch {
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    margin: 10px;
+    margin: 16px;
 }
 
 .cta {
@@ -144,18 +140,28 @@ pre {
 .snail::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--snailColor);
+    background-image: url('snail.svg');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 20px;
     cursor: pointer;
 }
 
 .snail::-moz-range-thumb {
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--snailColor);
+    background-image: url('snail.svg');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 20px;
     cursor: pointer;
 }
 
