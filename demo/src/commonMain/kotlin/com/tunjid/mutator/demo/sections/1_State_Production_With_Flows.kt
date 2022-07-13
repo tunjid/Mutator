@@ -32,7 +32,7 @@ fun Section1() {
         Snail0()
         Markdown(introMarkdown)
         CallToAction(disclaimerCta)
-        Markdown(producingState)
+        Markdown(producingStateIntro)
         CodeBlock(snail1Code)
         Snail1()
         CallToAction(snail1Cta)
@@ -64,10 +64,13 @@ private val disclaimerCta = """
 The following is my personal opinion and not of my employer.    
 """.trimIndent()
 
-private val producingState = """
+private val producingStateIntro = """
 # Producing state
 
-Producing state is at its core, is nothing more than consolidating sources of changes to state. While a simple statement, there's a bit more to it than meets the eye. Let's start simple. In the following we have a snail along a track. It has a single source of state change; time. Using a Flow, we can easily define the state for it.
+Producing state is at its core, is nothing more than consolidating sources of changes to state. A generally sound way of doing this is with [unidirectional data flow](https://developer.android.com/topic/architecture/ui-layer#udf) (UDF), therefore all techniques covered on this page are implementations of UDF.    
+
+While the tenets of UDF are simple, there's a bit more to implementing it properly especially with `Flows`. Let's start simple. In the following we have a snail along a track. It has a single source of state change; time. Using a `Flow`, we can easily define the state for it.
+
 """.trimIndent()
 
 private val snail1Code = """
