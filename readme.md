@@ -44,9 +44,8 @@ and
 ```kotlin
 fun <Action : Any, State : Any> CoroutineScope.stateFlowMutator(
     initialState: State,
-    started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
-    mutationFlows: List<Flow<Mutation<State>>> = listOf(),
-    stateTransform: (Flow<State>) -> Flow<State> = { it },
+    started: SharingStarted,
+    mutationFlows: List<Flow<Mutation<State>>>,
     actionTransform: (Flow<Action>) -> Flow<Mutation<State>>
 ): Mutator<Action, StateFlow<State>>
 ```
