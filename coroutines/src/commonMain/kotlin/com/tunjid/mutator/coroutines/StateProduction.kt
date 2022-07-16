@@ -32,16 +32,16 @@ import kotlinx.coroutines.launch
 
 /**
  * Produces a [StateFlow] by merging [mutationFlows] and reducing them into an
- * [initial] state within [this] [CoroutineScope]
+ * [initialState] state within [this] [CoroutineScope]
  */
 fun <State : Any> CoroutineScope.mutateStateWith(
-    initial: State,
+    initialState: State,
     started: SharingStarted,
     stateTransform: (Flow<State>) -> Flow<State> = { it },
     mutationFlows: List<Flow<Mutation<State>>>
 ): StateFlow<State> {
     // Set the seed for the state
-    var seed = initial
+    var seed = initialState
 
     // Use the flow factory function to capture the seed variable
     return stateTransform(
@@ -65,14 +65,7 @@ fun <State : Any> CoroutineScope.mutateStateWith(
 
 
 fun <State : Any> Flow<Mutation<State>>.reduceInto(initialState: State): Flow<State> =
-    scan(initialState) { state, mutation -> mutation.mutate(state) }
-
-/**
- * Alias to push the [Mutation] defined by [mutation] into [this]
- */
-suspend inline fun <T : Any> MutableSharedFlow<Mutation<T>>.emit(
-    noinline mutation: T.() -> T
-) = emit(Mutation(mutation))
+    scan(initialState) { state, mutation -> mutation(state) }
 
 /**
  * Helper function to run the provided [block] in the [scope]

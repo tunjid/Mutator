@@ -22,7 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.emit
+import com.tunjid.mutator.mutation
 import com.tunjid.mutator.coroutines.mutateStateWith
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
@@ -39,7 +39,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-
 data class Snail6State(
     val progress: Float = 0f,
     val speed: Speed = Speed.One,
@@ -54,16 +53,16 @@ class Snail6StateHolder(
     private val speed: Flow<Speed> = scope.speedFlow()
 
     private val speedChanges: Flow<Mutation<Snail6State>> = speed
-        .map { Mutation { copy(speed = it) } }
+        .map { mutation { copy(speed = it) } }
 
     private val progressChanges: Flow<Mutation<Snail6State>> = speed
         .toInterval()
-        .map { Mutation { copy(progress = (progress + 1) % 100) } }
+        .map { mutation { copy(progress = (progress + 1) % 100) } }
 
     private val userChanges = MutableSharedFlow<Mutation<Snail6State>>()
 
     val state: StateFlow<Snail6State> = scope.mutateStateWith(
-        initial = Snail6State(),
+        initialState = Snail6State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
             speedChanges,

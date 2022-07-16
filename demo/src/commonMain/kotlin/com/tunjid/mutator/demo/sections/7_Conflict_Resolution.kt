@@ -147,13 +147,13 @@ private val sixCode = """
     private fun Flow<SetMode>.mutations(): Flow<Mutation<Snail10State>> =
         flatMapLatest { (isDark, startColors) ->
             flow {
-                emit(Mutation { copy(isDark = isDark) })
+                emit(mutation { copy(isDark = isDark) })
                 emitAll(
                     interpolateColors(
                         startColors = startColors.map(Color::toArgb).toIntArray(),
                         endColors = MutedColors.colors(isDark)
                     )
-                        .map { Mutation{ copy(colors = it) }  }
+                        .map { mutation { copy(colors = it) }  }
                 )
             }
         }
@@ -174,8 +174,7 @@ class Snail10StateHolder(
 
     private val progressChanges: Flow<Mutation<Snail10State>> = …
 
-    private val mutator = stateFlowMutator<Action, Snail10State>(
-        scope = scope,
+    private val mutator = scope.stateFlowMutator<Action, Snail10State>(
         initialState = Snail10State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
@@ -199,25 +198,25 @@ class Snail10StateHolder(
 
     private fun Flow<Action.SetColor>.colorMutations(): Flow<Mutation<Snail10State>> =
         mapLatest {
-            Mutation { copy(colorIndex = it.index) }
+            mutation { copy(colorIndex = it.index) }
         }
 
     private fun Flow<Action.SetProgress>.progressMutations(): Flow<Mutation<Snail10State>> =
         mapLatest {
-            Mutation { copy(progress = it.progress) }
+            mutation { copy(progress = it.progress) }
         }
 
     private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail10State>> =
         flatMapLatest { (isDark, startColors) ->
             flow {
-                emit(Mutation { copy(isDark = isDark) })
+                emit(mutation { copy(isDark = isDark) })
                 emitAll(
                     interpolateColors(
                         startColors = startColors.map(Color::argb).toIntArray(),
                         endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
                     )
                         .map { (progress, colors) ->
-                            Mutation {
+                            mutation {
                                 copy(
                                     colorInterpolationProgress = progress,
                                     colors = colors

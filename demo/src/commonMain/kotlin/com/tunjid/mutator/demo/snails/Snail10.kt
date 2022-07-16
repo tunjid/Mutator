@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
+import com.tunjid.mutator.mutation
 import com.tunjid.mutator.coroutines.stateFlowMutator
 import com.tunjid.mutator.coroutines.toMutationStream
 import com.tunjid.mutator.demo.Color
@@ -79,15 +80,14 @@ class Snail10StateHolder(
     private val speed: Flow<Speed> = scope.speedFlow()
 
     private val speedChanges: Flow<Mutation<Snail10State>> = speed
-        .map { Mutation { copy(speed = it) } }
+        .map { mutation { copy(speed = it) } }
 
     private val progressChanges: Flow<Mutation<Snail10State>> = speed
         .toInterval()
-        .map { Mutation { copy(progress = (progress + 1) % 100) } }
+        .map { mutation { copy(progress = (progress + 1) % 100) } }
 
 
-    private val mutator = stateFlowMutator<Action, Snail10State>(
-        scope = scope,
+    private val mutator = scope.stateFlowMutator<Action, Snail10State>(
         initialState = Snail10State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
@@ -111,25 +111,25 @@ class Snail10StateHolder(
 
     private fun Flow<Action.SetColor>.colorMutations(): Flow<Mutation<Snail10State>> =
         mapLatest {
-            Mutation { copy(colorIndex = it.index) }
+            mutation { copy(colorIndex = it.index) }
         }
 
     private fun Flow<Action.SetProgress>.progressMutations(): Flow<Mutation<Snail10State>> =
         mapLatest {
-            Mutation { copy(progress = it.progress) }
+            mutation { copy(progress = it.progress) }
         }
 
     private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail10State>> =
         flatMapLatest { (isDark, startColors) ->
             flow {
-                emit(Mutation { copy(isDark = isDark) })
+                emit(mutation { copy(isDark = isDark) })
                 emitAll(
                     interpolateColors(
                         startColors = startColors.map(Color::argb).toIntArray(),
                         endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
                     )
                         .map { (progress, colors) ->
-                            Mutation {
+                            mutation {
                                 copy(
                                     colorInterpolationProgress = progress,
                                     colors = colors

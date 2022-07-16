@@ -52,8 +52,7 @@ class StateFlowMutatorKtTest {
     fun stateFlowMutatorRemembersLastValue() = runTest {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-        val mutator = stateFlowMutator<IntAction, State>(
-            scope = scope,
+        val mutator = scope.stateFlowMutator<IntAction, State>(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             actionTransform = { actions ->

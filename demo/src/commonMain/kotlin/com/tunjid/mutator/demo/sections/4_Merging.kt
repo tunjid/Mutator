@@ -31,6 +31,7 @@ fun Section4() = SectionLayout {
     Markdown(threeMarkdown)
     CodeBlock(fourCode)
     Markdown(fiveMarkdown)
+    CallToAction(inlineMutationCta)
     CodeBlock(sixCode)
     CallToAction(userActionsCta)
     Snail4()
@@ -61,13 +62,16 @@ Expressing the above in Kotlin is done with function literals. Δstate can be de
 """.trimIndent()
 
 private val fourCode = """
-data class Mutation<State : Any>(
-    val mutate: State.() -> State
-)    
+typealias Mutation<State> = State.() -> State
 """.trimIndent()
 
+private val inlineMutationCta = """
+To help with readability, creating a `Mutation` inside a `Flow` transformation lambda can be done with an inline function: `aFlow.map { mutation { copy(...) } }`
+""".trimIndent()
+
+
 private val fiveMarkdown = """
-That is, the unit of state change (Δstate) for any state `T` is a `Mutation`; a data class carrying a lambda with `T` as the receiver and when invoked, returns `T`. The above is extremely powerful as we can represent any state change for any state declaration with a single type.
+That is, the unit of state change (Δstate) for any state `T` is a `Mutation`; a lambda with `T` as the receiver that when invoked, returns `T`. The above is extremely powerful as we can represent any state change for any state declaration with a single type.
 
 To produce state then, we simply have to start with an initial state, and incrementally apply state `Mutation`s to it over time to create our state production pipeline. This is sometimes called reducing changes into state.
 
@@ -92,10 +96,10 @@ class Snail4StateHolder(
     private val speed: Flow<Speed> = …
 
     private val speedChanges: Flow<Mutation<Snail4State>> = speed
-        .map { Mutation { copy(speed = it) } }
+        .map { mutation { copy(speed = it) } }
 
     private val progressChanges: Flow<Mutation<Snail4State>> = intervalFlow
-        .map { Mutation { copy(progress = (progress + 1) % 100) } }
+        .map { mutation { copy(progress = (progress + 1) % 100) } }
 
     private val userChanges = MutableSharedFlow<Mutation<Snail4State>>()
 
@@ -104,12 +108,12 @@ class Snail4StateHolder(
         speedChanges,
         userChanges,
     )
-        .scan(Snail4State()) { state, mutation -> mutation.mutate(state) }
+        .scan(Snail4State()) { state, mutation -> mutation(state) }
         .stateIn(...)
 
-    fun setSnailColor(color: Color) {
+    fun setSnailColor(index: Int) {
         scope.launch {
-            userChanges.emit { copy(color = color) }
+            userChanges.emit { copy(color = colors[index]) }
         }
     }
 }    
@@ -157,9 +161,9 @@ class Snail5StateHolder(
 
     private val userChanges = MutableSharedFlow<Mutation<Snail5State>>()
 
-    fun setSnailColor(color: Color) {
+    fun setSnailColor(index: Int) {
         scope.launch {
-            userChanges.emit { copy(color = color) }
+            userChanges.emit { copy(color = colors[index]) }
         }
     }
     

@@ -72,7 +72,7 @@ class Snail6StateHolder(
         )
     )
 
-    fun setSnailColor(color: Color) {
+    fun setSnailColor(index: Int) {
         ..
     }
 

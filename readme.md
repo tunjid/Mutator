@@ -26,16 +26,14 @@ Mutator is a Kotlin multiplatform library that provides a suite of tools that he
 Where `Δstate` represents state changes over time and is expressed in Kotlin with the type:
 
 ```kotlin
-data class Mutation<State : Any>(
-    val mutate: State.() -> State
-)
+typealias Mutation<State> = State.() -> State
 ```
 
 At the moment, there are two implementations:
 
 ```kotlin
 fun <State : Any> CoroutineScope.mutateStateWith(
-    initial: State,
+    initialState: State,
     started: SharingStarted,
     mutationFlows: List<Flow<Mutation<State>>>
 ): StateFlow<State>  
@@ -44,8 +42,7 @@ fun <State : Any> CoroutineScope.mutateStateWith(
 and 
 
 ```kotlin
-fun <Action : Any, State : Any> stateFlowMutator(
-    scope: CoroutineScope,
+fun <Action : Any, State : Any> CoroutineScope.stateFlowMutator(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
     mutationFlows: List<Flow<Mutation<State>>> = listOf(),
@@ -93,16 +90,16 @@ class SnailStateHolder(
     private val speed: Flow<Speed> = scope.speedFlow()
 
     private val speedChanges: Flow<Mutation<Snail5State>> = speed
-        .map { Mutation { copy(speed = it) } }
+        .map { mutation { copy(speed = it) } }
 
     private val progressChanges: Flow<Mutation<Snail5State>> = speed
         .toInterval()
-        .map { Mutation { copy(progress = (progress + 1) % 100) } }
+        .map { mutation { copy(progress = (progress + 1) % 100) } }
 
     private val userChanges = MutableSharedFlow<Mutation<Snail5State>>()
 
     val state: StateFlow<SnailState> = scope.mutateStateWith(
-        initial = Snail6State(),
+        initialState = Snail6State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
             speedChanges,
@@ -125,7 +122,7 @@ class SnailStateHolder(
 }
 ```
 
-### `stateFlowMutator`
+### `CoroutineScope.stateFlowMutator`
 
 The `stateFlowMutator` function transforms a `Flow` of `Action` into a `Flow` of `State` by first
 mapping each `Action` into a `Mutation` of `State`, and then reducing the `Mutations` into an
@@ -156,8 +153,7 @@ data class State(
 A `StateFlow` `Mutator` of the above can be created by:
 
 ```kotlin
-        val mutator = stateFlowMutator<Action, State>(
-            scope = scope,
+        val mutator = scope.stateFlowMutator<Action, State>(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             transform = { actions ->
@@ -165,11 +161,11 @@ A `StateFlow` `Mutator` of the above can be created by:
                     when (val action = type()) {
                         is Action.Add -> action.flow
                             .map {
-                                Mutation { copy(count = count + value) }
+                                mutation { copy(count = count + value) }
                             }
                         is Action.Subtract -> action.flow
                             .map {
-                                Mutation { copy(count = count - value) }
+                                mutation { copy(count = count - value) }
                             }
                     }
                 }
@@ -196,8 +192,7 @@ In the above, fetching may need to be done consecutively, whereas only the most 
 sorting request should be honored. A `StateFlow` `Mutator` for the above therefore may resemble:
 
 ```kotlin
-val mutator = stateFlowMutator<Action, State>(
-    scope = scope,
+val mutator = scope.stateFlowMutator<Action, State>(
     initialState = State(comparator = defaultComparator),
     started = SharingStarted.WhileSubscribed(),
     transform = { actions ->
@@ -206,7 +201,7 @@ val mutator = stateFlowMutator<Action, State>(
                 is Action.Fetch -> action.flow
                     .map { fetch ->
                         val fetched = repository.get(fetch.query)
-                        Mutation {
+                        mutation {
                             copy(
                                 items = (items + fetched).sortedWith(comparator),
                             )
@@ -214,7 +209,7 @@ val mutator = stateFlowMutator<Action, State>(
                     }
                 is Action.Sort -> action.flow
                     .mapLatest { sort ->
-                        Mutation {
+                        mutation {
                             copy(
                                 comparator = sort.comparator,
                                 items = items.sortedWith(comparator)

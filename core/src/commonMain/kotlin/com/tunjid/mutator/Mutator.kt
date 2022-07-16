@@ -16,7 +16,10 @@
 
 package com.tunjid.mutator
 
-typealias StateChange<T> = Mutation<T>
+/**
+ * Type definition for a unit of change for a type [T].
+ */
+typealias Mutation<State> = State.() -> State
 
 interface Mutator<Action : Any, State : Any> {
     val state: State
@@ -24,27 +27,23 @@ interface Mutator<Action : Any, State : Any> {
 }
 
 /**
- * Data class holding a change transform for a type [T].
+ * Syntactic sugar for creating a [Mutation]
  */
-data class Mutation<T : Any>(
-    val mutate: T.() -> T
-) {
-    companion object {
-        /**
-         * Identity [Mutation] function; semantically a no op [Mutation]
-         */
-        fun <T : Any> identity(): Mutation<T> = Mutation { this }
-    }
-}
+inline fun <State> mutation(noinline mutation: State.() -> State): Mutation<State> = mutation
+
+/**
+ * Identity [Mutation] function; semantically a no op [Mutation]
+ */
+fun <State : Any> identity(): Mutation<State> = mutation { this }
 
 /**
  * Combines two [Mutation] instances into a single [Mutation]
  */
-operator fun <T : Any> Mutation<T>.plus(other: Mutation<T>) = Mutation<T> inner@{
-    val result = this@plus.mutate(this@inner)
-    other.mutate.invoke(result)
+operator fun <T : Any> Mutation<T>.plus(other: Mutation<T>) = mutation<T> inner@{
+    val result = this@plus(this@inner)
+    other.invoke(result)
 }
 
 fun <State : Any> Mutator<Mutation<State>, *>.accept(
-    mutator: State.() -> State
-) = accept(Mutation(mutator))
+    mutation: State.() -> State
+) = accept(mutation)
