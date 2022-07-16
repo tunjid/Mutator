@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 /**
  * Defines a [Mutator] to convert a [Flow] of [Action] into a [StateFlow] of [State].
  *
- * [scope]: The [CoroutineScope] for the resulting [StateFlow]. Any [Action]s sent if there are no
+ * [this@stateFlowMutator]: The [CoroutineScope] for the resulting [StateFlow]. Any [Action]s sent if there are no
  * subscribers to the output [StateFlow] will suspend until there is as least one subscriber.
  *
  * [initialState]: The seed state for the resulting [StateFlow].
@@ -44,32 +44,32 @@ import kotlinx.coroutines.launch
  * of state that will be reduced into the [initialState]. This is often achieved through the
  * [toMutationStream] [Flow] extension function.
  */
-fun <Action : Any, State : Any> stateFlowMutator(
-    scope: CoroutineScope,
+fun <Action : Any, State : Any> CoroutineScope.stateFlowMutator(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
     mutationFlows: List<Flow<Mutation<State>>> = listOf(),
     stateTransform: (Flow<State>) -> Flow<State> = { it },
     actionTransform: (Flow<Action>) -> Flow<Mutation<State>>
 ): Mutator<Action, StateFlow<State>> = object : Mutator<Action, StateFlow<State>> {
-    val actions = MutableSharedFlow<Action>()
+        val mutator = this
+        val actions = MutableSharedFlow<Action>()
 
-    override val state: StateFlow<State> =
-        scope.mutateStateWith(
-            initial = initialState,
-            started = started,
-            stateTransform = stateTransform,
-            mutationFlows = mutationFlows + actionTransform(actions)
-        )
+        override val state: StateFlow<State> =
+            mutateStateWith(
+                initialState = initialState,
+                started = started,
+                stateTransform = stateTransform,
+                mutationFlows = mutationFlows + actionTransform(actions)
+            )
 
-    override val accept: (Action) -> Unit = { action ->
-        scope.launch {
-            // Suspend till downstream is connected
-            actions.subscriptionCount.first { it > 0 }
-            actions.emit(action)
+        override val accept: (Action) -> Unit = { action ->
+            launch {
+                // Suspend till downstream is connected
+                mutator.actions.subscriptionCount.first { it > 0 }
+                mutator.actions.emit(action)
+            }
         }
     }
-}
 
 /**
  * Represents a type as a StateFlowMutator of itself with no op [Action]s.

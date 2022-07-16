@@ -17,7 +17,7 @@
 package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
-import com.tunjid.mutator.demo.editor.EditorView
+import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
 
@@ -25,7 +25,7 @@ import com.tunjid.mutator.demo.editor.SectionLayout
 fun Section3() {
     SectionLayout {
         Markdown(oneMarkdown)
-        EditorView(twoCode)
+        CodeBlock(twoCode)
         Markdown(threeMarkdown)
     }
 }
@@ -33,7 +33,7 @@ fun Section3() {
 private val oneMarkdown = """
 # Combining changes in state
 
-Combining sources of state as a general means of state production is rather robust and it lends itself to a wide range of cases, and works well for simple to moderate state production pipelines. It also scales linearly, that is each source of state change will need to be added to the `combine` function. This poses a problem for states with more than 5 sources of change as the `combine` function allows for at most 5 flows. This is called the [arity](https://en.wikipedia.org/wiki/Arity) of the `combine` function.
+Combining sources of state as a general means of state production is rather robust, lends itself to a wide range of cases, and works well for simple to moderate state production pipelines. It also scales linearly, that is each source of state change will need to be added to the `combine` function. This poses a problem for states with more than 5 sources of change as the `combine` function allows for at most 5 flows. This is called the [arity](https://en.wikipedia.org/wiki/Arity) of the `combine` function.
 
 One way around this is to combine the sources of state change into intermediate states, before combining them again into the final state.    
 """.trimIndent()
@@ -102,5 +102,5 @@ class LargeStateHolder {
 """.trimIndent()
 
 private val threeMarkdown = """
-The above works, but can be difficult to maintain. As new sources of state are added or removed over time, the signatures of the `IntermediateState` instances will need to change to accommodate the arity of the `combine` function causings cascading changes. This brings us to another state production approach, merging sources of change.
+The above works, but can be difficult to maintain. As new sources of state are added or removed over time, especially those from user events, the signatures of the `IntermediateState` instances will need to change to accommodate the arity of the `combine` function causing cascading changes. This brings us to another state production approach, merging sources of change.
 """.trimIndent()

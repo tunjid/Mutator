@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
@@ -33,9 +32,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.Speed
+import com.tunjid.mutator.demo.toComposeColor
 
 @Composable
 actual fun SnailCard(
@@ -44,7 +44,7 @@ actual fun SnailCard(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(0.8f),
-        color = color,
+        color = color.toComposeColor,
         content = { content() },
     )
 }
@@ -57,7 +57,7 @@ actual fun SnailText(
     Text(
         modifier = Modifier.padding(vertical = 8.dp),
         text = text,
-        color = color,
+        color = color.toComposeColor,
         style = MaterialTheme.typography.body1.copy(
             MaterialTheme.colors.onSurface
         )
@@ -75,8 +75,8 @@ actual fun Snail(
         valueRange = 0f..100f,
         value = progress,
         colors = SliderDefaults.colors(
-            thumbColor = color,
-            activeTrackColor = color
+            thumbColor = color.toComposeColor,
+            activeTrackColor = color.toComposeColor
         ),
         onValueChange = onValueChange
     )
@@ -94,7 +94,7 @@ actual fun ColorSwatch(
         colors.forEachIndexed { index, color ->
             Button(
                 modifier = Modifier.padding(horizontal = 8.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = color),
+                colors = ButtonDefaults.buttonColors(backgroundColor = color.toComposeColor),
                 onClick = {
                     onColorClicked(index)
                 },
@@ -122,7 +122,7 @@ actual fun ToggleButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
-                    .background(Color(0xA7C7E7)),
+                    .background(Color(0xA7C7E7).composeColor),
                 onClick = {
                     onClicked()
                 },
@@ -134,7 +134,7 @@ actual fun ToggleButton(
                 modifier = Modifier
                     .fillMaxWidth(progress)
                     .align(Alignment.CenterStart)
-                    .background(Color(0xA7C7E7)),
+                    .background(Color(0xA7C7E7).toComposeColor),
                 onClick = {
                     onClicked()
                 },

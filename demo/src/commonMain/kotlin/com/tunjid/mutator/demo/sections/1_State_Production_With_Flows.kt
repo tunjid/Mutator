@@ -18,41 +18,59 @@ package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
 import com.tunjid.mutator.demo.editor.CallToAction
-import com.tunjid.mutator.demo.editor.EditorView
+import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
+import com.tunjid.mutator.demo.snails.Snail0
 import com.tunjid.mutator.demo.snails.Snail1
 import com.tunjid.mutator.demo.snails.Snail2
 
 @Composable
 fun Section1() {
     SectionLayout {
+        Markdown(headingMarkdown)
+        Snail0()
         Markdown(introMarkdown)
-        EditorView(snail1Code)
+        CallToAction(disclaimerCta)
+        Markdown(producingStateIntro)
+        CodeBlock(snail1Code)
         Snail1()
-        CallToAction("The snail's progress is dependent only on time.")
+        CallToAction(snail1Cta)
         Markdown(threeMarkdown)
-        EditorView(fourCode)
+        CodeBlock(fourCode)
         Markdown(fiveMarkdown)
-        EditorView(sixCode)
+        CodeBlock(sixCode)
         Snail2()
-        CallToAction("The snail's state is now dependent on its progress and its speed.")
+        CallToAction(snail2Cta)
         Markdown(sevenMarkdown)
     }
 }
 
-private val introMarkdown = """
+private val headingMarkdown = """
 # Producing State with Flows
+""".trimIndent()
+
+private val introMarkdown = """
 
 State is what is. A declaration of things known at a certain point in time. As time passes however, state changes as data sources backing the state are updated and events happen. In mobile apps this presents a challenge; defining a convenient and concise means to produce state over time.
 
-This page is a [Jetpack Compose](https://developer.android.com/jetpack/compose?gclid=Cj0KCQjwzqSWBhDPARIsAK38LY-nnY_1sTpVvpENJZD5ek-tE18e3MvzE1hXlILdw7uYx1Y47zsvcXkaAlGJEALw_wcB&gclsrc=aw.ds) for [web](https://compose-web.ui.pages.jetbrains.team/) powered interactive experience that highlights various ways of producing state with a [Flow](https://kotlinlang.org/docs/flow.html). At the end of it, you should have a mental framework to help choose a state production pipeline that is most beneficial to your use cases.
+This page is a [Jetpack Compose](https://developer.android.com/jetpack/compose?gclid=Cj0KCQjwzqSWBhDPARIsAK38LY-nnY_1sTpVvpENJZD5ek-tE18e3MvzE1hXlILdw7uYx1Y47zsvcXkaAlGJEALw_wcB&gclsrc=aw.ds) for [web](https://compose-web.ui.pages.jetbrains.team/) powered interactive experiment that highlights various ways of producing state with a [Flow](https://kotlinlang.org/docs/flow.html). At the end of it, you should have a mental framework to help choose a state production pipeline that is most beneficial to your use cases.
 
 Code for the examples demonstrated, along with the source of this page and coordinates to a [kotlin multiplatform library](https://kotlinlang.org/docs/multiplatform.html) for the techniques shown can be found [here](https://github.com/tunjid/Mutator).
 
+""".trimIndent()
+
+private val disclaimerCta = """
+The following is my personal opinion and not of my employer.    
+""".trimIndent()
+
+private val producingStateIntro = """
 # Producing state
 
-Producing state is at its core, is nothing more than consolidating sources of changes to state. While a simple statement, there's a bit more to it than meets the eye. Let's start simple. In the following we have a Snail along a track. It has a single source of state change; time. Using a Flow, we can easily define the state for it.
+Producing state is at its core, is nothing more than consolidating sources of changes to state. A generally sound way of doing this is with [unidirectional data flow](https://developer.android.com/topic/architecture/ui-layer#udf) (UDF), therefore all techniques covered on this page are implementations of UDF.    
+
+While the tenets of UDF are simple, there's a bit more to implementing it properly especially with `Flows`. Let's start simple. In the following we have a snail along a track. It has a single source of state change; time. Using a `Flow`, we can easily define the state for it.
+
 """.trimIndent()
 
 private val snail1Code = """
@@ -68,6 +86,10 @@ class Snail1StateHolder(
         )
 }
 """.trimIndent()
+
+private val snail1Cta = """
+The snail's progress is dependent only on time.
+""".trimMargin()
 
 private val threeMarkdown = """
 This works well since there's just a single source of state change. Things get a little more complicated if we have multiple sources that attempt to change state. First we introduce a new property to the snail; it's speed:
@@ -85,7 +107,7 @@ Next, we define a state for the snail, and a state holder that produces its stat
 
 private val sixCode = """
 data class Snail2State(
-    val progress: Float = 0f,
+    ...,
     val speed: Speed = Speed.One,
 )
 
@@ -96,7 +118,6 @@ class Snail2StateHolder(
 
     private val progress: Flow<Float> = …
 
-
     val state: StateFlow<Snail2State> = combine(
         progress,
         speed,
@@ -104,6 +125,10 @@ class Snail2StateHolder(
     )
         .stateIn(...)
 }
+""".trimIndent()
+
+private val snail2Cta = """
+The snail's state is now dependent on its progress and its speed.    
 """.trimIndent()
 
 private val sevenMarkdown = """

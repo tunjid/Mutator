@@ -18,7 +18,7 @@ package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
 import com.tunjid.mutator.demo.editor.CallToAction
-import com.tunjid.mutator.demo.editor.EditorView
+import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.snails.Snail6
@@ -26,17 +26,17 @@ import com.tunjid.mutator.demo.snails.Snail6
 @Composable
 fun Section5() = SectionLayout {
     Markdown(oneMarkdown)
-    EditorView(twoCode)
+    CodeBlock(twoCode)
     Markdown(threeMarkdown)
-    EditorView(fourCode)
+    CodeBlock(fourCode)
     Snail6()
-    CallToAction("Snail6 is identical to Snail5; just with a formalized state production approach.")
+    CallToAction(snail6Cta)
 }
 
 private val oneMarkdown = """
 # Formalizing state production
 
-The merge approach can be formalized into a function on the `CoroutineScope` the state is produced in.
+The merge approach can be formalized into an extension function on the `CoroutineScope` the state is produced in:
 """.trimIndent()
 
 private val twoCode = """
@@ -72,7 +72,7 @@ class Snail6StateHolder(
         )
     )
 
-    fun setSnailColor(color: Color) {
+    fun setSnailColor(index: Int) {
         ..
     }
 
@@ -80,4 +80,8 @@ class Snail6StateHolder(
         …
     }
 } 
+""".trimIndent()
+
+private val snail6Cta = """
+Snail6 is identical to Snail5; just with a formalized state production approach.    
 """.trimIndent()

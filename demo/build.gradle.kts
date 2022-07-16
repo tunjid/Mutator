@@ -32,9 +32,6 @@ kotlin {
                 implementation(project(":coroutines"))
 
                 implementation(libs.jetbrains.compose.runtime)
-                implementation(libs.jetbrains.compose.animation)
-                implementation(libs.jetbrains.compose.material)
-                implementation(libs.jetbrains.compose.foundation.layout)
 
                 implementation(libs.kotlinx.coroutines.core)
             }
@@ -48,13 +45,17 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
+
+                implementation(libs.jetbrains.compose.animation)
+                implementation(libs.jetbrains.compose.material)
+                implementation(libs.jetbrains.compose.foundation.layout)
+
                 implementation(libs.richtext.commonmark)
             }
         }
         val jsMain by getting {
             dependencies {
                 implementation(compose.web.core)
-                implementation(compose.runtime)
 
                 implementation(libs.kotlin.wrappers.react)
                 implementation(libs.kotlin.wrappers.reactDom)

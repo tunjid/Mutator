@@ -21,12 +21,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.graphics.toArgb
 import com.tunjid.mutator.Mutation
+import com.tunjid.mutator.mutation
 import com.tunjid.mutator.coroutines.stateFlowMutator
 import com.tunjid.mutator.coroutines.toMutationStream
+import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.VerticalLayout
@@ -50,14 +49,14 @@ data class Snail10State(
     val isDark: Boolean = false,
     val colorIndex: Int = 0,
     val colorInterpolationProgress: Float = 0F,
-    val colors: List<Color> = MutedColors.colors(false).map(::Color)
+    val colors: List<Color> = MutedColors.colors(false)
 )
 
 val Snail10State.color get() = colors[colorIndex]
 
 val Snail10State.cardColor: Color get() = colors.last()
 
-val Snail10State.textColor: Color get() = if (cardColor.luminance() > 0.5) Color.Black else Color.LightGray
+val Snail10State.textColor: Color get() = if (cardColor.isBright()) Color.Black else Color.LightGray
 
 sealed class Action {
     data class SetColor(
@@ -81,15 +80,14 @@ class Snail10StateHolder(
     private val speed: Flow<Speed> = scope.speedFlow()
 
     private val speedChanges: Flow<Mutation<Snail10State>> = speed
-        .map { Mutation { copy(speed = it) } }
+        .map { mutation { copy(speed = it) } }
 
     private val progressChanges: Flow<Mutation<Snail10State>> = speed
         .toInterval()
-        .map { Mutation { copy(progress = (progress + 1) % 100) } }
+        .map { mutation { copy(progress = (progress + 1) % 100) } }
 
 
-    private val mutator = stateFlowMutator<Action, Snail10State>(
-        scope = scope,
+    private val mutator = scope.stateFlowMutator<Action, Snail10State>(
         initialState = Snail10State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
@@ -111,25 +109,27 @@ class Snail10StateHolder(
 
     val actions: (Action) -> Unit = mutator.accept
 
-    private fun Flow<Action.SetColor>.colorMutations() = mapLatest {
-        Mutation<Snail10State> { copy(colorIndex = it.index) }
-    }
+    private fun Flow<Action.SetColor>.colorMutations(): Flow<Mutation<Snail10State>> =
+        mapLatest {
+            mutation { copy(colorIndex = it.index) }
+        }
 
-    private fun Flow<Action.SetProgress>.progressMutations() = mapLatest {
-        Mutation<Snail10State> { copy(progress = it.progress) }
-    }
+    private fun Flow<Action.SetProgress>.progressMutations(): Flow<Mutation<Snail10State>> =
+        mapLatest {
+            mutation { copy(progress = it.progress) }
+        }
 
     private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail10State>> =
         flatMapLatest { (isDark, startColors) ->
             flow {
-                emit(Mutation { copy(isDark = isDark) })
+                emit(mutation { copy(isDark = isDark) })
                 emitAll(
                     interpolateColors(
-                        startColors = startColors.map(Color::toArgb).toIntArray(),
-                        endColors = MutedColors.colors(isDark)
+                        startColors = startColors.map(Color::argb).toIntArray(),
+                        endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
                     )
                         .map { (progress, colors) ->
-                            Mutation {
+                            mutation {
                                 copy(
                                     colorInterpolationProgress = progress,
                                     colors = colors

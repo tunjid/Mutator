@@ -29,3 +29,5 @@ expect fun CallToAction(
     text: String,
     centerText: Boolean = false,
 )
+@Composable
+expect fun CodeBlock(content: String)

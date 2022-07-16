@@ -16,26 +16,27 @@
 
 package com.tunjid.mutator.demo
 
-import androidx.compose.runtime.Composable
-import com.tunjid.mutator.demo.editor.ContainerLayout
-import com.tunjid.mutator.demo.sections.Section1
-import com.tunjid.mutator.demo.sections.Section2
-import com.tunjid.mutator.demo.sections.Section3
-import com.tunjid.mutator.demo.sections.Section4
-import com.tunjid.mutator.demo.sections.Section5
-import com.tunjid.mutator.demo.sections.Section6
-import com.tunjid.mutator.demo.sections.Section7
+import kotlin.math.sqrt
 
-@Composable
-fun App(
-) {
-    ContainerLayout {
-        Section1()
-        Section2()
-        Section3()
-        Section4()
-        Section5()
-        Section6()
-        Section7()
+actual class Color actual constructor(color: Long) {
+
+    actual val argb: Int = color.toInt()
+
+    actual val r: Int = argb and 0x00FF0000 shr 16
+    actual val g: Int = argb and 0x0000FF00 shr 8
+    actual val b: Int = argb and 0x000000FF
+
+    actual companion object {
+        actual val Black: Color = Color(0x000000)
+        actual val LightGray: Color = Color(0xFFCCCCCC)
+    }
+
+    actual fun isBright(): Boolean {
+        val hsp = sqrt(
+            0.299 * (r * r) +
+                    0.587 * (g * g) +
+                    0.114 * (b * b)
+        )
+        return hsp > 127.5
     }
 }

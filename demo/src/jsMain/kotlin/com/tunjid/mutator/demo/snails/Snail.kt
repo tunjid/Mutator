@@ -17,7 +17,7 @@
 package com.tunjid.mutator.demo.snails
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.HorizontalLayout
 import com.tunjid.mutator.demo.editor.StyledDiv
@@ -135,15 +135,15 @@ actual fun ToggleButton(
 )
 
 private fun Color.rgb() = rgb(
-    r = (red * 255).toInt(),
-    g = (green * 255).toInt(),
-    b = (blue * 255).toInt(),
+    r = r,
+    g = g,
+    b = b,
 )
 
 private fun Color.hex(): String {
-    val r = (red * 255).toInt().toHexString()
-    val g = (green * 255).toInt().toHexString()
-    val b = (blue * 255).toInt().toHexString()
+    val r = r.toHexString()
+    val g = g.toHexString()
+    val b = b.toHexString()
     return "#$r$g$b"
 }
 

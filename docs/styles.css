@@ -23,7 +23,16 @@
 }
 
 #container {
-    max-width: 800px;
+    max-width: 720px;
+}
+
+pre {
+    width: 100%;
+    overflow: auto;
+    height: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: start;
 }
 
 .markdown {
@@ -35,7 +44,7 @@
     font-size: 48px;
     letter-spacing: 0.25px;
     font-weight: normal;
-    line-height: 80%;
+    line-height: 90%;
 }
 
 .markdown h2 {
@@ -43,7 +52,7 @@
     font-size: 34px;
     letter-spacing: 0px;
     font-weight: lighter;
-    line-height: 80%;
+    line-height: 90%;
 }
 
 .markdown h3 {
@@ -80,16 +89,15 @@
     flex-direction: row;
     align-items: center;
 }
-
-#root > .compose-web-column > div {
-    position: relative;
+.centerText {
+    text-align: center;
 }
 
 .colorSwatch {
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    margin: 10px;
+    margin: 16px;
 }
 
 .cta {
@@ -132,18 +140,28 @@
 .snail::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--snailColor);
+    background-image: url('snail.svg');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 20px;
     cursor: pointer;
 }
 
 .snail::-moz-range-thumb {
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--snailColor);
+    background-image: url('snail.svg');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 20px;
     cursor: pointer;
 }
 
@@ -186,7 +204,7 @@
     bottom: 0;
     width: 50%;
     z-index: 10;
-    background: #2a639c;
+    background: #2a639ccc;
 }
 
 

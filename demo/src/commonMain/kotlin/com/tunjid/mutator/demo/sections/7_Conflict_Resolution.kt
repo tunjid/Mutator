@@ -18,7 +18,7 @@ package com.tunjid.mutator.demo.sections
 
 import androidx.compose.runtime.Composable
 import com.tunjid.mutator.demo.editor.CallToAction
-import com.tunjid.mutator.demo.editor.EditorView
+import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.snails.Snail10
@@ -28,19 +28,19 @@ import com.tunjid.mutator.demo.snails.Snail9
 @Composable
 fun Section7() = SectionLayout {
     Markdown(oneMarkdown)
-    EditorView(twoCode)
+    CodeBlock(twoCode)
     Snail8()
-    CallToAction("Tap the toggle button many times again. Notice that it does nothing while animation is running.")
+    CallToAction(snail8Cta)
     Markdown(threeMarkdown)
-    EditorView(fourCode)
+    CodeBlock(fourCode)
     Snail9()
-    CallToAction("Tap the toggle button many times. Notice that with each tap colors reverse their changes.")
+    CallToAction(snail9Cta)
     Markdown(fiveMarkdown)
-    EditorView(sixCode)
+    CodeBlock(sixCode)
     Markdown(sevenMarkdown)
-    EditorView(eightCode)
+    CodeBlock(eightCode)
     Snail10()
-    CallToAction("Snail10 is identical to Snail9; just with different state production semantics.")
+    CallToAction(snail10Cta)
     Markdown(nineMarkdown)
 }
 
@@ -72,15 +72,20 @@ class Snail8StateHolder(
         scope.launch {
             userChanges.emit { copy(isDark = isDark, isInterpolating = true) }
             interpolateColors(
-                startColors = state.value.colors.map(Color::toArgb).toIntArray(),
-                endColors = MutedColors.colors(isDark)
+                ...
             ).collect { (progress, colors) ->
-                userChanges.emit { copy(colorInterpolationProgress = progress, colors = colors) }
+                userChanges.emit { 
+                    copy(...) 
+                }
             }
             userChanges.emit { copy(isInterpolating = false) }
         }
     }
 }
+""".trimIndent()
+
+private val snail8Cta = """
+Tap the toggle button many times again. Notice that it ignores the toggle event while the animation is running.    
 """.trimIndent()
 
 private val threeMarkdown = """
@@ -92,7 +97,7 @@ Eliminating the source of conflict in the example above would require being able
 
 ### Cancel the job
 
-In the above `scope.launch()` returns a `Job` for the suspending function that collects from `interpolateColors`. Keeping a reference to this `Job` allows for canceling `Flow` when next the `setMode` method is invoked.
+In the above `scope.launch()` returns a `Job` for the suspending function that collects from `interpolateColors`. Keeping a reference to this `Job` allows for canceling the `Flow` when next the `setMode` method is invoked.
 
 """.trimIndent()
 
@@ -109,23 +114,28 @@ class Snail9StateHolder(
         setModeJob = scope.launch {
             userChanges.emit { copy(isDark = isDark) }
             interpolateColors(
-                startColors = state.value.colors.map(Color::toArgb).toIntArray(),
-                endColors = MutedColors.colors(isDark)
+                ...
             ).collect { (progress, colors) ->
-                userChanges.emit { copy(colorInterpolationProgress = progress, colors = colors) }
+                userChanges.emit { 
+                    copy(...) 
+                }
             }
         }
     }
 }
 """.trimIndent()
 
+private val snail9Cta = """
+Tap the toggle button many times. Notice that with each tap, the colors reverse their changes.   
+""".trimIndent()
+
 private val fiveMarkdown = """
-This works, although it has the caveat of something we've seen before; it scales linearly. Each method invocation that could have potential conflicts in state by virtue of it causing multiple changes in state will need a `Job` reference.
+This works, although it has the caveat of something we've seen before; it scales linearly. Each method invocation that could have potential conflicts in state by virtue of it causing multiple changes in state will need a `Job` reference to allow for cancelling collection.
 
 
 ### Model changes with flows
 
-In this approach, the user event of setting the mode is modeled as a `Flow`, and using `Flow` operators the `interpolateColors` `Flow` is automatically canceled each time the `SetMode` event is triggered.
+In this approach, the user event of setting the mode is modeled as a `Flow`, and by using the `flatMapLatest` `Flow` operator, the `interpolateColors` `Flow` is automatically canceled each time the `SetMode` `Flow` emits.
 """.trimIndent()
 
 private val sixCode = """
@@ -134,16 +144,16 @@ private val sixCode = """
         val startColors: List<Color>
     )
 
-    fun Flow<SetMode>.mutations(): Flow<Mutation<Snail10State>> =
+    private fun Flow<SetMode>.mutations(): Flow<Mutation<Snail10State>> =
         flatMapLatest { (isDark, startColors) ->
             flow {
-                emit(Mutation { copy(isDark = isDark) })
+                emit(mutation { copy(isDark = isDark) })
                 emitAll(
                     interpolateColors(
                         startColors = startColors.map(Color::toArgb).toIntArray(),
                         endColors = MutedColors.colors(isDark)
                     )
-                        .map { Mutation{ copy(colors = it) }  }
+                        .map { mutation { copy(colors = it) }  }
                 )
             }
         }
@@ -164,9 +174,7 @@ class Snail10StateHolder(
 
     private val progressChanges: Flow<Mutation<Snail10State>> = …
 
-
-    private val mutator = stateFlowMutator<Action, Snail10State>(
-        scope = scope,
+    private val mutator = scope.stateFlowMutator<Action, Snail10State>(
         initialState = Snail10State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
@@ -188,21 +196,27 @@ class Snail10StateHolder(
 
     val actions: (Action) -> Unit = mutator.accept
 
-    private fun Flow<Action.SetColor>.colorMutations() = …
+    private fun Flow<Action.SetColor>.colorMutations(): Flow<Mutation<Snail10State>> =
+        mapLatest {
+            mutation { copy(colorIndex = it.index) }
+        }
 
-    private fun Flow<Action.SetProgress>.progressMutations() = …
+    private fun Flow<Action.SetProgress>.progressMutations(): Flow<Mutation<Snail10State>> =
+        mapLatest {
+            mutation { copy(progress = it.progress) }
+        }
 
     private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail10State>> =
         flatMapLatest { (isDark, startColors) ->
             flow {
-                emit(Mutation { copy(isDark = isDark) })
+                emit(mutation { copy(isDark = isDark) })
                 emitAll(
                     interpolateColors(
-                        startColors = startColors.map(Color::toArgb).toIntArray(),
-                        endColors = MutedColors.colors(isDark)
+                        startColors = startColors.map(Color::argb).toIntArray(),
+                        endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
                     )
                         .map { (progress, colors) ->
-                            Mutation {
+                            mutation {
                                 copy(
                                     colorInterpolationProgress = progress,
                                     colors = colors
@@ -214,14 +228,39 @@ class Snail10StateHolder(
         }  
 """.trimIndent()
 
+private val snail10Cta = """
+Snail10 is identical to Snail9; just with different state production semantics.    
+""".trimIndent()
+
 private val nineMarkdown = """
+    
+In the above, all there are two sources of state `Mutation`s:
+
+* Data sources in the `mutationFlows` argument; defined as `Flow<Mutation<State>>`
+* User events in the `actionTransform` argument; defined as `(Flow<Action>) -> Flow<Mutation<State>>`
+   
+Crucially the `actionTransform` takes a `Flow` of all `Action` instances, splits them out into individual `Flow`s for each `Action`, and finally applies `Flow` transformations to each `Action` `Flow` to turn them into `Flow<Mutation<State>>`:
+
+* `colorMutations` and `progressMutations` both use `mapLatest` to guarantee no conflicts because `mapLatest` automatically cancels any suspending function invoked in its lambda.
+* `modeMutations` does the same as the above but uses `flatMapLatest` and the `flow { }` builder because it collects from a `Flow` instead of just invoking a `suspend` function.
+
 # Choosing a state production pipeline
 
-The above highlights a common motif in this document; the state production pipeline is only as complicated as the kind of state changes that can occur. Simple states require simple pipelines, and complicated states often require abstractions that bring convenience at the cost of complexity.
+The above highlights a common motif in this document; the state production pipeline is only as complicated as the kind of state produced, and the state changes that can occur. Simple states require simple pipelines, and complicated states often require higher level abstractions that enforce guarantees in state production. These guarantees often come with a complexity cost.
    
-Depending on the particulars of your state production pipeline, you may opt to
+Depending on the particulars of your state production pipeline, a rule of thumb that can be applied is:
 
-* `combine` sources that contribute to your State
-* `merge` mutations to state into an initial starting state
-* Model your state changes with a `Flow` to allow for tighter control of sources of change to mitigate conflicts that can arise.
+### Simple state production pipelines
+For small and simple states, `combine` sources that contribute to your state. No library is required.
+
+### Intermediate state production pipelines
+For intermediate states that have lots of different kinds of user events, `merge` changes to state so you do not have to create multiple `MutableStateFlow` instances to manage each user event. You may opt to use a library, or roll out a small custom implementation of the techniques described in the *merge* section above.
+
+ ### Large and complex state production pipelines 
+ For state production pipelines that:
+ * Have multiple contributors to the same state property that may conflict
+ * Have user events that can cause multiple mutations of state to occur
+ * Have state changes that involve collecting from other `Flow`s
+ 
+ Model your state production pipeline as a `Flow` to allow for tighter control of sources of change, and use a library that offers ergonomic APIs for your transformations.
 """.trimIndent()

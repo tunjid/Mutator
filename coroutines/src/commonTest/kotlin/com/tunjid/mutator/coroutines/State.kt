@@ -17,6 +17,7 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutation
+import com.tunjid.mutator.mutation
 
 data class State(
     val count: Double = 0.0
@@ -40,8 +41,8 @@ sealed class DoubleAction : Action() {
 
 val Action.mutation: Mutation<State>
     get() = when (this) {
-        is IntAction.Add -> Mutation { copy(count = count + value) }
-        is IntAction.Subtract -> Mutation { copy(count = count - value) }
-        is DoubleAction.Divide -> Mutation { copy(count = count / value) }
-        is DoubleAction.Multiply -> Mutation { copy(count = count * value) }
+        is IntAction.Add -> mutation { copy(count = count + value) }
+        is IntAction.Subtract -> mutation { copy(count = count - value) }
+        is DoubleAction.Divide -> mutation { copy(count = count / value) }
+        is DoubleAction.Multiply -> mutation { copy(count = count * value) }
     }
