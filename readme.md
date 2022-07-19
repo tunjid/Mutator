@@ -21,7 +21,7 @@ are production tested, and should not be taken as anything more than its face va
 
 ## Introduction
 
-Mutator is a Kotlin multiplatform library that provides a suite of tools that help with producing state. More specifically it provides implementations of the paradigm `newState = oldState + Δstate`.
+Mutator is a Kotlin multiplatform library that provides a suite of tools that help with producing state while following unidirectional data flow (UDF) principles. More specifically it provides implementations of the paradigm `newState = oldState + Δstate`.
 
 Where `Δstate` represents state changes over time and is expressed in Kotlin with the type:
 

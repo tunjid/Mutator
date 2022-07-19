@@ -47,7 +47,7 @@ fun Section1() {
 }
 
 private val headingMarkdown = """
-# Producing State with Flows
+# State production with unidirectional data flow and Kotlin Flows
 """.trimIndent()
 
 private val introMarkdown = """
