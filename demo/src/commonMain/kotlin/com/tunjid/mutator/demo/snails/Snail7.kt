@@ -160,7 +160,17 @@ fun Snail7() {
                 )
                 ToggleButton(
                     progress = state.colorInterpolationProgress,
-                    onClicked = { stateHolder.setMode(!state.isDark) }
+                    onClicked = {
+                        stateHolder.setMode(!state.isDark)
+                        udfStateHolder.accept(
+                            Event.UserTriggered(
+                                Marble.Metadata.Text(
+                                    if (!state.isDark) "\uD83C\uDF15"
+                                    else "\uD83C\uDF11"
+                                )
+                            )
+                        )
+                    }
                 )
             }
         }

@@ -197,6 +197,14 @@ fun Snail10() {
                                 startColors = state.colors
                             )
                         )
+                        udfStateHolder.accept(
+                            Event.UserTriggered(
+                                Marble.Metadata.Text(
+                                    if (!state.isDark) "\uD83C\uDF15"
+                                    else "\uD83C\uDF11"
+                                )
+                            )
+                        )
                     }
                 )
             }
