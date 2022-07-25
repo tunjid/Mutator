@@ -75,6 +75,7 @@ actual fun UDFVisualizer(stateHolder: UDFVisualizerStateHolder) {
             Label("State Holder")
             Marbles(state.marbles.filteredForVisualization())
             Label("UI")
+            P { Text("UDF Visualizer") }
         }
     )
 }

@@ -67,7 +67,7 @@ The following is my personal opinion and not of my employer.
 private val producingStateIntro = """
 # Producing state
 
-Producing state is at its core, is nothing more than consolidating sources of changes to state. A generally sound way of doing this is with [unidirectional data flow](https://developer.android.com/topic/architecture/ui-layer#udf) (UDF), therefore all techniques covered on this page are implementations of UDF.    
+Producing state is at its core, is nothing more than consolidating sources of changes to state. A generally sound way of doing this is with [unidirectional data flow](https://developer.android.com/topic/architecture/ui-layer#udf) (UDF), therefore all techniques covered on this page are implementations of UDF. Each illustration will also have an UDF visual aid to help convey the "state goes down and events go up" maxim.    
 
 While the tenets of UDF are simple, there's a bit more to implementing it properly especially with `Flows`. Let's start simple. In the following we have a snail along a track. It has a single source of state change; time. Using a `Flow`, we can easily define the state for it.
 
