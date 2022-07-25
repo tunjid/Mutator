@@ -69,13 +69,13 @@ sealed class Event {
 }
 
 data class State(
-    val index: Int = 0,
+    val index: Int = -1,
     val marbles: List<Marble> = listOf()
 )
 
 fun udfVisualizerStateHolder(
     scope: CoroutineScope
-) : Mutator<Event, StateFlow<State>> = scope.stateFlowMutator(
+): Mutator<Event, StateFlow<State>> = scope.stateFlowMutator(
     initialState = State(),
     mutationFlows = listOf(frames()),
     actionTransform = Flow<Event>::stateMutations,
@@ -106,8 +106,8 @@ private operator fun State.plus(action: Event) = copy(
  * Advances the frame for the UDF visualizer
  */
 private fun State.advanceFrame() = copy(marbles = marbles.mapNotNull {
-    if (it.percentage > 100) return@mapNotNull null
-    when (it) {
+    if (it.percentage > 100) null
+    else when (it) {
         is Marble.Event -> it.copy(percentage = it.percentage + 1)
         is Marble.State -> it.copy(percentage = it.percentage + 1)
     }

@@ -20,8 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.tunjid.mutator.demo.hex
+import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
+import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.alignItems
 import org.jetbrains.compose.web.css.background
@@ -32,6 +34,7 @@ import org.jetbrains.compose.web.css.display
 import org.jetbrains.compose.web.css.flexDirection
 import org.jetbrains.compose.web.css.fontSize
 import org.jetbrains.compose.web.css.height
+import org.jetbrains.compose.web.css.justifyContent
 import org.jetbrains.compose.web.css.left
 import org.jetbrains.compose.web.css.margin
 import org.jetbrains.compose.web.css.minWidth
@@ -117,7 +120,7 @@ private fun Marbles(marbles: List<Marble>) = Div(
 )
 
 @Composable
-private fun Marble(marble: Marble) = P(
+private fun Marble(marble: Marble) = Div(
     attrs = {
         style {
             property("z-index", 0)
@@ -127,9 +130,12 @@ private fun Marble(marble: Marble) = P(
             position(Position.Absolute)
             color(CSSColor("#FFFFFF"))
             textAlign("center")
-            fontSize(14.px)
+            fontSize(13.px)
             padding(0.px)
             margin(0.px)
+            display(DisplayStyle.Flex)
+            alignItems(AlignItems.Center)
+            justifyContent(JustifyContent.Center)
             background(
                 when (marble) {
                     is Marble.Event -> when (val core = marble.metadata) {
