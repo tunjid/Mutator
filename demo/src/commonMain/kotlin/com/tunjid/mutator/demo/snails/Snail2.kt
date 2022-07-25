@@ -17,6 +17,7 @@
 package com.tunjid.mutator.demo.snails
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -27,6 +28,10 @@ import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
 import com.tunjid.mutator.demo.toInterval
 import com.tunjid.mutator.demo.toProgress
+import com.tunjid.mutator.demo.udfvisualizer.Marble
+import com.tunjid.mutator.demo.udfvisualizer.Event
+import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
+import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -65,19 +70,31 @@ class Snail2StateHolder(
 fun Snail2() {
     val scope = rememberCoroutineScope()
     val stateHolder = remember { Snail2StateHolder(scope) }
+    val udfStateHolder = remember { udfVisualizerStateHolder(scope) }
     val state by stateHolder.state.collectAsState()
 
-    SnailCard {
-        VerticalLayout {
-            Paragraph(
-                text = "Snail2"
+    LaunchedEffect(state) {
+        udfStateHolder.accept(
+            Event.StateChange(
+                metadata = Marble.Metadata.Text(state.progress.toString())
             )
-            Snail(
-                progress = state.progress,
-            )
-            Paragraph(
-                text = "Progress: ${state.progress}; Speed: ${state.speed}"
-            )
+        )
+    }
+
+    Illustration {
+        SnailCard {
+            VerticalLayout {
+                Paragraph(
+                    text = "Snail2"
+                )
+                Snail(
+                    progress = state.progress,
+                )
+                Paragraph(
+                    text = "Progress: ${state.progress}; Speed: ${state.speed}"
+                )
+            }
         }
+        UDFVisualizer(udfStateHolder)
     }
 }

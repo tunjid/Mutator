@@ -17,6 +17,7 @@
 package com.tunjid.mutator.demo.snails
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -25,6 +26,10 @@ import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.intervalFlow
 import com.tunjid.mutator.demo.toProgress
+import com.tunjid.mutator.demo.udfvisualizer.Marble
+import com.tunjid.mutator.demo.udfvisualizer.Event
+import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
+import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -46,19 +51,27 @@ class Snail1StateHolder(
 fun Snail1() {
     val scope = rememberCoroutineScope()
     val stateHolder = remember { Snail1StateHolder(scope) }
+    val udf = remember { udfVisualizerStateHolder(scope) }
     val state by stateHolder.progress.collectAsState()
 
-    SnailCard {
-        VerticalLayout {
-            Paragraph(
-                text = "Snail1"
-            )
-            Snail(
-                progress = state,
-            )
-            Paragraph(
-                text = "Progress: $state"
-            )
+    LaunchedEffect(state) {
+        udf.accept(Event.StateChange(metadata = Marble.Metadata.Text(state.toString())))
+    }
+
+    Illustration {
+        SnailCard {
+            VerticalLayout {
+                Paragraph(
+                    text = "Snail1"
+                )
+                Snail(
+                    progress = state,
+                )
+                Paragraph(
+                    text = "Progress: $state"
+                )
+            }
         }
+        UDFVisualizer(udf)
     }
 }

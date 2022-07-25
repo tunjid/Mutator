@@ -19,6 +19,7 @@ package com.tunjid.mutator.demo.snails
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,12 +39,21 @@ import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.toComposeColor
 
 @Composable
+actual fun Illustration(
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(0.8f),
+        content = { content() },
+    )
+}
+
+@Composable
 actual fun SnailCard(
     color: Color,
     content: @Composable () -> Unit
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth(0.8f),
         color = color.toComposeColor,
         content = { content() },
     )

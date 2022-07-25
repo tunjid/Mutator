@@ -21,8 +21,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.tunjid.mutator.demo.editor.Paragraph
-import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.intervalFlow
 import com.tunjid.mutator.demo.toProgress
 import kotlinx.coroutines.CoroutineScope

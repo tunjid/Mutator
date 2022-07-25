@@ -40,3 +40,21 @@ actual class Color actual constructor(color: Long) {
         return hsp > 127.5
     }
 }
+
+fun Color.rgb() = org.jetbrains.compose.web.css.rgb(
+    r = r,
+    g = g,
+    b = b,
+)
+
+fun Color.hex(): String {
+    val r = r.toHexString()
+    val g = g.toHexString()
+    val b = b.toHexString()
+    return "#$r$g$b"
+}
+
+fun Int.toHexString(): String {
+    val hex = this.toString(16)
+    return if (hex.length == 1) "0$hex" else hex
+}

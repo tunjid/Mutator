@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package com.tunjid.mutator.demo.editor
+package com.tunjid.mutator.demo.udfvisualizer
 
 import androidx.compose.runtime.Composable
 
 @Composable
-expect fun Paragraph(text: String)
-
-@Composable
-expect fun Markdown(content: String)
-
-@Composable
-expect fun CallToAction(
-    text: String,
-    centerText: Boolean = false,
-)
-
-@Composable
-expect fun CodeBlock(content: String)
+actual fun UDFVisualizer(stateHolder: UDFVisualizerStateHolder) {
+}

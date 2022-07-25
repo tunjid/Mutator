@@ -19,12 +19,12 @@
 <head>
     <meta charset="UTF-8">
     <title>State production with unidirectional data flow and Kotlin Flows</title>
-    <link rel="icon" href="favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="viewport" content="width=800">
+    <link href="favicon.ico" rel="icon"/>
+    <link href="favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
+    <link href="favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
+    <link href="apple-touch-icon.png" rel="apple-touch-icon"/>
+    <link href="manifest.json" rel="manifest"/>
+    <meta content="width=800" name="viewport">
     <link href="styles.css" rel="stylesheet" type="text/css"/>
     <link href="hljs.css" rel="stylesheet">
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -33,7 +33,11 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9Q45NCPKF6"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
         gtag('js', new Date());
 
         gtag('config', 'G-9Q45NCPKF6');
