@@ -169,8 +169,8 @@ fun Snail9() {
                         udfStateHolder.accept(
                             Event.UserTriggered(
                                 Marble.Metadata.Text(
-                                    if (!state.isDark) "\uD83C\uDF15"
-                                    else "\uD83C\uDF11"
+                                    if (state.isDark) "☀️"
+                                    else "\uD83C\uDF18"
                                 )
                             )
                         )
