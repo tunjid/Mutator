@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.shareIn
 
-const val SPEED = 500L
+const val SPEED = 1600L
 
 enum class Speed(val multiplier: Int) {
     One(1), Two(2), Three(3), Four(4)

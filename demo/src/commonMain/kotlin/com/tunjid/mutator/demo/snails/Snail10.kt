@@ -23,8 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.stateFlowMutator
-import com.tunjid.mutator.coroutines.toMutationStream
+import com.tunjid.mutator.coroutines.mutateStateWith
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
@@ -38,14 +37,13 @@ import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import com.tunjid.mutator.mutation
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.launch
 
 
 data class Snail10State(
@@ -63,24 +61,11 @@ val Snail10State.cardColor: Color get() = colors.last()
 
 val Snail10State.textColor: Color get() = if (cardColor.isBright()) Color.Black else Color.LightGray
 
-sealed class Action {
-    data class SetColor(
-        val index: Int
-    ) : Action()
-
-    data class SetProgress(
-        val progress: Float
-    ) : Action()
-
-    data class SetMode(
-        val isDark: Boolean,
-        val startColors: List<Color>
-    ) : Action()
-}
-
 class Snail10StateHolder(
-    scope: CoroutineScope
+    private val scope: CoroutineScope
 ) {
+
+    private var setModeJob: Job? = null
 
     private val speed: Flow<Speed> = scope.speedFlow()
 
@@ -91,60 +76,49 @@ class Snail10StateHolder(
         .toInterval()
         .map { mutation { copy(progress = (progress + 1) % 100) } }
 
+    private val userChanges = MutableSharedFlow<Mutation<Snail10State>>()
 
-    private val mutator = scope.stateFlowMutator<Action, Snail10State>(
+    val state: StateFlow<Snail10State> = scope.mutateStateWith(
         initialState = Snail10State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
             speedChanges,
-            progressChanges
-        ),
-        actionTransform = { actions ->
-            actions.toMutationStream {
-                when (val type = type()) {
-                    is Action.SetColor -> type.flow.colorMutations()
-                    is Action.SetMode -> type.flow.modeMutations()
-                    is Action.SetProgress -> type.flow.progressMutations()
+            progressChanges,
+            userChanges,
+        )
+    )
+
+    fun setSnailColor(index: Int) {
+        scope.launch {
+            userChanges.emit { copy(colorIndex = index) }
+        }
+    }
+
+    fun setProgress(progress: Float) {
+        scope.launch {
+            userChanges.emit { copy(progress = progress) }
+        }
+    }
+
+    fun setMode(isDark: Boolean) {
+        setModeJob?.cancel()
+        setModeJob = scope.launch {
+            userChanges.emit { copy(isDark = isDark) }
+            interpolateColors(
+                startColors = state.value.colors.map(Color::argb).toIntArray(),
+                endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
+            ).collect { (progress, colors) ->
+                userChanges.emit {
+                    copy(
+                        colorInterpolationProgress = progress,
+                        colors = colors
+                    )
                 }
             }
         }
-    )
-
-    val state: StateFlow<Snail10State> = mutator.state
-
-    val actions: (Action) -> Unit = mutator.accept
-
-    private fun Flow<Action.SetColor>.colorMutations(): Flow<Mutation<Snail10State>> =
-        mapLatest {
-            mutation { copy(colorIndex = it.index) }
-        }
-
-    private fun Flow<Action.SetProgress>.progressMutations(): Flow<Mutation<Snail10State>> =
-        mapLatest {
-            mutation { copy(progress = it.progress) }
-        }
-
-    private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail10State>> =
-        flatMapLatest { (isDark, startColors) ->
-            flow {
-                emit(mutation { copy(isDark = isDark) })
-                emitAll(
-                    interpolateColors(
-                        startColors = startColors.map(Color::argb).toIntArray(),
-                        endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
-                    )
-                        .map { (progress, colors) ->
-                            mutation {
-                                copy(
-                                    colorInterpolationProgress = progress,
-                                    colors = colors
-                                )
-                            }
-                        }
-                )
-            }
-        }
+    }
 }
+
 
 @Composable
 fun Snail10() {
@@ -173,14 +147,14 @@ fun Snail10() {
                     progress = state.progress,
                     color = state.color,
                     onValueChange = {
-                        stateHolder.actions(Action.SetProgress(it))
+                        stateHolder.setProgress(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Text(it.toString())))
                     }
                 )
                 ColorSwatch(
                     colors = state.colors,
                     onColorClicked = {
-                        stateHolder.actions(Action.SetColor(it))
+                        stateHolder.setSnailColor(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Tint(state.colors[it])))
                     }
                 )
@@ -191,12 +165,7 @@ fun Snail10() {
                 ToggleButton(
                     progress = state.colorInterpolationProgress,
                     onClicked = {
-                        stateHolder.actions(
-                            Action.SetMode(
-                                isDark = !state.isDark,
-                                startColors = state.colors
-                            )
-                        )
+                        stateHolder.setMode(!state.isDark)
                         udfStateHolder.accept(
                             Event.UserTriggered(
                                 Marble.Metadata.Text(

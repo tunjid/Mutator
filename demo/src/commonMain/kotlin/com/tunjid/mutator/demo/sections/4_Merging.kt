@@ -133,6 +133,7 @@ This example has all the functionality the `combine` approach did, but with a sl
 It however brings the following advantages:
 
 * `merge` is an n-ary function; it has no arity limits; you can merge as many `Flow`s as you want.
+* New state can be a product of old state; a `Mutation` is an accumulating/reducing function.
 * All user actions that change state can share the same source `Flow`: `userChanges` a [`MutableSharedFlow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-shared-flow/).
 * All source flows can independently contribute their state mutations
 * All source flows at the time of introducing the state mutation can read the existing state.
@@ -182,5 +183,5 @@ Drag the snail to place it anywhere on its track. Also, try to hold it in place 
 private val nineMarkdown = """
 That is, we can simply introduce a state change to the `progress` property of the state despite the `progessChanges` flow also contributing to a change of the same property. This is something that would be rather difficult with the `combine` approach. This is because the combine approach only lets you set state properties of state to create new state. The `merge` approach instead lets you `mutate` or change properties of state and apply them to the existing state.  
   
- Furthermore both `setSnailColor` and `setProgress` contribute their changes to state using the same  `MutableSharedFlow`: `userChanges`. This approach scales well because no mater how many methods are added that change the `State` from user events, they don't need any more variables to be declared in the state holder class. 
+Furthermore both `setSnailColor` and `setProgress` contribute their changes to state using the same  `MutableSharedFlow`: `userChanges`. This approach scales well because no mater how many methods are added that change the `State` from user events, they don't need any more variables to be declared in the state holder class. 
 """.trimIndent()

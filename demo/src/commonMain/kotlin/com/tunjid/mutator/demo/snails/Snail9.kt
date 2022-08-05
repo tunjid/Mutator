@@ -37,7 +37,6 @@ import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import com.tunjid.mutator.mutation
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -51,6 +50,7 @@ data class Snail9State(
     val speed: Speed = Speed.One,
     val isDark: Boolean = false,
     val colorIndex: Int = 0,
+    val isInterpolating: Boolean = false,
     val colorInterpolationProgress: Float = 0F,
     val colors: List<Color> = MutedColors.colors(false)
 )
@@ -64,8 +64,6 @@ val Snail9State.textColor: Color get() = if (cardColor.isBright()) Color.Black e
 class Snail9StateHolder(
     private val scope: CoroutineScope
 ) {
-
-    private var setModeJob: Job? = null
 
     private val speed: Flow<Speed> = scope.speedFlow()
 
@@ -101,9 +99,9 @@ class Snail9StateHolder(
     }
 
     fun setMode(isDark: Boolean) {
-        setModeJob?.cancel()
-        setModeJob = scope.launch {
-            userChanges.emit { copy(isDark = isDark) }
+        if (state.value.isInterpolating) return
+        scope.launch {
+            userChanges.emit { copy(isDark = isDark, isInterpolating = true) }
             interpolateColors(
                 startColors = state.value.colors.map(Color::argb).toIntArray(),
                 endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
@@ -115,6 +113,7 @@ class Snail9StateHolder(
                     )
                 }
             }
+            userChanges.emit { copy(isInterpolating = false) }
         }
     }
 }

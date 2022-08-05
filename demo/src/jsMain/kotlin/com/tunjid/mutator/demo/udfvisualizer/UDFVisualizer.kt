@@ -73,7 +73,7 @@ actual fun UDFVisualizer(stateHolder: UDFVisualizerStateHolder) {
         },
         {
             Label("State Holder")
-            Marbles(state.marbles.filteredForVisualization())
+            Marbles(state.marbles)
             Label("UI")
             P { Text("UDF Visualizer") }
         }
@@ -176,11 +176,3 @@ private fun Marble.color() = when (this) {
 }
 
 private fun Marble.hexColor() = color().hex()
-
-private fun List<Marble>.filteredForVisualization(): List<Marble> {
-    val (states, events) = partition { it is Marble.State }
-    val filtered = states
-        .filterIsInstance<Marble.State>()
-        .filter { it.index % 5 == 0 }
-    return filtered + events
-}

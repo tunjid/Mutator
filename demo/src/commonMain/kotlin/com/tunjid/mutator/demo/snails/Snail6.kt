@@ -23,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.mutateStateWith
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
@@ -39,9 +38,15 @@ import com.tunjid.mutator.mutation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class Snail6State(
@@ -51,49 +56,29 @@ data class Snail6State(
     val colors: List<Color> = MutedColors.colors(false)
 )
 
-class Snail6StateHolder(
-    private val scope: CoroutineScope
-) {
+class Snail6StateHolder{
 
-    private val speed: Flow<Speed> = scope.speedFlow()
+    private val _state = MutableStateFlow(Snail6State())
 
-    private val speedChanges: Flow<Mutation<Snail6State>> = speed
-        .map { mutation { copy(speed = it) } }
-
-    private val progressChanges: Flow<Mutation<Snail6State>> = speed
-        .toInterval()
-        .map { mutation { copy(progress = (progress + 1) % 100) } }
-
-    private val userChanges = MutableSharedFlow<Mutation<Snail6State>>()
-
-    val state: StateFlow<Snail6State> = scope.mutateStateWith(
-        initialState = Snail6State(),
-        started = SharingStarted.WhileSubscribed(),
-        mutationFlows = listOf(
-            speedChanges,
-            progressChanges,
-            userChanges,
-        )
-    )
+    val state: StateFlow<Snail6State> = _state.asStateFlow()
 
     fun setSnailColor(index: Int) {
-        scope.launch {
-            userChanges.emit { copy(color = colors[index]) }
+        _state.update {
+            it.copy(color = it.colors[index])
         }
     }
 
     fun setProgress(progress: Float) {
-        scope.launch {
-            userChanges.emit { copy(progress = progress) }
+        _state.update {
+            it.copy(progress = progress)
         }
     }
 }
 
-
 @Composable
 fun Snail6() {
     val scope = rememberCoroutineScope()
-    val stateHolder = remember { Snail6StateHolder(scope) }
+    val stateHolder = remember { Snail6StateHolder() }
     val udfStateHolder = remember { udfVisualizerStateHolder(scope) }
     val state by stateHolder.state.collectAsState()
 

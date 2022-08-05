@@ -51,6 +51,7 @@ private val headingMarkdown = """
 """.trimIndent()
 
 private val introMarkdown = """
+By [Adetunji Dahunsi](https://twitter.com/Tunji_D).
 
 State is what is. A declaration of things known at a certain point in time. As time passes however, state changes as data sources backing the state are updated and events happen. In mobile apps this presents a challenge; defining a convenient and concise means to produce state over time.
 
