@@ -42,8 +42,10 @@ These sources of change mentioned above can be from anything that can be modeled
 
 private val twoCode = """
 data class Snail4State(
-    ...,
-    val color: Color = MutedColors.colors(false).first(),
+    val progress: Float = 0f,
+    val speed: Speed = Speed.One,
+    val color: Color = Color.Blue,
+    val colors: List<Color> = listOf()
 )
 
 class Snail4StateHolder(

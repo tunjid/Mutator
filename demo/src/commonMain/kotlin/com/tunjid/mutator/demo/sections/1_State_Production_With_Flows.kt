@@ -126,7 +126,6 @@ The fundamental unit of state change is  a function literal with the signature `
 private val snail2Prose2 = """ 
 The above works provided the only sources of state change are from user actions that call synchronous or `suspend` functions. Things get  a little more interesting when sources of state change include:
 * `Flows`.
-* `suspend` functions.
 * `Flows` and `suspend` functions.
 
 Let's start with just `Flows`. Consider the snail again, except this time, it has a single source of state change; time. As time passes, the snail slowly progresses on  its track. Using a `Flow`, we can easily define the state for it.
@@ -167,7 +166,7 @@ Next, we define a state for the snail, and a state holder that produces its stat
 
 private val sixCode = """
 data class Snail3State(
-    ...,
+    val progress: Float = 0f,
     val speed: Speed = Speed.One,
 )
 

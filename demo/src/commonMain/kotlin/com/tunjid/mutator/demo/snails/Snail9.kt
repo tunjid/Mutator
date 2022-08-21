@@ -160,7 +160,7 @@ fun Snail9() {
                 )
                 SnailText(
                     color = state.textColor,
-                    text = "Progress: ${state.progress}\nSpeed: ${state.speed.text}"
+                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}"
                 )
                 ToggleButton(
                     progress = state.colorInterpolationProgress,

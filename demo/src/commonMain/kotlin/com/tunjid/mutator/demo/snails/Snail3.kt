@@ -92,7 +92,7 @@ fun Snail3() {
                     progress = state.progress,
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}\nSpeed: ${state.speed.text}"
+                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}"
                 )
             }
         }

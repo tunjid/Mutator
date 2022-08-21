@@ -203,5 +203,5 @@ The method of state production described above may seem unfamiliar at first, how
 """.trimIndent()
 
 private val tenCta = """
-Merging `Mutation` instances can be thought of an extension to `MutableStateFlow.update()`, where updates can come from both user actions and other `Flow` instances.
+Merging `Mutation` instances can be thought of an extension to `MutableStateFlow.update()`, where updates can come from both `Flows` and `suspend` functions.
 """.trimIndent()
