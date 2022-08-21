@@ -31,6 +31,7 @@ import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.interpolateColors
 import com.tunjid.mutator.demo.speedFlow
+import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
 import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
@@ -186,7 +187,7 @@ fun Snail11() {
                 )
                 SnailText(
                     color = state.textColor,
-                    text = "Progress: ${state.progress}; Speed: ${state.speed}"
+                    text = "Progress: ${state.progress}\nSpeed: ${state.speed.text}"
                 )
                 ToggleButton(
                     progress = state.colorInterpolationProgress,

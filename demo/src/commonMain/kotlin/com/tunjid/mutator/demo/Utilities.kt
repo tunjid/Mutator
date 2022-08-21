@@ -34,6 +34,13 @@ enum class Speed(val multiplier: Int) {
     One(1), Two(2), Three(3), Four(4)
 }
 
+val Speed.text get() = when(this) {
+    Speed.One -> "1x"
+    Speed.Two -> "2x"
+    Speed.Three -> "3x"
+    Speed.Four -> "4x"
+}
+
 fun intervalFlow(intervalMillis: Long) = flow {
     var value = 0L
     while (true) {

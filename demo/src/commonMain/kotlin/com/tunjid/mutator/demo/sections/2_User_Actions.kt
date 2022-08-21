@@ -21,32 +21,32 @@ import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
-import com.tunjid.mutator.demo.snails.Snail3
+import com.tunjid.mutator.demo.snails.Snail4
 
 @Composable
 fun Section2() {
     SectionLayout {
         Markdown(oneMarkdown)
         CodeBlock(twoCode)
-        Snail3()
+        Snail4()
         CallToAction(snail3Cta)
         Markdown(threeMarkdown)
     }
 }
 
 private val oneMarkdown = """
-# User actions
+# User actions as `Flows`
 
 These sources of change mentioned above can be from anything that can be modeled as a flow, be it reading data from a database or user actions. Imagine if we want to be able to change the snail's color on a whim. We can add a [`MutableSharedFlow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-mutable-shared-flow/) for the color of the snail to our state holder class, and then `combine` it with the rest of the flows to produce the state.    
 """.trimIndent()
 
 private val twoCode = """
-data class Snail3State(
+data class Snail4State(
     ...,
     val color: Color = MutedColors.colors(false).first(),
 )
 
-class Snail3StateHolder(
+class Snail4StateHolder(
     scope: CoroutineScope
 ) {
 
@@ -56,11 +56,11 @@ class Snail3StateHolder(
 
     private val color: MutableStateFlow<Color> = MutableStateFlow(Color.Cyan)
     
-    val state: StateFlow<Snail3State> = combine(
+    val state: StateFlow<Snail4State> = combine(
         progress,
         speed,
         color,
-        ::Snail3State
+        ::Snail4State
     )
         .stateIn(...)
 

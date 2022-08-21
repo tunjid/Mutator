@@ -24,7 +24,7 @@ import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.snails.Snail7
 
 @Composable
-fun Section6() = SectionLayout {
+fun Section5() = SectionLayout {
     Markdown(oneMarkdown)
     CodeBlock(twoCode)
     Markdown(threeMarkdown)
@@ -40,7 +40,7 @@ The merge approach can be formalized into an extension function on the `Coroutin
 """.trimIndent()
 
 private val twoCode = """
-fun <State : Any> CoroutineScope.mutateStateWith(
+fun <State : Any> CoroutineScope.produceState(
     initial: State,
     started: SharingStarted,
     mutationFlows: List<Flow<Mutation<State>>>
@@ -60,15 +60,15 @@ class Snail7StateHolder(
 
     private val progressChanges: Flow<Mutation<Snail7State>> = …
 
-    private val userChanges = MutableSharedFlow<Mutation<Snail7State>>()
+    private val changeEvents = MutableSharedFlow<Mutation<Snail7State>>()
 
-    val state: StateFlow<Snail7State> = scope.mutateStateWith(
+    val state: StateFlow<Snail7State> = scope.produceState(
         initial = Snail7State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
             speedChanges,
             progressChanges,
-            userChanges,
+            changeEvents,
         )
     )
 
@@ -83,5 +83,5 @@ class Snail7StateHolder(
 """.trimIndent()
 
 private val Snail7Cta = """
-Snail7 is identical to Snail5; just with a formalized state production approach.    
+Snail7 is identical to Snail6; just with a formalized state production approach.    
 """.trimIndent()

@@ -25,7 +25,6 @@ import com.tunjid.mutator.demo.sections.Section4
 import com.tunjid.mutator.demo.sections.Section5
 import com.tunjid.mutator.demo.sections.Section6
 import com.tunjid.mutator.demo.sections.Section7
-import com.tunjid.mutator.demo.sections.Section8
 
 @Composable
 fun App(
@@ -38,6 +37,5 @@ fun App(
         Section5()
         Section6()
         Section7()
-        Section8()
     }
 }

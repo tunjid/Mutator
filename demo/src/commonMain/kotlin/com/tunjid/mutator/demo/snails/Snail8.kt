@@ -23,13 +23,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.mutateStateWith
+import com.tunjid.mutator.coroutines.produceState
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.interpolateColors
 import com.tunjid.mutator.demo.speedFlow
+import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
 import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
@@ -73,39 +74,39 @@ class Snail8StateHolder(
         .toInterval()
         .map { mutation { copy(progress = (progress + 1) % 100) } }
 
-    private val userChanges = MutableSharedFlow<Mutation<Snail8State>>()
+    private val changeEvents = MutableSharedFlow<Mutation<Snail8State>>()
 
-    val state: StateFlow<Snail8State> = scope.mutateStateWith(
+    val state: StateFlow<Snail8State> = scope.produceState(
         initialState = Snail8State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
             speedChanges,
             progressChanges,
-            userChanges,
+            changeEvents,
         )
     )
 
     fun setSnailColor(index: Int) {
         scope.launch {
-            userChanges.emit { copy(colorIndex = index) }
+            changeEvents.emit { copy(colorIndex = index) }
         }
     }
 
     fun setProgress(progress: Float) {
         scope.launch {
-            userChanges.emit { copy(progress = progress) }
+            changeEvents.emit { copy(progress = progress) }
         }
     }
 
     fun setMode(isDark: Boolean) {
         scope.launch {
-            userChanges.emit { copy(isDark = isDark) }
+            changeEvents.emit { copy(isDark = isDark) }
             // Collect from a flow that animates color changes
             interpolateColors(
                 startColors = state.value.colors.map(Color::argb).toIntArray(),
                 endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
             ).collect { (progress, colors) ->
-                userChanges.emit {
+                changeEvents.emit {
                     copy(
                         colorInterpolationProgress = progress,
                         colors = colors
@@ -156,7 +157,7 @@ fun Snail8() {
                 )
                 SnailText(
                     color = state.textColor,
-                    text = "Progress: ${state.progress}; Speed: ${state.speed}"
+                    text = "Progress: ${state.progress}\nSpeed: ${state.speed.text}"
                 )
                 ToggleButton(
                     progress = state.colorInterpolationProgress,

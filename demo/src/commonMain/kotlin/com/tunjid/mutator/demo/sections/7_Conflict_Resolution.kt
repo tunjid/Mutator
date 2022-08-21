@@ -26,7 +26,7 @@ import com.tunjid.mutator.demo.snails.Snail9
 import com.tunjid.mutator.demo.snails.Snail10
 
 @Composable
-fun Section8() = SectionLayout {
+fun Section7() = SectionLayout {
     Markdown(oneMarkdown)
     CodeBlock(twoCode)
     Snail9()
@@ -70,15 +70,15 @@ class Snail9StateHolder(
     fun setMode(isDark: Boolean) {
         if (state.value.isInterpolating) return
         scope.launch {
-            userChanges.emit { copy(isDark = isDark, isInterpolating = true) }
+            changeEvents.emit { copy(isDark = isDark, isInterpolating = true) }
             interpolateColors(
                 ...
             ).collect { (progress, colors) ->
-                userChanges.emit { 
+                changeEvents.emit { 
                     copy(...) 
                 }
             }
-            userChanges.emit { copy(isInterpolating = false) }
+            changeEvents.emit { copy(isInterpolating = false) }
         }
     }
 }
@@ -112,11 +112,11 @@ class Snail10StateHolder(
     fun setMode(isDark: Boolean) {
         setModeJob?.cancel()
         setModeJob = scope.launch {
-            userChanges.emit { copy(isDark = isDark) }
+            changeEvents.emit { copy(isDark = isDark) }
             interpolateColors(
                 ...
             ).collect { (progress, colors) ->
-                userChanges.emit { 
+                changeEvents.emit { 
                     copy(...) 
                 }
             }

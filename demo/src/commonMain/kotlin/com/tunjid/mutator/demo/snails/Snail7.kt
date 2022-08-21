@@ -23,13 +23,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.mutateStateWith
+import com.tunjid.mutator.coroutines.produceState
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
+import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
 import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
@@ -64,27 +65,27 @@ class Snail7StateHolder(
         .toInterval()
         .map { mutation { copy(progress = (progress + 1) % 100) } }
 
-    private val userChanges = MutableSharedFlow<Mutation<Snail7State>>()
+    private val changeEvents = MutableSharedFlow<Mutation<Snail7State>>()
 
-    val state: StateFlow<Snail7State> = scope.mutateStateWith(
+    val state: StateFlow<Snail7State> = scope.produceState(
         initialState = Snail7State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
             speedChanges,
             progressChanges,
-            userChanges,
+            changeEvents,
         )
     )
 
     fun setSnailColor(index: Int) {
         scope.launch {
-            userChanges.emit { copy(color = colors[index]) }
+            changeEvents.emit { copy(color = colors[index]) }
         }
     }
 
     fun setProgress(progress: Float) {
         scope.launch {
-            userChanges.emit { copy(progress = progress) }
+            changeEvents.emit { copy(progress = progress) }
         }
     }
 }
@@ -128,7 +129,7 @@ fun Snail7() {
                     }
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}; Speed: ${state.speed}"
+                    text = "Progress: ${state.progress}\nSpeed: ${state.speed.text}"
                 )
             }
         }

@@ -29,6 +29,7 @@ import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
+import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
 import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
@@ -45,6 +46,7 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
 
 data class Snail5State(
     val progress: Float = 0f,
@@ -66,12 +68,12 @@ class Snail5StateHolder(
         .toInterval()
         .map { mutation { copy(progress = (progress + 1) % 100) } }
 
-    private val userChanges = MutableSharedFlow<Mutation<Snail5State>>()
+    private val changeEvents = MutableSharedFlow<Mutation<Snail5State>>()
 
     val state: StateFlow<Snail5State> = merge(
         progressChanges,
         speedChanges,
-        userChanges,
+        changeEvents,
     )
         .scan(Snail5State()) { state, mutation -> mutation(state) }
         .stateIn(
@@ -82,13 +84,7 @@ class Snail5StateHolder(
 
     fun setSnailColor(index: Int) {
         scope.launch {
-            userChanges.emit { copy(color = colors[index]) }
-        }
-    }
-
-    fun setProgress(progress: Float) {
-        scope.launch {
-            userChanges.emit { copy(progress = progress) }
+            changeEvents.emit { copy(color = colors[index]) }
         }
     }
 }
@@ -118,10 +114,6 @@ fun Snail5() {
                 Snail(
                     progress = state.progress,
                     color = state.color,
-                    onValueChange = {
-                        stateHolder.setProgress(it)
-                        udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Text(it.toString())))
-                    }
                 )
                 ColorSwatch(
                     colors = state.colors,
@@ -131,7 +123,7 @@ fun Snail5() {
                     }
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}; Speed: ${state.speed}"
+                    text = "Progress: ${state.progress}\nSpeed: ${state.speed.text}"
                 )
             }
         }

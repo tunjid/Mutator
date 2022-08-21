@@ -24,7 +24,7 @@ import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.snails.Snail8
 
 @Composable
-fun Section7() = SectionLayout {
+fun Section6() = SectionLayout {
     Markdown(oneMarkdown)
     CodeBlock(twoCode)
     CallToAction(composeAnimationApiCta)
@@ -50,13 +50,13 @@ class Snail8StateHolder(
 
     fun setMode(isDark: Boolean) {
         scope.launch {
-            userChanges.emit { copy(isDark = isDark) }
+            changeEvents.emit { copy(isDark = isDark) }
             /* Collect from a flow that animates color changes */
             interpolateColors(
                 startColors = state.value.colors.map(Color::argb).toIntArray(),
                 endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
             ).collect { (progress, colors) ->
-                userChanges.emit { 
+                changeEvents.emit { 
                     copy(
                         colorInterpolationProgress = progress,
                         colors = colors

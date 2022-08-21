@@ -22,29 +22,26 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
+import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
+import com.tunjid.mutator.demo.toProgress
 import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
 import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
-import com.tunjid.mutator.mutation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 
 data class Snail4State(
@@ -55,26 +52,25 @@ data class Snail4State(
 )
 
 class Snail4StateHolder(
-    private val scope: CoroutineScope
+    scope: CoroutineScope
 ) {
 
     private val speed: Flow<Speed> = scope.speedFlow()
 
-    private val speedChanges: Flow<Mutation<Snail4State>> = speed
-        .map { mutation { copy(speed = it) } }
-
-    private val progressChanges: Flow<Mutation<Snail4State>> = speed
+    private val progress: Flow<Float> = speed
         .toInterval()
-        .map { mutation { copy(progress = (progress + 1) % 100) } }
+        .toProgress()
 
-    private val userChanges = MutableSharedFlow<Mutation<Snail4State>>()
-
-    val state: StateFlow<Snail4State> = merge(
-        progressChanges,
-        speedChanges,
-        userChanges,
+    private val color: MutableStateFlow<Color> = MutableStateFlow(
+        MutedColors.colors(isDark = false).first()
     )
-        .scan(Snail4State()) { state, mutation -> mutation(state) }
+
+    val state: StateFlow<Snail4State> = combine(
+        progress,
+        speed,
+        color,
+        ::Snail4State
+    )
         .stateIn(
             scope = scope,
             started = SharingStarted.WhileSubscribed(),
@@ -82,9 +78,7 @@ class Snail4StateHolder(
         )
 
     fun setSnailColor(index: Int) {
-        scope.launch {
-            userChanges.emit { copy(color = colors[index]) }
-        }
+        this.color.value = state.value.colors[index]
     }
 }
 
@@ -122,7 +116,7 @@ fun Snail4() {
                     }
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}; Speed: ${state.speed}"
+                    text = "Progress: ${state.progress}\nSpeed: ${state.speed.text}"
                 )
             }
         }

@@ -32,7 +32,7 @@ typealias Mutation<State> = State.() -> State
 At the moment, there are two implementations:
 
 ```kotlin
-fun <State : Any> CoroutineScope.mutateStateWith(
+fun <State : Any> CoroutineScope.produceState(
     initialState: State,
     started: SharingStarted,
     mutationFlows: List<Flow<Mutation<State>>>
@@ -54,7 +54,7 @@ Where a `Mutator<Action, StateFlow<State>>` exposes fields for
 * state: `StateFlow<State>`
 * action: `(Action) -> Unit`
 
-`mutateStateWith` with is well suited for MVVM style applications and `stateFlowMutator` for MVI like approaches.
+`produceState` with is well suited for MVVM style applications and `stateFlowMutator` for MVI like approaches.
 
 ## Download
 
@@ -70,9 +70,9 @@ Where the latest version is indicated by the badge at the top of this file.
 Please refer to the project [website](https://tunjid.github.io/Mutator/) for an interactive walk through of the problem space this library operates in and visual examples.
 
 
-### `CoroutineScope.mutateStateWith`
+### `CoroutineScope.produceState`
 
-`CoroutineScope.mutateStateWith` is a function that allows for mutating an initial state over time, by providing a `List` of `Flows` that contribute to state changes. A simple example follows:
+`CoroutineScope.produceState` is a function that allows for mutating an initial state over time, by providing a `List` of `Flows` that contribute to state changes. A simple example follows:
 
 ```kotlin
 data class SnailState(
@@ -97,7 +97,7 @@ class SnailStateHolder(
 
     private val userChanges = MutableSharedFlow<Mutation<Snail5State>>()
 
-    val state: StateFlow<SnailState> = scope.mutateStateWith(
+    val state: StateFlow<SnailState> = scope.produceState(
         initialState = Snail6State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(

@@ -22,12 +22,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.tunjid.mutator.demo.Color
-import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
+import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
 import com.tunjid.mutator.demo.toProgress
 import com.tunjid.mutator.demo.udfvisualizer.Marble
@@ -36,7 +35,6 @@ import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -46,28 +44,20 @@ import kotlinx.coroutines.flow.stateIn
 data class Snail3State(
     val progress: Float = 0f,
     val speed: Speed = Speed.One,
-    val color: Color = MutedColors.colors(false).first(),
-    val colors: List<Color> = MutedColors.colors(false)
 )
 
 class Snail3StateHolder(
     scope: CoroutineScope
 ) {
-
     private val speed: Flow<Speed> = scope.speedFlow()
 
     private val progress: Flow<Float> = speed
         .toInterval()
         .toProgress()
 
-    private val color: MutableStateFlow<Color> = MutableStateFlow(
-        MutedColors.colors(isDark = false).first()
-    )
-
     val state: StateFlow<Snail3State> = combine(
         progress,
         speed,
-        color,
         ::Snail3State
     )
         .stateIn(
@@ -75,10 +65,6 @@ class Snail3StateHolder(
             started = SharingStarted.WhileSubscribed(),
             initialValue = Snail3State()
         )
-
-    fun setSnailColor(index: Int) {
-        this.color.value = state.value.colors[index]
-    }
 }
 
 @Composable
@@ -91,7 +77,6 @@ fun Snail3() {
     LaunchedEffect(state) {
         udfStateHolder.accept(
             Event.StateChange(
-                color = state.color,
                 metadata = Marble.Metadata.Text(state.progress.toString())
             )
         )
@@ -105,17 +90,9 @@ fun Snail3() {
                 )
                 Snail(
                     progress = state.progress,
-                    color = state.color,
-                )
-                ColorSwatch(
-                    colors = state.colors,
-                    onColorClicked = {
-                        stateHolder.setSnailColor(it)
-                        udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Tint(state.colors[it])))
-                    }
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}; Speed: ${state.speed}"
+                    text = "Progress: ${state.progress}\nSpeed: ${state.speed.text}"
                 )
             }
         }

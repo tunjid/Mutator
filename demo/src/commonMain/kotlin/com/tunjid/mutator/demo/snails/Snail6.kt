@@ -29,6 +29,7 @@ import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
+import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
 import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
@@ -38,15 +39,12 @@ import com.tunjid.mutator.mutation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class Snail6State(
@@ -56,21 +54,42 @@ data class Snail6State(
     val colors: List<Color> = MutedColors.colors(false)
 )
 
-class Snail6StateHolder{
+class Snail6StateHolder(
+    private val scope: CoroutineScope
+) {
 
-    private val _state = MutableStateFlow(Snail6State())
+    private val speed: Flow<Speed> = scope.speedFlow()
 
-    val state: StateFlow<Snail6State> = _state.asStateFlow()
+    private val speedChanges: Flow<Mutation<Snail6State>> = speed
+        .map { mutation { copy(speed = it) } }
+
+    private val progressChanges: Flow<Mutation<Snail6State>> = speed
+        .toInterval()
+        .map { mutation { copy(progress = (progress + 1) % 100) } }
+
+    private val changeEvents = MutableSharedFlow<Mutation<Snail6State>>()
+
+    val state: StateFlow<Snail6State> = merge(
+        progressChanges,
+        speedChanges,
+        changeEvents,
+    )
+        .scan(Snail6State()) { state, mutation -> mutation(state) }
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = Snail6State()
+        )
 
     fun setSnailColor(index: Int) {
-        _state.update {
-            it.copy(color = it.colors[index])
+        scope.launch {
+            changeEvents.emit { copy(color = colors[index]) }
         }
     }
 
     fun setProgress(progress: Float) {
-        _state.update {
-            it.copy(progress = progress)
+        scope.launch {
+            changeEvents.emit { copy(progress = progress) }
         }
     }
 }
@@ -78,7 +97,7 @@ class Snail6StateHolder{
 @Composable
 fun Snail6() {
     val scope = rememberCoroutineScope()
-    val stateHolder = remember { Snail6StateHolder() }
+    val stateHolder = remember { Snail6StateHolder(scope) }
     val udfStateHolder = remember { udfVisualizerStateHolder(scope) }
     val state by stateHolder.state.collectAsState()
 
@@ -113,7 +132,7 @@ fun Snail6() {
                     }
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}; Speed: ${state.speed}"
+                    text = "Progress: ${state.progress}\nSpeed: ${state.speed.text}"
                 )
             }
         }

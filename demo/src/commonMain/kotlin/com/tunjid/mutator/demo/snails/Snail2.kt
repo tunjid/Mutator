@@ -22,47 +22,28 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
-import com.tunjid.mutator.demo.speedFlow
-import com.tunjid.mutator.demo.toInterval
+import com.tunjid.mutator.demo.intervalFlow
 import com.tunjid.mutator.demo.toProgress
 import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
 import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-
-
-data class Snail2State(
-    val progress: Float = 0f,
-    val speed: Speed = Speed.One,
-)
 
 class Snail2StateHolder(
     scope: CoroutineScope
 ) {
-    private val speed: Flow<Speed> = scope.speedFlow()
-
-    private val progress: Flow<Float> = speed
-        .toInterval()
+    val progress: StateFlow<Float> = intervalFlow(500)
         .toProgress()
-
-    val state: StateFlow<Snail2State> = combine(
-        progress,
-        speed,
-        ::Snail2State
-    )
         .stateIn(
             scope = scope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Snail2State()
+            initialValue = 0f
         )
 }
 
@@ -70,15 +51,11 @@ class Snail2StateHolder(
 fun Snail2() {
     val scope = rememberCoroutineScope()
     val stateHolder = remember { Snail2StateHolder(scope) }
-    val udfStateHolder = remember { udfVisualizerStateHolder(scope) }
-    val state by stateHolder.state.collectAsState()
+    val udf = remember { udfVisualizerStateHolder(scope) }
+    val state by stateHolder.progress.collectAsState()
 
     LaunchedEffect(state) {
-        udfStateHolder.accept(
-            Event.StateChange(
-                metadata = Marble.Metadata.Text(state.progress.toString())
-            )
-        )
+        udf.accept(Event.StateChange(metadata = Marble.Metadata.Text(state.toString())))
     }
 
     Illustration {
@@ -88,13 +65,13 @@ fun Snail2() {
                     text = "Snail2"
                 )
                 Snail(
-                    progress = state.progress,
+                    progress = state,
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}; Speed: ${state.speed}"
+                    text = "Progress: $state"
                 )
             }
         }
-        UDFVisualizer(udfStateHolder)
+        UDFVisualizer(udf)
     }
 }
