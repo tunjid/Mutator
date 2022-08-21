@@ -21,26 +21,26 @@ import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
-import com.tunjid.mutator.demo.snails.Snail10
-import com.tunjid.mutator.demo.snails.Snail8
+import com.tunjid.mutator.demo.snails.Snail11
 import com.tunjid.mutator.demo.snails.Snail9
+import com.tunjid.mutator.demo.snails.Snail10
 
 @Composable
 fun Section7() = SectionLayout {
     Markdown(oneMarkdown)
     CodeBlock(twoCode)
-    Snail8()
-    CallToAction(snail8Cta)
+    Snail9()
+    CallToAction(Snail9Cta)
     Markdown(threeMarkdown)
     CodeBlock(fourCode)
-    Snail9()
-    CallToAction(snail9Cta)
+    Snail10()
+    CallToAction(Snail10Cta)
     Markdown(fiveMarkdown)
     CodeBlock(sixCode)
     Markdown(sevenMarkdown)
     CodeBlock(eightCode)
-    Snail10()
-    CallToAction(snail10Cta)
+    Snail11()
+    CallToAction(Snail11Cta)
     Markdown(nineMarkdown)
 }
 
@@ -56,12 +56,12 @@ We can add a new boolean field to the state called `isInterpolating`. If `setMod
 """.trimIndent()
 
 private val twoCode = """
-data class Snail8State(
+data class Snail9State(
     ...
     val isInterpolating: Boolean = false,
 )
     
-class Snail8StateHolder(
+class Snail9StateHolder(
     private val scope: CoroutineScope
 ) {
 
@@ -70,21 +70,21 @@ class Snail8StateHolder(
     fun setMode(isDark: Boolean) {
         if (state.value.isInterpolating) return
         scope.launch {
-            userChanges.emit { copy(isDark = isDark, isInterpolating = true) }
+            changeEvents.emit { copy(isDark = isDark, isInterpolating = true) }
             interpolateColors(
                 ...
             ).collect { (progress, colors) ->
-                userChanges.emit { 
+                changeEvents.emit { 
                     copy(...) 
                 }
             }
-            userChanges.emit { copy(isInterpolating = false) }
+            changeEvents.emit { copy(isInterpolating = false) }
         }
     }
 }
 """.trimIndent()
 
-private val snail8Cta = """
+private val Snail9Cta = """
 Tap the toggle button many times again. Notice that it ignores the toggle event while the animation is running.    
 """.trimIndent()
 
@@ -102,7 +102,7 @@ In the above `scope.launch()` returns a `Job` for the suspending function that c
 """.trimIndent()
 
 private val fourCode = """
-class Snail9StateHolder(
+class Snail10StateHolder(
     private val scope: CoroutineScope
 ) {
 
@@ -112,11 +112,11 @@ class Snail9StateHolder(
     fun setMode(isDark: Boolean) {
         setModeJob?.cancel()
         setModeJob = scope.launch {
-            userChanges.emit { copy(isDark = isDark) }
+            changeEvents.emit { copy(isDark = isDark) }
             interpolateColors(
                 ...
             ).collect { (progress, colors) ->
-                userChanges.emit { 
+                changeEvents.emit { 
                     copy(...) 
                 }
             }
@@ -125,7 +125,7 @@ class Snail9StateHolder(
 }
 """.trimIndent()
 
-private val snail9Cta = """
+private val Snail10Cta = """
 Tap the toggle button many times. Notice that with each tap, the colors reverse their changes.   
 """.trimIndent()
 
@@ -144,7 +144,7 @@ private val sixCode = """
         val startColors: List<Color>
     )
 
-    private fun Flow<SetMode>.mutations(): Flow<Mutation<Snail10State>> =
+    private fun Flow<SetMode>.mutations(): Flow<Mutation<Snail11State>> =
         flatMapLatest { (isDark, startColors) ->
             flow {
                 emit(mutation { copy(isDark = isDark) })
@@ -166,16 +166,16 @@ Scaling the above to cover state production for our snail is non trivial, and of
 """.trimIndent()
 
 private val eightCode = """
-class Snail10StateHolder(
+class Snail11StateHolder(
     scope: CoroutineScope
 ) {
 
-    private val speedChanges: Flow<Mutation<Snail10State>> = …
+    private val speedChanges: Flow<Mutation<Snail11State>> = …
 
-    private val progressChanges: Flow<Mutation<Snail10State>> = …
+    private val progressChanges: Flow<Mutation<Snail11State>> = …
 
-    private val mutator = scope.stateFlowMutator<Action, Snail10State>(
-        initialState = Snail10State(),
+    private val mutator = scope.stateFlowMutator<Action, Snail11State>(
+        initialState = Snail11State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
             speedChanges,
@@ -192,21 +192,21 @@ class Snail10StateHolder(
         }
     )
 
-    val state: StateFlow<Snail10State> = mutator.state
+    val state: StateFlow<Snail11State> = mutator.state
 
     val actions: (Action) -> Unit = mutator.accept
 
-    private fun Flow<Action.SetColor>.colorMutations(): Flow<Mutation<Snail10State>> =
+    private fun Flow<Action.SetColor>.colorMutations(): Flow<Mutation<Snail11State>> =
         mapLatest {
             mutation { copy(colorIndex = it.index) }
         }
 
-    private fun Flow<Action.SetProgress>.progressMutations(): Flow<Mutation<Snail10State>> =
+    private fun Flow<Action.SetProgress>.progressMutations(): Flow<Mutation<Snail11State>> =
         mapLatest {
             mutation { copy(progress = it.progress) }
         }
 
-    private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail10State>> =
+    private fun Flow<Action.SetMode>.modeMutations(): Flow<Mutation<Snail11State>> =
         flatMapLatest { (isDark, startColors) ->
             flow {
                 emit(mutation { copy(isDark = isDark) })
@@ -228,8 +228,8 @@ class Snail10StateHolder(
         }  
 """.trimIndent()
 
-private val snail10Cta = """
-Snail10 is identical to Snail9; just with different state production semantics.    
+private val Snail11Cta = """
+Snail11 is identical to Snail10; just with different state production semantics.    
 """.trimIndent()
 
 private val nineMarkdown = """

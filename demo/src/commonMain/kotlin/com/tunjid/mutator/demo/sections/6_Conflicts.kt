@@ -21,15 +21,15 @@ import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
-import com.tunjid.mutator.demo.snails.Snail7
+import com.tunjid.mutator.demo.snails.Snail8
 
 @Composable
 fun Section6() = SectionLayout {
     Markdown(oneMarkdown)
     CodeBlock(twoCode)
     CallToAction(composeAnimationApiCta)
-    Snail7()
-    CallToAction(snail7Cta)
+    Snail8()
+    CallToAction(Snail8Cta)
     Markdown(threeMarkdown)
 }
 
@@ -42,7 +42,7 @@ This is best illustrated with an example. Say we wanted to expose our snail to t
 """.trimIndent()
 
 private val twoCode = """
-class Snail7StateHolder(
+class Snail8StateHolder(
     private val scope: CoroutineScope
 ) {
 
@@ -50,13 +50,13 @@ class Snail7StateHolder(
 
     fun setMode(isDark: Boolean) {
         scope.launch {
-            userChanges.emit { copy(isDark = isDark) }
+            changeEvents.emit { copy(isDark = isDark) }
             /* Collect from a flow that animates color changes */
             interpolateColors(
                 startColors = state.value.colors.map(Color::argb).toIntArray(),
                 endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
             ).collect { (progress, colors) ->
-                userChanges.emit { 
+                changeEvents.emit { 
                     copy(
                         colorInterpolationProgress = progress,
                         colors = colors
@@ -72,7 +72,7 @@ private val composeAnimationApiCta = """
 In Jetpack Compose apps, animating color changes is best done with the [animateColorAsState](https://developer.android.com/reference/kotlin/androidx/compose/animation/package-summary#animateColorAsState(androidx.compose.ui.graphics.Color,androidx.compose.animation.core.AnimationSpec,kotlin.Function1)) APIs instead of manually as shown in the example above. The example is merely used to demonstrate long running operations that cause state changes, like uploading a file with a progress bar.   
 """.trimIndent()
 
-private val snail7Cta = """
+private val Snail8Cta = """
 Tap the toggle button to switch between light and dark modes for the snail. Notice that tapping in quick succession will cause the UI to flicker as state changes conflict.  
 """.trimIndent()
 

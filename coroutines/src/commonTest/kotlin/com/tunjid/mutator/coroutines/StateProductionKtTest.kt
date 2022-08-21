@@ -57,7 +57,7 @@ class StateProductionKtTest {
 
     @Test
     fun test_simple_state_production() = runTest {
-        val state = scope.mutateStateWith(
+        val state = scope.produceState(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             mutationFlows = listOf(
@@ -76,7 +76,7 @@ class StateProductionKtTest {
 
     @Test
     fun test_state_production_persists_after_unsubscribing() = runTest {
-        val state = scope.mutateStateWith(
+        val state = scope.produceState(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             mutationFlows = listOf(
@@ -102,7 +102,7 @@ class StateProductionKtTest {
 
     @Test
     fun test_state_production_with_merged_flows() = runTest {
-        val state = scope.mutateStateWith(
+        val state = scope.produceState(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             mutationFlows = listOf(

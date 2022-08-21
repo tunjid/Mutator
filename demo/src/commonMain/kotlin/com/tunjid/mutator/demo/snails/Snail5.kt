@@ -17,19 +17,25 @@
 package com.tunjid.mutator.demo.snails
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.mutation
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
+import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
+import com.tunjid.mutator.demo.udfvisualizer.Marble
+import com.tunjid.mutator.demo.udfvisualizer.Event
+import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
+import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
+import com.tunjid.mutator.mutation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -40,6 +46,7 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
 
 data class Snail5State(
     val progress: Float = 0f,
@@ -61,12 +68,12 @@ class Snail5StateHolder(
         .toInterval()
         .map { mutation { copy(progress = (progress + 1) % 100) } }
 
-    private val userChanges = MutableSharedFlow<Mutation<Snail5State>>()
+    private val changeEvents = MutableSharedFlow<Mutation<Snail5State>>()
 
     val state: StateFlow<Snail5State> = merge(
         progressChanges,
         speedChanges,
-        userChanges,
+        changeEvents,
     )
         .scan(Snail5State()) { state, mutation -> mutation(state) }
         .stateIn(
@@ -77,13 +84,7 @@ class Snail5StateHolder(
 
     fun setSnailColor(index: Int) {
         scope.launch {
-            userChanges.emit { copy(color = colors[index]) }
-        }
-    }
-
-    fun setProgress(progress: Float) {
-        scope.launch {
-            userChanges.emit { copy(progress = progress) }
+            changeEvents.emit { copy(color = colors[index]) }
         }
     }
 }
@@ -92,27 +93,40 @@ class Snail5StateHolder(
 fun Snail5() {
     val scope = rememberCoroutineScope()
     val stateHolder = remember { Snail5StateHolder(scope) }
+    val udfStateHolder = remember { udfVisualizerStateHolder(scope) }
     val state by stateHolder.state.collectAsState()
 
-    SnailCard {
-        VerticalLayout {
-            Paragraph(
-                text = "Snail5"
-            )
-            Snail(
-                progress = state.progress,
+    LaunchedEffect(state) {
+        udfStateHolder.accept(
+            Event.StateChange(
                 color = state.color,
-                onValueChange = { stateHolder.setProgress(it) }
+                metadata = Marble.Metadata.Text(state.progress.toString())
             )
-            ColorSwatch(
-                colors = state.colors,
-                onColorClicked = {
-                    stateHolder.setSnailColor(it)
-                }
-            )
-            Paragraph(
-                text = "Progress: ${state.progress}; Speed: ${state.speed}"
-            )
+        )
+    }
+
+    Illustration {
+        SnailCard {
+            VerticalLayout {
+                Paragraph(
+                    text = "Snail5"
+                )
+                Snail(
+                    progress = state.progress,
+                    color = state.color,
+                )
+                ColorSwatch(
+                    colors = state.colors,
+                    onColorClicked = {
+                        stateHolder.setSnailColor(it)
+                        udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Tint(state.colors[it])))
+                    }
+                )
+                Paragraph(
+                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}"
+                )
+            }
         }
+        UDFVisualizer(udfStateHolder)
     }
 }

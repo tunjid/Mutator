@@ -24,6 +24,7 @@ import com.tunjid.mutator.demo.editor.SectionLayout
 import com.tunjid.mutator.demo.snails.Snail0
 import com.tunjid.mutator.demo.snails.Snail1
 import com.tunjid.mutator.demo.snails.Snail2
+import com.tunjid.mutator.demo.snails.Snail3
 
 @Composable
 fun Section1() {
@@ -35,22 +36,29 @@ fun Section1() {
         Markdown(producingStateIntro)
         CodeBlock(snail1Code)
         Snail1()
+        CallToAction(snail1cta)
+        Markdown(snail2Prose)
+        CallToAction(snail2UnitOfChangeCta)
+        Markdown(snail2Prose2)
+        CodeBlock(snail2Code)
+        Snail2()
         CallToAction(snail1Cta)
         Markdown(threeMarkdown)
         CodeBlock(fourCode)
         Markdown(fiveMarkdown)
         CodeBlock(sixCode)
-        Snail2()
+        Snail3()
         CallToAction(snail2Cta)
         Markdown(sevenMarkdown)
     }
 }
 
 private val headingMarkdown = """
-# Producing State with Flows
+# State production with unidirectional data flow and Kotlin Flows
 """.trimIndent()
 
 private val introMarkdown = """
+By [Adetunji Dahunsi](https://twitter.com/Tunji_D).
 
 State is what is. A declaration of things known at a certain point in time. As time passes however, state changes as data sources backing the state are updated and events happen. In mobile apps this presents a challenge; defining a convenient and concise means to produce state over time.
 
@@ -67,14 +75,65 @@ The following is my personal opinion and not of my employer.
 private val producingStateIntro = """
 # Producing state
 
-Producing state is at its core, is nothing more than consolidating sources of changes to state. A generally sound way of doing this is with [unidirectional data flow](https://developer.android.com/topic/architecture/ui-layer#udf) (UDF), therefore all techniques covered on this page are implementations of UDF.    
+Producing state is at its core, is nothing more than consolidating sources of changes to state. A generally sound way of doing this is with [unidirectional data flow](https://developer.android.com/topic/architecture/ui-layer#udf) (UDF), therefore all techniques covered on this page are implementations of UDF. Each illustration will also have an UDF visual aid to help convey the "state goes down and events go up" idiom.    
 
-While the tenets of UDF are simple, there's a bit more to implementing it properly especially with `Flows`. Let's start simple. In the following we have a snail along a track. It has a single source of state change; time. Using a `Flow`, we can easily define the state for it.
+While the tenets of UDF are simple, there's a bit more to implementing it properly especially with `Flows`. Let's start simple. In the following we have a snail along a track. The snail has the following properties:
 
+* It's progress along the track.
+* It's color.
+
+An easy way to represent the state production pipeline for the snail is with a single `MutableStateFlow`: 
 """.trimIndent()
 
 private val snail1Code = """
-class Snail1StateHolder(
+data class Snail1State(
+    val progress: Float = 0f,
+    val color: Color = MutedColors.colors(false).first(),
+    val colors: List<Color> = MutedColors.colors(false)
+)
+
+class Snail1StateHolder {
+
+    private val _state = MutableStateFlow(Snail1State())
+    val state: StateFlow<Snail1State> = _state.asStateFlow()
+
+    fun setSnailColor(index: Int) {
+        _state.update {
+            it.copy(color = it.colors[index])
+        }
+    }
+
+    fun setProgress(progress: Float) {
+        _state.update {
+            it.copy(progress = progress)
+        }
+    }
+}    
+""".trimIndent()
+
+private val snail1cta = """
+Interact with the  snail by dragging it around and changing its color. 
+""".trimIndent()
+
+private val snail2Prose = """
+In the above, the [`update`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/update.html) function takes a function with the signature `(State) -> State` as its only argument. This the fundamental unit of state change, a function that takes the current state and changes it to the next state.
+""".trimIndent()
+
+private val snail2UnitOfChangeCta = """
+The fundamental unit of state change is  a function literal with the signature `(State) -> State`.
+""".trimIndent()
+
+private val snail2Prose2 = """ 
+The above works provided the only sources of state change are from user actions that call synchronous or `suspend` functions. Things get  a little more interesting when sources of state change include:
+* `Flows`.
+* `Flows` and `suspend` functions.
+
+Let's start with just `Flows`. Consider the snail again, except this time, it has a single source of state change; time. As time passes, the snail slowly progresses on  its track. Using a `Flow`, we can easily define the state for it.
+    
+""".trimIndent()
+
+private val snail2Code = """
+class Snail2StateHolder(
     scope: CoroutineScope
 ) {
     val progress: StateFlow<Float> = intervalFlow(500)
@@ -84,7 +143,7 @@ class Snail1StateHolder(
             started = SharingStarted.WhileSubscribed(),
             initialValue = 0f
         )
-}
+}    
 """.trimIndent()
 
 private val snail1Cta = """
@@ -106,22 +165,22 @@ Next, we define a state for the snail, and a state holder that produces its stat
 """.trimIndent()
 
 private val sixCode = """
-data class Snail2State(
-    ...,
+data class Snail3State(
+    val progress: Float = 0f,
     val speed: Speed = Speed.One,
 )
 
-class Snail2StateHolder(
+class Snail3StateHolder(
     scope: CoroutineScope
 ) {
     private val speed: Flow<Speed> = …
 
     private val progress: Flow<Float> = …
 
-    val state: StateFlow<Snail2State> = combine(
+    val state: StateFlow<Snail3State> = combine(
         progress,
         speed,
-        ::Snail2State
+        ::Snail3State
     )
         .stateIn(...)
 }

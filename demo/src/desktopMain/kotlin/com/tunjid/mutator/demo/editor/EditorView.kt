@@ -42,7 +42,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.tunjid.mutator.demo.editor.Settings
 import kotlin.text.Regex.Companion.fromLiteral
 
 @Composable
@@ -184,22 +183,22 @@ private fun AnnotatedString.Builder.addStyle(style: SpanStyle, text: String, reg
 }
 
 object AppTheme {
-        val colors: Colors = Colors()
+    val colors: Colors = Colors()
 
-        val code: Code = Code()
+    val code: Code = Code()
 
-        class Colors(
-            val backgroundDark: Color = Color(0xFF2B2B2B),
-            val backgroundMedium: Color = Color(0xFF3C3F41),
-            val backgroundLight: Color = Color(0xFF4E5254),
-        )
+    class Colors(
+        val backgroundDark: Color = Color(0xFF2B2B2B),
+        val backgroundMedium: Color = Color(0xFF3C3F41),
+        val backgroundLight: Color = Color(0xFF4E5254),
+    )
 
-        class Code(
-            val simple: SpanStyle = SpanStyle(Color(0xFFA9B7C6)),
-            val value: SpanStyle = SpanStyle(Color(0xFF6897BB)),
-            val keyword: SpanStyle = SpanStyle(Color(0xFFCC7832)),
-            val punctuation: SpanStyle = SpanStyle(Color(0xFFA1C17E)),
-            val annotation: SpanStyle = SpanStyle(Color(0xFFBBB529)),
-            val comment: SpanStyle = SpanStyle(Color(0xFF808080))
-        )
+    class Code(
+        val simple: SpanStyle = SpanStyle(Color(0xFFA9B7C6)),
+        val value: SpanStyle = SpanStyle(Color(0xFF6897BB)),
+        val keyword: SpanStyle = SpanStyle(Color(0xFFCC7832)),
+        val punctuation: SpanStyle = SpanStyle(Color(0xFFA1C17E)),
+        val annotation: SpanStyle = SpanStyle(Color(0xFFBBB529)),
+        val comment: SpanStyle = SpanStyle(Color(0xFF808080))
+    )
 }

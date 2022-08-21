@@ -23,6 +23,11 @@ import com.tunjid.mutator.demo.Speed
 
 
 @Composable
+expect fun Illustration(
+    content: @Composable () -> Unit
+)
+
+@Composable
 expect fun SnailCard(
     color: Color = Color(0xFFFFFF),
     content: @Composable () -> Unit

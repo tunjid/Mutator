@@ -55,7 +55,7 @@ fun <Action : Any, State : Any> CoroutineScope.stateFlowMutator(
         val actions = MutableSharedFlow<Action>()
 
         override val state: StateFlow<State> =
-            mutateStateWith(
+            produceState(
                 initialState = initialState,
                 started = started,
                 stateTransform = stateTransform,

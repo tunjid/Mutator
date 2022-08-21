@@ -21,18 +21,29 @@ import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.Speed
 import com.tunjid.mutator.demo.editor.HorizontalLayout
 import com.tunjid.mutator.demo.editor.StyledDiv
+import com.tunjid.mutator.demo.hex
+import com.tunjid.mutator.demo.rgb
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.max
 import org.jetbrains.compose.web.attributes.min
 import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.css.color
 import org.jetbrains.compose.web.css.percent
-import org.jetbrains.compose.web.css.rgb
 import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Input
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
+
+@Composable
+actual fun Illustration(
+    content: @Composable () -> Unit
+) {
+    StyledDiv(
+        content = content,
+        classNames = listOf("illustration", "sectionLayout"),
+    )
+}
 
 @Composable
 actual fun SnailCard(
@@ -52,7 +63,7 @@ actual fun SnailCard(
 actual fun SnailText(
     color: Color,
     text: String
-)= P(
+) = P(
     attrs = {
         style { color(color.rgb()) }
     },
@@ -133,21 +144,3 @@ actual fun ToggleButton(
         )
     }
 )
-
-private fun Color.rgb() = rgb(
-    r = r,
-    g = g,
-    b = b,
-)
-
-private fun Color.hex(): String {
-    val r = r.toHexString()
-    val g = g.toHexString()
-    val b = b.toHexString()
-    return "#$r$g$b"
-}
-
-private fun Int.toHexString(): String {
-    val hex = this.toString(16)
-    return if (hex.length == 1) "0$hex" else hex
-}

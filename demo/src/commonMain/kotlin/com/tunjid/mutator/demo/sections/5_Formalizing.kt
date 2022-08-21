@@ -21,7 +21,7 @@ import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
-import com.tunjid.mutator.demo.snails.Snail6
+import com.tunjid.mutator.demo.snails.Snail7
 
 @Composable
 fun Section5() = SectionLayout {
@@ -29,8 +29,8 @@ fun Section5() = SectionLayout {
     CodeBlock(twoCode)
     Markdown(threeMarkdown)
     CodeBlock(fourCode)
-    Snail6()
-    CallToAction(snail6Cta)
+    Snail7()
+    CallToAction(Snail7Cta)
 }
 
 private val oneMarkdown = """
@@ -40,7 +40,7 @@ The merge approach can be formalized into an extension function on the `Coroutin
 """.trimIndent()
 
 private val twoCode = """
-fun <State : Any> CoroutineScope.mutateStateWith(
+fun <State : Any> CoroutineScope.produceState(
     initial: State,
     started: SharingStarted,
     mutationFlows: List<Flow<Mutation<State>>>
@@ -52,23 +52,23 @@ Where the use of it in the snail example becomes:
 """.trimIndent()
 
 private val fourCode = """
-class Snail6StateHolder(
+class Snail7StateHolder(
     private val scope: CoroutineScope
 ) {
 
-    private val speedChanges: Flow<Mutation<Snail6State>> = …
+    private val speedChanges: Flow<Mutation<Snail7State>> = …
 
-    private val progressChanges: Flow<Mutation<Snail6State>> = …
+    private val progressChanges: Flow<Mutation<Snail7State>> = …
 
-    private val userChanges = MutableSharedFlow<Mutation<Snail6State>>()
+    private val changeEvents = MutableSharedFlow<Mutation<Snail7State>>()
 
-    val state: StateFlow<Snail6State> = scope.mutateStateWith(
-        initial = Snail6State(),
+    val state: StateFlow<Snail7State> = scope.produceState(
+        initial = Snail7State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
             speedChanges,
             progressChanges,
-            userChanges,
+            changeEvents,
         )
     )
 
@@ -82,6 +82,6 @@ class Snail6StateHolder(
 } 
 """.trimIndent()
 
-private val snail6Cta = """
-Snail6 is identical to Snail5; just with a formalized state production approach.    
+private val Snail7Cta = """
+Snail7 is identical to Snail6; just with a formalized state production approach.    
 """.trimIndent()

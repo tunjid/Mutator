@@ -28,10 +28,17 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.shareIn
 
-const val SPEED = 500L
+const val SPEED = 1600L
 
 enum class Speed(val multiplier: Int) {
     One(1), Two(2), Three(3), Four(4)
+}
+
+val Speed.text get() = when(this) {
+    Speed.One -> "1x"
+    Speed.Two -> "2x"
+    Speed.Three -> "3x"
+    Speed.Four -> "4x"
 }
 
 fun intervalFlow(intervalMillis: Long) = flow {

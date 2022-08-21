@@ -20,16 +20,17 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 
 expect class Color(color: Long) {
-     val argb: Int
-     val r: Int
-     val g: Int
-     val b: Int
+    val argb: Int
+    val r: Int
+    val g: Int
+    val b: Int
 
-     fun isBright(): Boolean
-     companion object {
-         val Black : Color
-         val LightGray : Color
-     }
+    fun isBright(): Boolean
+
+    companion object {
+        val Black: Color
+        val LightGray: Color
+    }
 }
 
 
