@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -71,6 +72,8 @@ class StateFlowProducer<State : Any> internal constructor(
         block: suspend Mutator<State>.() -> Unit
     ) {
         scope.launch {
+            // Suspend till downstream is connected
+            parallelExecutedTasks.subscriptionCount.first { it > 0 }
             parallelExecutedTasks.emit(flow {
                 block(this.asMutator())
             })
