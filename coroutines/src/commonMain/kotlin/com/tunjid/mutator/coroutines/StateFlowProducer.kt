@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-fun <State: Any> CoroutineScope.stateFlowProducer(
+fun <State : Any> CoroutineScope.stateFlowProducer(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(),
     mutationFlows: List<Flow<Mutation<State>>>
@@ -54,12 +54,15 @@ class StateFlowProducer<State : Any> internal constructor(
     override val state = scope.produceState(
         initialState = initialState,
         started = started,
-        mutationFlows = mutationFlows + parallelExecutedTasks.flatMapMerge { it }
+        mutationFlows = mutationFlows + parallelExecutedTasks.flatMapMerge(
+            concurrency = Int.MAX_VALUE,
+            transform = { it }
+        )
     )
 
     /**
      * Runs [block] in parallel with any other tasks submitted to [launch]. [block] is only ever run if there is an
-     * active collector of [state], and are managed under the [SharingStarted] policy passed to this [StateProducer].
+     * active collector of [state], and is managed under the [SharingStarted] policy passed to this [StateProducer].
      *
      * If there are no observers of [state] at the invocation of [launch], the Coroutine launched will suspend till
      * a collector begins to collect from [state].
