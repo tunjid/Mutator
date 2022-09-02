@@ -18,8 +18,8 @@ package com.tunjid.mutator.demo.udfvisualizer
 
 import androidx.compose.runtime.Composable
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.Mutator
-import com.tunjid.mutator.coroutines.stateFlowMutator
+import com.tunjid.mutator.ActionStateProducer
+import com.tunjid.mutator.coroutines.actionStateFlowProducer
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.intervalFlow
 import com.tunjid.mutator.mutation
@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.map
 val eventColor = Color(0xEF685C)
 val stateColor = Color(0x3080E9)
 
-typealias UDFVisualizerStateHolder = Mutator<Event, StateFlow<State>>
+typealias UDFVisualizerStateHolder = ActionStateProducer<Event, StateFlow<State>>
 
 sealed class Marble {
 
@@ -75,7 +75,7 @@ data class State(
 
 fun udfVisualizerStateHolder(
     scope: CoroutineScope
-): Mutator<Event, StateFlow<State>> = scope.stateFlowMutator(
+): ActionStateProducer<Event, StateFlow<State>> = scope.actionStateFlowProducer(
     initialState = State(),
     mutationFlows = listOf(frames()),
     actionTransform = Flow<Event>::stateMutations,

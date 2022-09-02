@@ -17,7 +17,7 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.Mutator
+import com.tunjid.mutator.ActionStateProducer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,9 +29,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
- * Defines a [Mutator] to convert a [Flow] of [Action] into a [StateFlow] of [State].
+ * Defines a [ActionStateProducer] to convert a [Flow] of [Action] into a [StateFlow] of [State].
  *
- * [this@stateFlowMutator]: The [CoroutineScope] for the resulting [StateFlow]. Any [Action]s sent if there are no
+ * [this@actionStateFlowProducer]: The [CoroutineScope] for the resulting [StateFlow]. Any [Action]s sent if there are no
  * subscribers to the output [StateFlow] will suspend until there is as least one subscriber.
  *
  * [initialState]: The seed state for the resulting [StateFlow].
@@ -44,13 +44,13 @@ import kotlinx.coroutines.launch
  * of state that will be reduced into the [initialState]. This is often achieved through the
  * [toMutationStream] [Flow] extension function.
  */
-fun <Action : Any, State : Any> CoroutineScope.stateFlowMutator(
+fun <Action : Any, State : Any> CoroutineScope.actionStateFlowProducer(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
     mutationFlows: List<Flow<Mutation<State>>> = listOf(),
     stateTransform: (Flow<State>) -> Flow<State> = { it },
     actionTransform: (Flow<Action>) -> Flow<Mutation<State>>
-): Mutator<Action, StateFlow<State>> = object : Mutator<Action, StateFlow<State>> {
+): ActionStateProducer<Action, StateFlow<State>> = object : ActionStateProducer<Action, StateFlow<State>> {
         val mutator = this
         val actions = MutableSharedFlow<Action>()
 
@@ -76,8 +76,8 @@ fun <Action : Any, State : Any> CoroutineScope.stateFlowMutator(
  *
  * This is typically useful for testing or previews
  */
-fun <Action : Any, State : Any> State.asNoOpStateFlowMutator(): Mutator<Action, StateFlow<State>> =
-    object : Mutator<Action, StateFlow<State>> {
+fun <Action : Any, State : Any> State.asNoOpStateFlowMutator(): ActionStateProducer<Action, StateFlow<State>> =
+    object : ActionStateProducer<Action, StateFlow<State>> {
         override val accept: (Action) -> Unit = {}
         override val state: StateFlow<State> = MutableStateFlow(this@asNoOpStateFlowMutator)
     }

@@ -174,7 +174,7 @@ class Snail11StateHolder(
 
     private val progressChanges: Flow<Mutation<Snail11State>> = …
 
-    private val mutator = scope.stateFlowMutator<Action, Snail11State>(
+    private val mutator = scope.actionStateFlowProducer<Action, Snail11State>(
         initialState = Snail11State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(

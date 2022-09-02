@@ -17,7 +17,7 @@
 package com.tunjid.mutator.coroutines
 
 import app.cash.turbine.test
-import com.tunjid.mutator.Mutator
+import com.tunjid.mutator.ActionStateProducer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -34,7 +34,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class StateFlowMutatorKtTest {
+class ActionStateProducerKtTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -49,10 +49,10 @@ class StateFlowMutatorKtTest {
     }
 
     @Test
-    fun stateFlowMutatorRemembersLastValue() = runTest {
+    fun actionStateFlowProducerRemembersLastValue() = runTest {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-        val mutator = scope.stateFlowMutator<IntAction, State>(
+        val mutator = scope.actionStateFlowProducer<IntAction, State>(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             actionTransform = { actions ->
@@ -101,12 +101,12 @@ class StateFlowMutatorKtTest {
 
     @Test
     fun noOpOperatorCompiles() {
-        val noOpMutator: Mutator<Action, StateFlow<State>> = State().asNoOpStateFlowMutator()
-        noOpMutator.accept(IntAction.Add(value = 1))
+        val noOpActionStateProducer: ActionStateProducer<Action, StateFlow<State>> = State().asNoOpStateFlowMutator()
+        noOpActionStateProducer.accept(IntAction.Add(value = 1))
 
         assertEquals(
             expected = State(),
-            actual = noOpMutator.state.value
+            actual = noOpActionStateProducer.state.value
         )
     }
 }

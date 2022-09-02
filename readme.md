@@ -42,7 +42,7 @@ fun <State : Any> CoroutineScope.produceState(
 and 
 
 ```kotlin
-fun <Action : Any, State : Any> CoroutineScope.stateFlowMutator(
+fun <Action : Any, State : Any> CoroutineScope.actionStateFlowProducer(
     initialState: State,
     started: SharingStarted,
     mutationFlows: List<Flow<Mutation<State>>>,
@@ -54,7 +54,7 @@ Where a `Mutator<Action, StateFlow<State>>` exposes fields for
 * state: `StateFlow<State>`
 * action: `(Action) -> Unit`
 
-`produceState` with is well suited for MVVM style applications and `stateFlowMutator` for MVI like approaches.
+`produceState` with is well suited for MVVM style applications and `actionStateFlowProducer` for MVI like approaches.
 
 ## Download
 
@@ -121,9 +121,9 @@ class SnailStateHolder(
 }
 ```
 
-### `CoroutineScope.stateFlowMutator`
+### `CoroutineScope.actionStateFlowProducer`
 
-The `stateFlowMutator` function transforms a `Flow` of `Action` into a `Flow` of `State` by first
+The `actionStateFlowProducer` function transforms a `Flow` of `Action` into a `Flow` of `State` by first
 mapping each `Action` into a `Mutation` of `State`, and then reducing the `Mutations` into an
 initial state within the provided `CoroutineScope`.
 
@@ -152,7 +152,7 @@ data class State(
 A `StateFlow` `Mutator` of the above can be created by:
 
 ```kotlin
-        val mutator = scope.stateFlowMutator<Action, State>(
+        val mutator = scope.actionStateFlowProducer<Action, State>(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             transform = { actions ->
@@ -191,7 +191,7 @@ In the above, fetching may need to be done consecutively, whereas only the most 
 sorting request should be honored. A `StateFlow` `Mutator` for the above therefore may resemble:
 
 ```kotlin
-val mutator = scope.stateFlowMutator<Action, State>(
+val mutator = scope.actionStateFlowProducer<Action, State>(
     initialState = State(comparator = defaultComparator),
     started = SharingStarted.WhileSubscribed(),
     transform = { actions ->
