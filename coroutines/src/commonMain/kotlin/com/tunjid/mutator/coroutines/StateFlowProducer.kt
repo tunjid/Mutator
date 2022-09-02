@@ -30,12 +30,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 fun <State: Any> CoroutineScope.stateFlowProducer(
-    initial: State,
+    initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(),
     mutationFlows: List<Flow<Mutation<State>>>
 ) = StateFlowProducer(
     scope = this,
-    initialState = initial,
+    initialState = initialState,
     started = started,
     mutationFlows = mutationFlows
 )
@@ -49,24 +49,26 @@ class StateFlowProducer<State : Any> internal constructor(
     started: SharingStarted = SharingStarted.WhileSubscribed(),
     mutationFlows: List<Flow<Mutation<State>>>
 ) : StateProducer<StateFlow<State>> {
-    private val taskQueue = MutableSharedFlow<Flow<Mutation<State>>>()
+    private val parallelExecutedTasks = MutableSharedFlow<Flow<Mutation<State>>>()
 
     override val state = scope.produceState(
         initialState = initialState,
         started = started,
-        mutationFlows = mutationFlows + taskQueue.flatMapMerge { it }
+        mutationFlows = mutationFlows + parallelExecutedTasks.flatMapMerge { it }
     )
 
     /**
-     * Runs [block] in [CoroutineScope] that has a [Job] as the child of the [Job] of [scope].
-     * This allows for the child [Job] to be passed a parameter in the [block] lambda allowing
-     * for cancelling the coroutine that runs [block].
+     * Runs [block] in parallel with any other tasks submitted to [launch]. [block] is only ever run if there is an
+     * active collector of [state], and are managed under the [SharingStarted] policy passed to this [StateProducer].
+     *
+     * If there are no observers of [state] at the invocation of [launch], the Coroutine launched will suspend till
+     * a collector begins to collect from [state].
      */
     fun launch(
         block: suspend Mutator<State>.() -> Unit
     ) {
         scope.launch {
-            taskQueue.emit(flow {
+            parallelExecutedTasks.emit(flow {
                 block(this.asMutator())
             })
         }

@@ -23,7 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.produceState
+import com.tunjid.mutator.coroutines.stateFlowProducer
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
@@ -32,18 +32,16 @@ import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
 import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
-import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
+import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import com.tunjid.mutator.mutation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 data class Snail7State(
     val progress: Float = 0f,
@@ -53,7 +51,7 @@ data class Snail7State(
 )
 
 class Snail7StateHolder(
-    private val scope: CoroutineScope
+    scope: CoroutineScope
 ) {
 
     private val speed: Flow<Speed> = scope.speedFlow()
@@ -65,28 +63,23 @@ class Snail7StateHolder(
         .toInterval()
         .map { mutation { copy(progress = (progress + 1) % 100) } }
 
-    private val changeEvents = MutableSharedFlow<Mutation<Snail7State>>()
-
-    val state: StateFlow<Snail7State> = scope.produceState(
+    private val stateProducer = scope.stateFlowProducer(
         initialState = Snail7State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
             speedChanges,
             progressChanges,
-            changeEvents,
         )
     )
 
-    fun setSnailColor(index: Int) {
-        scope.launch {
-            changeEvents.emit { copy(color = colors[index]) }
-        }
+    val state: StateFlow<Snail7State> = stateProducer.state
+
+    fun setSnailColor(index: Int) = stateProducer.launch {
+        mutate { copy(color = colors[index]) }
     }
 
-    fun setProgress(progress: Float) {
-        scope.launch {
-            changeEvents.emit { copy(progress = progress) }
-        }
+    fun setProgress(progress: Float) = stateProducer.launch {
+        mutate { copy(progress = progress) }
     }
 }
 

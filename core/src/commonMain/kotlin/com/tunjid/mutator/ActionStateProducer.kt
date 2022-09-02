@@ -25,8 +25,6 @@ interface Mutator<State : Any> {
     suspend fun mutate(mutation: Mutation<State>)
 }
 
-suspend fun <State : Any> Mutator<State>.setState(mutation: Mutation<State>) = mutate(mutation)
-
 interface StateProducer<State : Any> {
     val state: State
 }

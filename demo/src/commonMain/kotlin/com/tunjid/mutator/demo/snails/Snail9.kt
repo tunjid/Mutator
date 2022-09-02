@@ -23,7 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.produceState
+import com.tunjid.mutator.coroutines.stateFlowProducer
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
@@ -32,18 +32,16 @@ import com.tunjid.mutator.demo.interpolateColors
 import com.tunjid.mutator.demo.speedFlow
 import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
-import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
+import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import com.tunjid.mutator.mutation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 
 data class Snail9State(
@@ -75,47 +73,40 @@ class Snail9StateHolder(
         .toInterval()
         .map { mutation { copy(progress = (progress + 1) % 100) } }
 
-    private val changeEvents = MutableSharedFlow<Mutation<Snail9State>>()
-
-    val state: StateFlow<Snail9State> = scope.produceState(
+    private val stateProducer = scope.stateFlowProducer(
         initialState = Snail9State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(
             speedChanges,
             progressChanges,
-            changeEvents,
         )
     )
 
-    fun setSnailColor(index: Int) {
-        scope.launch {
-            changeEvents.emit { copy(colorIndex = index) }
-        }
+    val state: StateFlow<Snail9State> = stateProducer.state
+
+    fun setSnailColor(index: Int) = stateProducer.launch {
+        mutate { copy(colorIndex = index) }
     }
 
-    fun setProgress(progress: Float) {
-        scope.launch {
-            changeEvents.emit { copy(progress = progress) }
-        }
+    fun setProgress(progress: Float) = stateProducer.launch {
+        mutate { copy(progress = progress) }
     }
 
-    fun setMode(isDark: Boolean) {
-        if (state.value.isInterpolating) return
-        scope.launch {
-            changeEvents.emit { copy(isDark = isDark, isInterpolating = true) }
-            interpolateColors(
-                startColors = state.value.colors.map(Color::argb).toIntArray(),
-                endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
-            ).collect { (progress, colors) ->
-                changeEvents.emit {
-                    copy(
-                        colorInterpolationProgress = progress,
-                        colors = colors
-                    )
-                }
+    fun setMode(isDark: Boolean) = stateProducer.launch {
+        if (state.value.isInterpolating) return@launch
+        mutate { copy(isDark = isDark, isInterpolating = true) }
+        interpolateColors(
+            startColors = state.value.colors.map(Color::argb).toIntArray(),
+            endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
+        ).collect { (progress, colors) ->
+            mutate {
+                copy(
+                    colorInterpolationProgress = progress,
+                    colors = colors
+                )
             }
-            changeEvents.emit { copy(isInterpolating = false) }
         }
+        mutate { copy(isInterpolating = false) }
     }
 }
 
