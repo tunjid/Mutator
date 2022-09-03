@@ -21,8 +21,15 @@ package com.tunjid.mutator
  */
 typealias Mutation<State> = State.() -> State
 
-interface Mutator<Action : Any, State : Any> {
+interface Mutator<State : Any> {
+    suspend fun mutate(mutation: Mutation<State>)
+}
+
+interface StateProducer<State : Any> {
     val state: State
+}
+
+interface ActionStateProducer<Action : Any, State : Any> : StateProducer<State> {
     val accept: (Action) -> Unit
 }
 
@@ -44,6 +51,6 @@ operator fun <T : Any> Mutation<T>.plus(other: Mutation<T>) = mutation<T> inner@
     other.invoke(result)
 }
 
-fun <State : Any> Mutator<Mutation<State>, *>.accept(
+fun <State : Any> ActionStateProducer<Mutation<State>, *>.accept(
     mutation: State.() -> State
 ) = accept(mutation)

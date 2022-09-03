@@ -65,22 +65,23 @@ class Snail9StateHolder(
     private val scope: CoroutineScope
 ) {
 
-    …
+    private val stateProducer = scope.stateFlowProducer(
+        ...
+    )   
+    ...
 
-    fun setMode(isDark: Boolean) {
-        if (state.value.isInterpolating) return
-        scope.launch {
-            changeEvents.emit { copy(isDark = isDark, isInterpolating = true) }
-            interpolateColors(
-                ...
-            ).collect { (progress, colors) ->
-                changeEvents.emit { 
-                    copy(...) 
-                }
+    fun setMode(isDark: Boolean) = stateProducer.launch {
+        if (state.value.isInterpolating) return@launch
+        mutate { copy(isDark = isDark, isInterpolating = true) }
+        interpolateColors(
+            ...
+        ).collect { (progress, colors) ->
+            mutate {
+                copy(...)
             }
-            changeEvents.emit { copy(isInterpolating = false) }
         }
-    }
+        mutate { copy(isInterpolating = false) }
+    }    
 }
 """.trimIndent()
 
@@ -106,22 +107,24 @@ class Snail10StateHolder(
     private val scope: CoroutineScope
 ) {
 
-   private var setModeJob: Job? = null
-    …
+    private val stateProducer = scope.stateFlowProducer(
+        ...
+    )   
+    private var setModeJob: Job? = null
+    ...
 
-    fun setMode(isDark: Boolean) {
+    fun setMode(isDark: Boolean) = stateProducer.launch {
         setModeJob?.cancel()
-        setModeJob = scope.launch {
-            changeEvents.emit { copy(isDark = isDark) }
-            interpolateColors(
-                ...
-            ).collect { (progress, colors) ->
-                changeEvents.emit { 
-                    copy(...) 
-                }
+        setModeJob = currentCoroutineContext()[Job]
+        mutate { copy(isDark = isDark) }
+        interpolateColors(
+            ...
+        ).collect { (progress, colors) ->
+            mutate {
+                copy(...)
             }
         }
-    }
+    }    
 }
 """.trimIndent()
 
@@ -174,7 +177,7 @@ class Snail11StateHolder(
 
     private val progressChanges: Flow<Mutation<Snail11State>> = …
 
-    private val mutator = scope.stateFlowMutator<Action, Snail11State>(
+    private val mutator = scope.actionStateFlowProducer<Action, Snail11State>(
         initialState = Snail11State(),
         started = SharingStarted.WhileSubscribed(),
         mutationFlows = listOf(

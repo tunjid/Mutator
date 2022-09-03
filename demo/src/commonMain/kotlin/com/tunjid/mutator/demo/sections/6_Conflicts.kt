@@ -46,22 +46,23 @@ class Snail8StateHolder(
     private val scope: CoroutineScope
 ) {
 
-    …
+    private val stateProducer = scope.stateFlowProducer(
+        ...
+    )    
+    ...
 
-    fun setMode(isDark: Boolean) {
-        scope.launch {
-            changeEvents.emit { copy(isDark = isDark) }
-            /* Collect from a flow that animates color changes */
-            interpolateColors(
-                startColors = state.value.colors.map(Color::argb).toIntArray(),
-                endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
-            ).collect { (progress, colors) ->
-                changeEvents.emit { 
-                    copy(
-                        colorInterpolationProgress = progress,
-                        colors = colors
-                    ) 
-                }
+    fun setMode(isDark: Boolean) = stateProducer.launch {
+        mutate { copy(isDark = isDark) }
+        /* Collect from a flow that animates color changes */
+        interpolateColors(
+            startColors = state.value.colors.map(Color::argb).toIntArray(),
+            endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
+        ).collect { (progress, colors) ->
+            mutate {
+                copy(
+                    colorInterpolationProgress = progress,
+                    colors = colors
+                )
             }
         }
     }
