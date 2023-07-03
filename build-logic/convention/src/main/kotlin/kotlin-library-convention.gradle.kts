@@ -15,7 +15,6 @@
  */
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 
 /*
  * Copyright 2021 Google LLC
@@ -173,4 +172,9 @@ signing {
         useInMemoryPgpKeys(signingKey, signingPassword)
         sign(publishing.publications)
     }
+}
+
+val signingTasks = tasks.withType<Sign>()
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    dependsOn(signingTasks)
 }
