@@ -78,7 +78,7 @@ fun udfVisualizerStateHolder(
 ): ActionStateProducer<Event, StateFlow<State>> = scope.actionStateFlowProducer(
     initialState = State(),
     mutationFlows = listOf(frames()),
-    actionTransform = Flow<Event>::stateMutations,
+    actionTransform = { it.stateMutations() },
 )
 
 private fun frames(): Flow<Mutation<State>> = intervalFlow(10)
