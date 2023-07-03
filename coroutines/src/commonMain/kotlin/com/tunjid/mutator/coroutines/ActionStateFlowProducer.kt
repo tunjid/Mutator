@@ -29,6 +29,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+typealias DeferredStateReader<State> = StateProducer<suspend () -> State>
+
 /**
  * Defines a [ActionStateProducer] to convert a [Flow] of [Action] into a [StateFlow] of [State].
  *
@@ -47,10 +49,10 @@ import kotlinx.coroutines.launch
  */
 fun <Action : Any, State : Any> CoroutineScope.actionStateFlowProducer(
     initialState: State,
-    started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
+    started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
     mutationFlows: List<Flow<Mutation<State>>> = listOf(),
     stateTransform: (Flow<State>) -> Flow<State> = { it },
-    actionTransform: StateProducer<suspend () -> State>.(Flow<Action>) -> Flow<Mutation<State>>
+    actionTransform: DeferredStateReader<State>.(Flow<Action>) -> Flow<Mutation<State>>
 ): ActionStateProducer<Action, StateFlow<State>> = ActionStateFlowProducer(
     coroutineScope = this,
     initialState = initialState,
@@ -63,10 +65,10 @@ fun <Action : Any, State : Any> CoroutineScope.actionStateFlowProducer(
 private class ActionStateFlowProducer<Action : Any, State : Any>(
     coroutineScope: CoroutineScope,
     initialState: State,
-    started: SharingStarted = SharingStarted.WhileSubscribed(DefaultStopTimeoutMillis),
+    started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
     mutationFlows: List<Flow<Mutation<State>>> = listOf(),
     stateTransform: (Flow<State>) -> Flow<State> = { it },
-    actionTransform: StateProducer<suspend () -> State>.(Flow<Action>) -> Flow<Mutation<State>>
+    actionTransform: DeferredStateReader<State>.(Flow<Action>) -> Flow<Mutation<State>>
 ) : ActionStateProducer<Action, StateFlow<State>>,
     suspend () -> State {
 
@@ -74,7 +76,7 @@ private class ActionStateFlowProducer<Action : Any, State : Any>(
 
     // Allows for reading the current state in concurrent contexts.
     // Note that it suspends to prevent reading state before this class is fully constructed
-    private val stateReader = object : StateProducer<suspend () -> State> {
+    private val stateReader = object : DeferredStateReader<State> {
         override val state: suspend () -> State = this@ActionStateFlowProducer
     }
 
@@ -113,4 +115,4 @@ fun <Action : Any, State : Any> State.asNoOpStateFlowMutator(): ActionStateProdu
         override val state: StateFlow<State> = MutableStateFlow(this@asNoOpStateFlowMutator)
     }
 
-private const val DefaultStopTimeoutMillis = 5000L
+private const val DEFAULT_STOP_TIMEOUT_MILLIS = 5000L
