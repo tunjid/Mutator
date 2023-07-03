@@ -15,5 +15,5 @@
  */
 
 plugins {
-    `kotlin-library-convention`
+    id("kotlin-library-convention")
 }

@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-pluginManagement {
-    includeBuild("build-logic")
-    repositories {
-        gradlePluginPortal()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-    }
-}
-dependencyResolutionManagement {
-    // Workaround for KT-51379
-    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
-}
-rootProject.name = "Mutator"
-include(
-    ":core",
-    ":coroutines",
-    ":demo",
-)
 
+plugins {
+    `kotlin-dsl`
+}
+
+group = "com.tunjid.tiler.buildlogic"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+    implementation(libs.jetbrains.compose.gradlePlugin)
+    implementation(libs.kotlin.gradlePlugin)
+    implementation(libs.dokka.gradlePlugin)
+}

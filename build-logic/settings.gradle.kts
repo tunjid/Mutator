@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 dependencyResolutionManagement {
     repositories {
         gradlePluginPortal()
@@ -27,3 +29,6 @@ dependencyResolutionManagement {
         }
     }
 }
+
+rootProject.name = "build-logic"
+include(":convention")

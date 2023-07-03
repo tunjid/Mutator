@@ -32,7 +32,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  * limitations under the License.
  */
 
-
 plugins {
     kotlin("multiplatform")
     `maven-publish`
@@ -82,6 +81,7 @@ kotlin {
             binaryOptions["memoryModel"] = "experimental"
         }
     }
+    configureKotlinJvm()
 }
 
 allprojects {
@@ -172,4 +172,9 @@ signing {
         useInMemoryPgpKeys(signingKey, signingPassword)
         sign(publishing.publications)
     }
+}
+
+val signingTasks = tasks.withType<Sign>()
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    dependsOn(signingTasks)
 }
