@@ -14,18 +14,4 @@
  * limitations under the License.
  */
 
-repositories {
-    google()
-    mavenCentral()
-    gradlePluginPortal()
-}
-
-plugins {
-    `kotlin-dsl`
-}
-
-dependencies {
-    implementation(libs.jetbrains.compose.gradlePlugin)
-    implementation(libs.kotlin.gradlePlugin)
-    implementation(libs.dokka.gradlePlugin)
-}
+configureKotlinJvm()

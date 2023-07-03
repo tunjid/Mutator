@@ -1,12 +1,13 @@
 [versions]
-androidGradlePlugin = "7.1.2"
-androidxCompose = "1.2.0-beta01"
-dokka = "1.6.10"
-jetbrainsCompose = "1.2.0-alpha01-dev725"
+androidGradlePlugin = "8.0.2"
+androidxCompose = "1.4.3"
+androidxComposeCompiler = "1.4.6"
+dokka = "1.8.10"
+jetbrainsCompose = "1.4.1"
 junit4 = "4.13.2"
-kotlin = "1.6.21"
-kotlinWrappers = "17.0.2-pre.316-kotlin-1.6.10"
-kotlinxCoroutines = "1.6.0"
+kotlin = "1.8.20"
+kotlinWrappers = "18.2.0-pre.584"
+kotlinxCoroutines = "1.7.2"
 richtext = "0.13.0"
 turbine = "0.7.0"
 
@@ -46,3 +47,15 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 richtext-commonmark= { group = "com.halilibo.compose-richtext", name = "richtext-commonmark", version.ref = "richtext" }
 richtext-material= { group = "com.halilibo.compose-richtext", name = "richtext-ui-material", version.ref = "richtext" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+androidx-compose = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrainsCompose" }
+jetbrains-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

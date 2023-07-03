@@ -15,6 +15,7 @@
  */
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 
 /*
  * Copyright 2021 Google LLC
@@ -31,7 +32,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 plugins {
     kotlin("multiplatform")
@@ -82,6 +82,7 @@ kotlin {
             binaryOptions["memoryModel"] = "experimental"
         }
     }
+    configureKotlinJvm()
 }
 
 allprojects {

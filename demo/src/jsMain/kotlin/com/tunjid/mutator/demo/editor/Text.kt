@@ -17,6 +17,7 @@
 package com.tunjid.mutator.demo.editor
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.key
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.backgroundColor
@@ -33,8 +34,8 @@ import react.FC
 import react.Props
 import react.ReactElement
 import react.create
-import react.dom.render
-import react.dom.unmountComponentAtNode
+import react.dom.client.createRoot
+import web.dom.Element
 
 
 @Composable
@@ -107,17 +108,10 @@ private fun ElementScope<HTMLElement>.UseReactEffect(
     key: Any?,
     content: ReactElement<*>
 ) {
-    DomSideEffect(key = key) { htmlElement ->
-        render(
-            element = content,
-            container = htmlElement
-        )
-    }
-
-    DisposableRefEffect { htmlElement ->
-        onDispose {
-            unmountComponentAtNode(htmlElement)
-        }
+    DisposableEffect(key1 = key) {
+        val root = createRoot(scopeElement as Element)
+        root.render(content)
+        onDispose { root.unmount() }
     }
 }
 

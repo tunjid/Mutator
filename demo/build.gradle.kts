@@ -17,6 +17,7 @@
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
+    id("kotlin-jvm-convention")
 }
 
 kotlin {
@@ -55,13 +56,13 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation(compose.web.core)
+                implementation(compose.html.core)
 
                 implementation(libs.kotlin.wrappers.react)
                 implementation(libs.kotlin.wrappers.reactDom)
 
-                implementation(npm("react", "17.0.2"))
-                implementation(npm("react-dom", "17.0.2"))
+                implementation(npm("react", "18.2.0"))
+                implementation(npm("react-dom", "18.2.0"))
                 implementation(npm("highlight.js", "10.7.2"))
                 implementation(npm("react-markdown", "6.0.3"))
 
