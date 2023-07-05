@@ -18,18 +18,19 @@ package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.ActionStateProducer
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.StateProducer
+import com.tunjid.mutator.StateHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-typealias DeferredStateReader<State> = StateProducer<suspend () -> State>
+typealias SuspendingStateHolder<State> = StateHolder<suspend () -> State>
 
 /**
  * Defines a [ActionStateProducer] to convert a [Flow] of [Action] into a [StateFlow] of [State].
@@ -52,7 +53,7 @@ fun <Action : Any, State : Any> CoroutineScope.actionStateFlowProducer(
     started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
     mutationFlows: List<Flow<Mutation<State>>> = listOf(),
     stateTransform: (Flow<State>) -> Flow<State> = { it },
-    actionTransform: DeferredStateReader<State>.(Flow<Action>) -> Flow<Mutation<State>>
+    actionTransform: SuspendingStateHolder<State>.(Flow<Action>) -> Flow<Mutation<State>> = { emptyFlow() }
 ): ActionStateProducer<Action, StateFlow<State>> = ActionStateFlowProducer(
     coroutineScope = this,
     initialState = initialState,
@@ -65,10 +66,10 @@ fun <Action : Any, State : Any> CoroutineScope.actionStateFlowProducer(
 private class ActionStateFlowProducer<Action : Any, State : Any>(
     coroutineScope: CoroutineScope,
     initialState: State,
-    started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
-    mutationFlows: List<Flow<Mutation<State>>> = listOf(),
+    started: SharingStarted,
+    mutationFlows: List<Flow<Mutation<State>>>,
     stateTransform: (Flow<State>) -> Flow<State> = { it },
-    actionTransform: DeferredStateReader<State>.(Flow<Action>) -> Flow<Mutation<State>>
+    actionTransform: SuspendingStateHolder<State>.(Flow<Action>) -> Flow<Mutation<State>>
 ) : ActionStateProducer<Action, StateFlow<State>>,
     suspend () -> State {
 
@@ -76,7 +77,7 @@ private class ActionStateFlowProducer<Action : Any, State : Any>(
 
     // Allows for reading the current state in concurrent contexts.
     // Note that it suspends to prevent reading state before this class is fully constructed
-    private val stateReader = object : DeferredStateReader<State> {
+    private val stateReader = object : SuspendingStateHolder<State> {
         override val state: suspend () -> State = this@ActionStateFlowProducer
     }
 

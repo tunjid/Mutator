@@ -17,7 +17,6 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.mutation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow
@@ -68,7 +67,7 @@ data class TransformationContext<Action : Any>(
 fun <Action : Any, State : Any> Flow<Action>.toMutationStream(
     keySelector: (Action) -> String = Any::defaultKeySelector,
     // Ergonomic hack to simulate multiple receivers
-    transform: TransformationContext<Action>.() -> Flow<Mutation<State>>
+    transform: suspend TransformationContext<Action>.() -> Flow<Mutation<State>>
 ): Flow<Mutation<State>> = splitByType(
     typeSelector = { it },
     keySelector = keySelector,
@@ -91,7 +90,7 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
     typeSelector: (Input) -> Selector,
     keySelector: (Selector) -> String = Any::defaultKeySelector,
     // Ergonomic hack to simulate multiple receivers
-    transform: TransformationContext<Selector>.() -> Flow<Output>
+    transform: suspend TransformationContext<Selector>.() -> Flow<Output>
 ): Flow<Output> =
     channelFlow mutationFlow@{
         val keysToFlowHolders = mutableMapOf<String, FlowHolder<Selector>>()

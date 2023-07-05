@@ -25,6 +25,8 @@ interface Mutator<State : Any> {
     suspend fun mutate(mutation: Mutation<State>)
 }
 
+typealias StateHolder<State> = StateProducer<State>
+
 interface StateProducer<State : Any> {
     val state: State
 }
@@ -50,7 +52,3 @@ operator fun <T : Any> Mutation<T>.plus(other: Mutation<T>) = mutation<T> inner@
     val result = this@plus(this@inner)
     other.invoke(result)
 }
-
-fun <State : Any> ActionStateProducer<Mutation<State>, *>.accept(
-    mutation: State.() -> State
-) = accept(mutation)
