@@ -22,9 +22,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -92,6 +95,57 @@ class ActionStateProducerKtTest {
             // Subtract 5, then wait till its processed
             mutator.accept(IntAction.Subtract(value = 5))
             assertEquals(State(count = -3.0), awaitItem())
+
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        scope.cancel()
+    }
+
+    @Test
+    fun actionStateFlowProducerSuspendsWithNoSubscribers() = runTest {
+        val dispatcher = StandardTestDispatcher()
+        val scope = CoroutineScope(SupervisorJob() + dispatcher)
+
+        val mutator = scope.actionStateFlowProducer<IntAction, State>(
+            initialState = State(),
+            started = SharingStarted.WhileSubscribed(),
+            actionTransform = { actions ->
+                actions
+                    .onEach { delay(1000) }
+                    .toMutationStream {
+                    when (val action = type()) {
+                        is IntAction.Add -> action.flow
+                            .map { it.mutation }
+
+                        is IntAction.Subtract -> action.flow
+                            .map { it.mutation }
+                    }
+                }
+            }
+        )
+
+        mutator.accept(IntAction.Add(value = 1))
+        mutator.accept(IntAction.Add(value = 1))
+        mutator.accept(IntAction.Add(value = 1))
+        mutator.accept(IntAction.Add(value = 1))
+
+        mutator.state.test {
+            // Read first emission, should be the initial value
+            assertEquals(State(), awaitItem())
+
+            // Queue should be drained
+            dispatcher.scheduler.advanceTimeBy(1000)
+            assertEquals(State(1.0), awaitItem())
+
+            dispatcher.scheduler.advanceTimeBy(1000)
+            assertEquals(State(2.0), awaitItem())
+
+            dispatcher.scheduler.advanceTimeBy(1000)
+            assertEquals(State(3.0), awaitItem())
+
+            dispatcher.scheduler.advanceTimeBy(1000)
+            assertEquals(State(4.0), awaitItem())
 
             cancelAndIgnoreRemainingEvents()
         }
