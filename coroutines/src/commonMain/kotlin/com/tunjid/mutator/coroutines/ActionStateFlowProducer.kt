@@ -20,13 +20,13 @@ import com.tunjid.mutator.ActionStateProducer
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.StateHolder
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -73,7 +73,7 @@ private class ActionStateFlowProducer<Action : Any, State : Any>(
 ) : ActionStateProducer<Action, StateFlow<State>>,
     suspend () -> State {
 
-    private val actions = MutableSharedFlow<Action>()
+    private val actions = Channel<Action>()
 
     // Allows for reading the current state in concurrent contexts.
     // Note that it suspends to prevent reading state before this class is fully constructed
@@ -86,17 +86,12 @@ private class ActionStateFlowProducer<Action : Any, State : Any>(
             initialState = initialState,
             started = started,
             stateTransform = stateTransform,
-            mutationFlows = mutationFlows + actionTransform(stateReader, actions)
+            mutationFlows = mutationFlows + actionTransform(stateReader, actions.receiveAsFlow())
         )
 
     override val accept: (Action) -> Unit = { action ->
         coroutineScope.launch {
-            // Suspend till downstream is connected
-            // 1 subscriber is enough as only the most recent state is necessary
-            if (actions.subscriptionCount.value < 1) {
-                actions.subscriptionCount.first { it > 0 }
-            }
-            actions.emit(action)
+            actions.send(action)
         }
     }
 
