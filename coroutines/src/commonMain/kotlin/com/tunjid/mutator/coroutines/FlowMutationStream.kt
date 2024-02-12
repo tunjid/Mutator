@@ -17,12 +17,13 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutation
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 
 /**
  * Class holding the context of the [Action] emitted that is being split out into
@@ -39,7 +40,7 @@ data class TransformationContext<Action : Any>(
     /**
      * A convenience for the backing [Flow] of the [Action] subtype  from the parent [Flow]
      */
-    @Suppress("unused", "UNCHECKED_CAST")
+    @Suppress("unused", "UNCHECKED_CAST", "UnusedReceiverParameter")
     inline val <reified Subtype : Action> Subtype.flow: Flow<Subtype>
         get() = backing as Flow<Subtype>
 
@@ -54,7 +55,13 @@ data class TransformationContext<Action : Any>(
  * transforms on subtypes of [Action]. This allows for certain actions to be processed differently
  * than others. For example: a certain action may need to only cause mutations on distinct
  * emissions, whereas other actions may need to use more complex [Flow] transformations like
- * [Flow.flatMapMerge] and so on.
+ * [Flow.flatMapMerge] and so on. It does so by creating a [Channel] for each subtype.
+ *
+ * [capacity]: The capacity for the [Channel] created for each subtype. See the [Channel] factory
+ * function for details.
+ *
+ * [onBufferOverflow]: The behavior of the [Channel] on overflow. See the [BufferOverflow]
+ * for details.
  *
  *  [keySelector]: The mapping for the [Action] to the key used to identify it. This is useful
  *  for nested class hierarchies. By default each distinct type will be split out, but if you want
@@ -65,13 +72,17 @@ data class TransformationContext<Action : Any>(
  * @see [splitByType]
  */
 fun <Action : Any, State : Any> Flow<Action>.toMutationStream(
+    capacity: Int = Channel.BUFFERED,
+    onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
     keySelector: (Action) -> String = Any::defaultKeySelector,
     // Ergonomic hack to simulate multiple receivers
     transform: suspend TransformationContext<Action>.() -> Flow<Mutation<State>>
 ): Flow<Mutation<State>> = splitByType(
+    capacity = capacity,
+    onBufferOverflow = onBufferOverflow,
     typeSelector = { it },
     keySelector = keySelector,
-    transform = transform
+    transform = transform,
 )
 
 /**
@@ -87,6 +98,8 @@ fun <Action : Any, State : Any> Flow<Action>.toMutationStream(
  * [transform]: a function for mapping independent [Flow]s of [Selector] to [Flow]s of [Output]
  */
 fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
+    capacity: Int,
+    onBufferOverflow: BufferOverflow,
     typeSelector: (Input) -> Selector,
     keySelector: (Selector) -> String = Any::defaultKeySelector,
     // Ergonomic hack to simulate multiple receivers
@@ -100,7 +113,11 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
                 val flowKey = keySelector(selected)
                 when (val existingHolder = keysToFlowHolders[flowKey]) {
                     null -> {
-                        val holder = FlowHolder(selected)
+                        val holder = FlowHolder(
+                            capacity = capacity,
+                            onBufferOverflow = onBufferOverflow,
+                            firstEmission = selected
+                        )
                         keysToFlowHolders[flowKey] = holder
                         val context = TransformationContext(selected, holder.exposedFlow)
                         val mutationFlow = transform(context)
@@ -108,9 +125,7 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
                     }
 
                     else -> {
-                        // Wait for downstream to be connected
-                        existingHolder.internalSharedFlow.subscriptionCount.first { it > 0 }
-                        existingHolder.internalSharedFlow.emit(selected)
+                        existingHolder.internalSharedFlow.send(selected)
                     }
                 }
             }
@@ -125,10 +140,17 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
  * a [Flow] of [Action]
  */
 private data class FlowHolder<Action>(
+    val capacity: Int,
+    val onBufferOverflow: BufferOverflow,
     val firstEmission: Action,
 ) {
-    val internalSharedFlow: MutableSharedFlow<Action> = MutableSharedFlow()
-    val exposedFlow: Flow<Action> = internalSharedFlow.onStart { emit(firstEmission) }
+    val internalSharedFlow: Channel<Action> = Channel(
+        capacity = capacity,
+        onBufferOverflow = onBufferOverflow,
+    )
+    val exposedFlow: Flow<Action> = internalSharedFlow
+        .receiveAsFlow()
+        .onStart { emit(firstEmission) }
 }
 
 private fun Any.defaultKeySelector(): String = this::class.simpleName
