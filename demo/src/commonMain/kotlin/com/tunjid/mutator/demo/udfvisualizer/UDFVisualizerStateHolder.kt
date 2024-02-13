@@ -22,7 +22,7 @@ import com.tunjid.mutator.ActionStateProducer
 import com.tunjid.mutator.coroutines.actionStateFlowProducer
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.intervalFlow
-import com.tunjid.mutator.mutation
+import com.tunjid.mutator.mutationOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -77,15 +77,15 @@ fun udfVisualizerStateHolder(
     scope: CoroutineScope
 ): ActionStateProducer<Event, StateFlow<State>> = scope.actionStateFlowProducer(
     initialState = State(),
-    mutationFlows = listOf(frames()),
+    inputs = listOf(frames()),
     actionTransform = { it.stateMutations() },
 )
 
 private fun frames(): Flow<Mutation<State>> = intervalFlow(10)
-    .map { mutation { advanceFrame() } }
+    .map { mutationOf { advanceFrame() } }
 
 private fun Flow<Event>.stateMutations(): Flow<Mutation<State>> =
-    map { mutation { this + it } }
+    map { mutationOf { this + it } }
 
 /**
  * Reduces the [action] into the [State]

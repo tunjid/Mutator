@@ -33,12 +33,12 @@ import kotlinx.coroutines.launch
 fun <State : Any> CoroutineScope.stateFlowProducer(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(),
-    mutationFlows: List<Flow<Mutation<State>>>
+    inputs: List<Flow<Mutation<State>>>
 ) = StateFlowProducer(
     scope = this,
     initialState = initialState,
     started = started,
-    mutationFlows = mutationFlows
+    inputs = inputs
 )
 
 /**
@@ -48,14 +48,14 @@ class StateFlowProducer<State : Any> internal constructor(
     private val scope: CoroutineScope,
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(),
-    mutationFlows: List<Flow<Mutation<State>>>
+    inputs: List<Flow<Mutation<State>>>
 ) : StateProducer<StateFlow<State>> {
     private val parallelExecutedTasks = MutableSharedFlow<Flow<Mutation<State>>>()
 
     override val state = scope.produceState(
         initialState = initialState,
         started = started,
-        mutationFlows = mutationFlows + parallelExecutedTasks.flatMapMerge(
+        inputs = inputs + parallelExecutedTasks.flatMapMerge(
             concurrency = Int.MAX_VALUE,
             transform = { it }
         )

@@ -31,14 +31,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
- * Produces a [StateFlow] by merging [mutationFlows] and reducing them into an
+ * Produces a [StateFlow] by merging [inputs] and reducing them into an
  * [initialState] state within [this] [CoroutineScope]
  */
 fun <State : Any> CoroutineScope.produceState(
     initialState: State,
     started: SharingStarted,
     stateTransform: (Flow<State>) -> Flow<State> = { it },
-    mutationFlows: List<Flow<Mutation<State>>>
+    inputs: List<Flow<Mutation<State>>>
 ): StateFlow<State> {
     // Set the seed for the state
     var seed = initialState
@@ -47,7 +47,7 @@ fun <State : Any> CoroutineScope.produceState(
     return stateTransform(
         flow {
             emitAll(
-                merge(*mutationFlows.toTypedArray())
+                merge(*inputs.toTypedArray())
                     // Reduce into the seed so if resubscribed, the last value of state is persisted
                     // when the flow pipeline is started again
                     .reduceInto(seed)
