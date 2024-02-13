@@ -75,7 +75,7 @@ class Snail8StateHolder(
     private val stateProducer = scope.stateFlowProducer(
         initialState = Snail8State(),
         started = SharingStarted.WhileSubscribed(),
-        mutationFlows = listOf(
+        inputs = listOf(
             speedChanges,
             progressChanges,
         )

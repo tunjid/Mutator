@@ -60,7 +60,7 @@ class StateProductionKtTest {
         val state = scope.produceState(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
-            mutationFlows = listOf(
+            inputs = listOf(
                 eventMutations
             )
         )
@@ -79,7 +79,7 @@ class StateProductionKtTest {
         val state = scope.produceState(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
-            mutationFlows = listOf(
+            inputs = listOf(
                 eventMutations
             )
         )
@@ -105,7 +105,7 @@ class StateProductionKtTest {
         val state = scope.produceState(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
-            mutationFlows = listOf(
+            inputs = listOf(
                 eventMutations,
                 flow {
                     delay(1000)

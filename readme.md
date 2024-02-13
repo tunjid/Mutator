@@ -43,7 +43,7 @@ At the moment, there are two implementations:
 fun <State : Any> CoroutineScope.stateFlowProducer(
     initialState: State,
     started: SharingStarted,
-    mutationFlows: List<Flow<Mutation<State>>>
+    inputs: List<Flow<Mutation<State>>>
 ): StateProducer<StateFlow<State>>  
 ```
 
@@ -53,7 +53,7 @@ and
 fun <Action : Any, State : Any> CoroutineScope.actionStateFlowProducer(
     initialState: State,
     started: SharingStarted,
-    mutationFlows: List<Flow<Mutation<State>>>,
+    inputs: List<Flow<Mutation<State>>>,
     actionTransform: (Flow<Action>) -> Flow<Mutation<State>>
 ): StateProducer<StateFlow<State>>
 ```

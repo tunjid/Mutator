@@ -51,14 +51,14 @@ typealias SuspendingStateHolder<State> = StateHolder<suspend () -> State>
 fun <Action : Any, State : Any> CoroutineScope.actionStateFlowProducer(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
-    mutationFlows: List<Flow<Mutation<State>>> = listOf(),
+    inputs: List<Flow<Mutation<State>>> = listOf(),
     stateTransform: (Flow<State>) -> Flow<State> = { it },
     actionTransform: SuspendingStateHolder<State>.(Flow<Action>) -> Flow<Mutation<State>> = { emptyFlow() }
 ): ActionStateProducer<Action, StateFlow<State>> = ActionStateFlowProducer(
     coroutineScope = this,
     initialState = initialState,
     started = started,
-    mutationFlows = mutationFlows,
+    inputs = inputs,
     stateTransform = stateTransform,
     actionTransform = actionTransform
 )
@@ -67,7 +67,7 @@ private class ActionStateFlowProducer<Action : Any, State : Any>(
     coroutineScope: CoroutineScope,
     initialState: State,
     started: SharingStarted,
-    mutationFlows: List<Flow<Mutation<State>>>,
+    inputs: List<Flow<Mutation<State>>>,
     stateTransform: (Flow<State>) -> Flow<State> = { it },
     actionTransform: SuspendingStateHolder<State>.(Flow<Action>) -> Flow<Mutation<State>>
 ) : ActionStateProducer<Action, StateFlow<State>>,
@@ -86,7 +86,7 @@ private class ActionStateFlowProducer<Action : Any, State : Any>(
             initialState = initialState,
             started = started,
             stateTransform = stateTransform,
-            mutationFlows = mutationFlows + actionTransform(stateReader, actions.receiveAsFlow())
+            inputs = inputs + actionTransform(stateReader, actions.receiveAsFlow())
         )
 
     override val accept: (Action) -> Unit = { action ->

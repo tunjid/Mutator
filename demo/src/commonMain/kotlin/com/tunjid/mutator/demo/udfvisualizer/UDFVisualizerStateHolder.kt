@@ -77,7 +77,7 @@ fun udfVisualizerStateHolder(
     scope: CoroutineScope
 ): ActionStateProducer<Event, StateFlow<State>> = scope.actionStateFlowProducer(
     initialState = State(),
-    mutationFlows = listOf(frames()),
+    inputs = listOf(frames()),
     actionTransform = { it.stateMutations() },
 )
 
