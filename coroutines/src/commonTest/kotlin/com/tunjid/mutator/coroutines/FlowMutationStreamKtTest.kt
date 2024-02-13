@@ -16,7 +16,7 @@
 
 package com.tunjid.mutator.coroutines
 
-import com.tunjid.mutator.mutation
+import com.tunjid.mutator.mutationOf
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asFlow
@@ -210,14 +210,14 @@ class FlowMutationStreamKtTest {
                 when (val type = type()) {
                     is Split.Action.Regular -> type.flow
                         .map {
-                            mutation { copy(regularCount = regularCount + 1) }
+                            mutationOf { copy(regularCount = regularCount + 1) }
                         }
 
                     is Split.Action.Delayed -> type.flow
                         .map {
                             // Delay when processing this action
                             delay(1000)
-                            mutation { copy(delayedCount = delayedCount + 1) }
+                            mutationOf { copy(delayedCount = delayedCount + 1) }
                         }
                 }
             }
