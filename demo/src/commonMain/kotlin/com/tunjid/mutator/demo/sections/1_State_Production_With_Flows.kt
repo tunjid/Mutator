@@ -60,7 +60,7 @@ private val headingMarkdown = """
 private val introMarkdown = """
 By [Adetunji Dahunsi](https://twitter.com/Tunji_D).
 
-State is what is. A declaration of things known at a certain point in time. As time passes however, state changes as data sources backing the state are updated and events happen. In mobile apps this presents a challenge; defining a convenient and concise means to produce state over time.
+State is what it is. A declaration of things known at a certain point in time. As time passes however, state changes as data sources backing the state are updated and events happen. In mobile apps this presents a challenge; defining a convenient and concise means to produce state over time.
 
 This page is a [Jetpack Compose](https://developer.android.com/jetpack/compose?gclid=Cj0KCQjwzqSWBhDPARIsAK38LY-nnY_1sTpVvpENJZD5ek-tE18e3MvzE1hXlILdw7uYx1Y47zsvcXkaAlGJEALw_wcB&gclsrc=aw.ds) for [web](https://compose-web.ui.pages.jetbrains.team/) powered interactive experiment that highlights various ways of producing state with a [Flow](https://kotlinlang.org/docs/flow.html). At the end of it, you should have a mental framework to help choose a state production pipeline that is most beneficial to your use cases.
 
@@ -79,8 +79,8 @@ Producing state is at its core, is nothing more than consolidating sources of ch
 
 While the tenets of UDF are simple, there's a bit more to implementing it properly especially with `Flows`. Let's start simple. In the following we have a snail along a track. The snail has the following properties:
 
-* It's progress along the track.
-* It's color.
+* Its progress along the track.
+* Its color.
 
 An easy way to represent the state production pipeline for the snail is with a single `MutableStateFlow`: 
 """.trimIndent()
