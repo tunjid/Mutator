@@ -43,7 +43,7 @@ private val twoCode = """
 fun <State: Any> CoroutineScope.stateFlowProducer(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(),
-    mutationFlows: List<Flow<Mutation<State>>>
+    inputs: List<Flow<Mutation<State>>>
 ) : StateFlowProducer<State>
 """.trimIndent()
 
@@ -63,7 +63,7 @@ class Snail7StateHolder(
     private val stateProducer = scope.stateFlowProducer(
         initialState = Snail7State(),
         started = SharingStarted.WhileSubscribed(),
-        mutationFlows = listOf(
+        inputs = listOf(
             speedChanges,
             progressChanges,
         )

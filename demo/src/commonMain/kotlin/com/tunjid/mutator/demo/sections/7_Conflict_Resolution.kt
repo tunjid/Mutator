@@ -180,7 +180,7 @@ class Snail11StateHolder(
     private val mutator = scope.actionStateFlowProducer<Action, Snail11State>(
         initialState = Snail11State(),
         started = SharingStarted.WhileSubscribed(),
-        mutationFlows = listOf(
+        inputs = listOf(
             speedChanges,
             progressChanges
         ),
@@ -239,7 +239,7 @@ private val nineMarkdown = """
     
 In the above, all there are two sources of state `Mutation`s:
 
-* Data sources in the `mutationFlows` argument; defined as `Flow<Mutation<State>>`
+* Data sources in the `inputs` argument; defined as `Flow<Mutation<State>>`
 * User events in the `actionTransform` argument; defined as `(Flow<Action>) -> Flow<Mutation<State>>`
    
 Crucially the `actionTransform` takes a `Flow` of all `Action` instances, splits them out into individual `Flow`s for each `Action`, and finally applies `Flow` transformations to each `Action` `Flow` to turn them into `Flow<Mutation<State>>`:
