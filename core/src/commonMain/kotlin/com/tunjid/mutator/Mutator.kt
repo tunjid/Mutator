@@ -17,17 +17,17 @@
 package com.tunjid.mutator
 
 /**
- * Type definition for a unit of change for a type [T].
+ * Type definition for a unit of change for a type [State].
  */
 typealias Mutation<State> = State.() -> State
 
-typealias StateHolder<State> = StateProducer<State>
+typealias StateHolder<State> = StateMutator<State>
 
-interface StateProducer<State : Any> {
+interface StateMutator<State : Any> {
     val state: State
 }
 
-interface ActionStateProducer<Action : Any, State : Any> : StateProducer<State> {
+interface ActionStateMutator<Action : Any, State : Any> : StateMutator<State> {
     val accept: (Action) -> Unit
 }
 
