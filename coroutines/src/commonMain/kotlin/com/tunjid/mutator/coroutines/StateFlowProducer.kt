@@ -17,17 +17,15 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.Mutator
 import com.tunjid.mutator.StateProducer
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 fun <State : Any> CoroutineScope.stateFlowProducer(
@@ -50,15 +48,13 @@ class StateFlowProducer<State : Any> internal constructor(
     started: SharingStarted = SharingStarted.WhileSubscribed(),
     inputs: List<Flow<Mutation<State>>>
 ) : StateProducer<StateFlow<State>> {
-    private val parallelExecutedTasks = MutableSharedFlow<Flow<Mutation<State>>>()
+    private val mutationChannel = Channel<Mutation<State>>()
+    private val mutationSender = FlowCollector(mutationChannel::send)
 
     override val state = scope.produceState(
         initialState = initialState,
         started = started,
-        inputs = inputs + parallelExecutedTasks.flatMapMerge(
-            concurrency = Int.MAX_VALUE,
-            transform = { it }
-        )
+        inputs = inputs + mutationChannel.receiveAsFlow()
     )
 
     /**
@@ -69,20 +65,8 @@ class StateFlowProducer<State : Any> internal constructor(
      * a collector begins to collect from [state].
      */
     fun launch(
-        block: suspend Mutator<State>.() -> Unit
-    ) {
-        scope.launch {
-            // Suspend till downstream is connected
-            parallelExecutedTasks.subscriptionCount.first { it > 0 }
-            parallelExecutedTasks.emit(flow {
-                block(this.asMutator())
-            })
-        }
-    }
-}
-
-private fun <State : Any> FlowCollector<Mutation<State>>.asMutator() = object : Mutator<State> {
-    override suspend fun mutate(mutation: Mutation<State>) {
-        this@asMutator.emit(mutation)
+        block: suspend FlowCollector<Mutation<State>>.() -> Unit
+    ): Job = scope.launch {
+        block(mutationSender)
     }
 }

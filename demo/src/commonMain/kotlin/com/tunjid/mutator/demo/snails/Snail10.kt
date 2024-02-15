@@ -62,7 +62,7 @@ val Snail10State.cardColor: Color get() = colors.last()
 val Snail10State.textColor: Color get() = if (cardColor.isBright()) Color.Black else Color.LightGray
 
 class Snail10StateHolder(
-    private val scope: CoroutineScope
+    scope: CoroutineScope
 ) {
 
     private var setModeJob: Job? = null
@@ -87,22 +87,22 @@ class Snail10StateHolder(
     val state: StateFlow<Snail10State> = stateProducer.state
 
     fun setSnailColor(index: Int) = stateProducer.launch {
-        mutate { copy(colorIndex = index) }
+        emit { copy(colorIndex = index) }
     }
 
     fun setProgress(progress: Float) = stateProducer.launch {
-        mutate { copy(progress = progress) }
+        emit { copy(progress = progress) }
     }
 
     fun setMode(isDark: Boolean) = stateProducer.launch {
         setModeJob?.cancel()
         setModeJob = currentCoroutineContext()[Job]
-        mutate { copy(isDark = isDark) }
+        emit { copy(isDark = isDark) }
         interpolateColors(
             startColors = state.value.colors.map(Color::argb).toIntArray(),
             endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
         ).collect { (progress, colors) ->
-            mutate {
+            emit {
                 copy(
                     colorInterpolationProgress = progress,
                     colors = colors
@@ -148,7 +148,13 @@ fun Snail10() {
                     colors = state.colors,
                     onColorClicked = {
                         stateHolder.setSnailColor(it)
-                        udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Tint(state.colors[it])))
+                        udfStateHolder.accept(
+                            Event.UserTriggered(
+                                metadata = Marble.Metadata.Tint(
+                                    state.colors[it]
+                                )
+                            )
+                        )
                     }
                 )
                 SnailText(

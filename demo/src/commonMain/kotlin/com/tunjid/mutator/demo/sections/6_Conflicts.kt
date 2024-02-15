@@ -52,13 +52,13 @@ class Snail8StateHolder(
     ...
 
     fun setMode(isDark: Boolean) = stateProducer.launch {
-        mutate { copy(isDark = isDark) }
+        emit { copy(isDark = isDark) }
         /* Collect from a flow that animates color changes */
         interpolateColors(
             startColors = state.value.colors.map(Color::argb).toIntArray(),
             endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
         ).collect { (progress, colors) ->
-            mutate {
+            emit {
                 copy(
                     colorInterpolationProgress = progress,
                     colors = colors

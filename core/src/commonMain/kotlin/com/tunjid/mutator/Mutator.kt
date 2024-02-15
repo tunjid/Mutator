@@ -21,10 +21,6 @@ package com.tunjid.mutator
  */
 typealias Mutation<State> = State.() -> State
 
-interface Mutator<State : Any> {
-    suspend fun mutate(mutation: Mutation<State>)
-}
-
 typealias StateHolder<State> = StateProducer<State>
 
 interface StateProducer<State : Any> {
