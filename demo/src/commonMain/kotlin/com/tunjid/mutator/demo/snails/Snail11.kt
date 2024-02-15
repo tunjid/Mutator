@@ -23,7 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.actionStateFlowProducer
+import com.tunjid.mutator.coroutines.actionStateFlowMutator
 import com.tunjid.mutator.coroutines.toMutationStream
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
@@ -93,7 +93,7 @@ class Snail11StateHolder(
         .map { mutationOf { copy(progress = (progress + 1) % 100) } }
 
 
-    private val mutator = scope.actionStateFlowProducer<Action, Snail11State>(
+    private val mutator = scope.actionStateFlowMutator<Action, Snail11State>(
         initialState = Snail11State(),
         started = SharingStarted.WhileSubscribed(),
         inputs = listOf(

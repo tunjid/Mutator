@@ -17,7 +17,7 @@
 package com.tunjid.mutator.coroutines
 
 import app.cash.turbine.test
-import com.tunjid.mutator.ActionStateProducer
+import com.tunjid.mutator.ActionStateMutator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -37,7 +37,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ActionStateProducerKtTest {
+class ActionStateMutatorKtTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -52,10 +52,10 @@ class ActionStateProducerKtTest {
     }
 
     @Test
-    fun actionStateFlowProducerRemembersLastValue() = runTest {
+    fun actionStateFlowMutatorRemembersLastValue() = runTest {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-        val mutator = scope.actionStateFlowProducer<IntAction, State>(
+        val mutator = scope.actionStateFlowMutator<IntAction, State>(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             actionTransform = { actions ->
@@ -103,11 +103,11 @@ class ActionStateProducerKtTest {
     }
 
     @Test
-    fun actionStateFlowProducerSuspendsWithNoSubscribers() = runTest {
+    fun actionStateFlowMutatorSuspendsWithNoSubscribers() = runTest {
         val dispatcher = StandardTestDispatcher()
         val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
-        val mutator = scope.actionStateFlowProducer<IntAction, State>(
+        val mutator = scope.actionStateFlowMutator<IntAction, State>(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             actionTransform = { actions ->
@@ -155,12 +155,12 @@ class ActionStateProducerKtTest {
 
     @Test
     fun noOpOperatorCompiles() {
-        val noOpActionStateProducer: ActionStateProducer<Action, StateFlow<State>> = State().asNoOpStateFlowMutator()
-        noOpActionStateProducer.accept(IntAction.Add(value = 1))
+        val noOpActionStateMutator: ActionStateMutator<Action, StateFlow<State>> = State().asNoOpStateFlowMutator()
+        noOpActionStateMutator.accept(IntAction.Add(value = 1))
 
         assertEquals(
             expected = State(),
-            actual = noOpActionStateProducer.state.value
+            actual = noOpActionStateMutator.state.value
         )
     }
 }

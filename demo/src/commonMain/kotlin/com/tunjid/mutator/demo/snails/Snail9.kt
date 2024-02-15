@@ -23,7 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.stateFlowProducer
+import com.tunjid.mutator.coroutines.stateFlowMutator
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
@@ -73,7 +73,7 @@ class Snail9StateHolder(
         .toInterval()
         .map { mutationOf { copy(progress = (progress + 1) % 100) } }
 
-    private val stateProducer = scope.stateFlowProducer(
+    private val stateMutator = scope.stateFlowMutator(
         initialState = Snail9State(),
         started = SharingStarted.WhileSubscribed(),
         inputs = listOf(
@@ -82,17 +82,17 @@ class Snail9StateHolder(
         )
     )
 
-    val state: StateFlow<Snail9State> = stateProducer.state
+    val state: StateFlow<Snail9State> = stateMutator.state
 
-    fun setSnailColor(index: Int) = stateProducer.launch {
+    fun setSnailColor(index: Int) = stateMutator.launch {
         emit { copy(colorIndex = index) }
     }
 
-    fun setProgress(progress: Float) = stateProducer.launch {
+    fun setProgress(progress: Float) = stateMutator.launch {
         emit { copy(progress = progress) }
     }
 
-    fun setMode(isDark: Boolean) = stateProducer.launch {
+    fun setMode(isDark: Boolean) = stateMutator.launch {
         if (state.value.isInterpolating) return@launch
         emit { copy(isDark = isDark, isInterpolating = true) }
         interpolateColors(

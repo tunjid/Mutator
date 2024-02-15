@@ -16,7 +16,7 @@
 
 package com.tunjid.mutator.coroutines
 
-import com.tunjid.mutator.ActionStateProducer
+import com.tunjid.mutator.ActionStateMutator
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.StateHolder
 import kotlinx.coroutines.CoroutineScope
@@ -33,9 +33,9 @@ import kotlinx.coroutines.launch
 typealias SuspendingStateHolder<State> = StateHolder<suspend () -> State>
 
 /**
- * Defines a [ActionStateProducer] to convert a [Flow] of [Action] into a [StateFlow] of [State].
+ * Defines a [ActionStateMutator] to convert a [Flow] of [Action] into a [StateFlow] of [State].
  *
- * [this@actionStateFlowProducer]: The [CoroutineScope] for the resulting [StateFlow]. Any [Action]s sent if there are no
+ * [this@actionStateFlowMutator]: The [CoroutineScope] for the resulting [StateFlow]. Any [Action]s sent if there are no
  * subscribers to the output [StateFlow] will suspend until there is as least one subscriber.
  *
  * [initialState]: The seed state for the resulting [StateFlow].
@@ -48,13 +48,13 @@ typealias SuspendingStateHolder<State> = StateHolder<suspend () -> State>
  * of state that will be reduced into the [initialState]. This is often achieved through the
  * [toMutationStream] [Flow] extension function.
  */
-fun <Action : Any, State : Any> CoroutineScope.actionStateFlowProducer(
+fun <Action : Any, State : Any> CoroutineScope.actionStateFlowMutator(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
-    inputs: List<Flow<Mutation<State>>> = listOf(),
+    inputs: List<Flow<Mutation<State>>> = emptyList(),
     stateTransform: (Flow<State>) -> Flow<State> = { it },
     actionTransform: SuspendingStateHolder<State>.(Flow<Action>) -> Flow<Mutation<State>> = { emptyFlow() }
-): ActionStateProducer<Action, StateFlow<State>> = ActionStateFlowProducer(
+): ActionStateMutator<Action, StateFlow<State>> = ActionStateFlowMutator(
     coroutineScope = this,
     initialState = initialState,
     started = started,
@@ -63,14 +63,14 @@ fun <Action : Any, State : Any> CoroutineScope.actionStateFlowProducer(
     actionTransform = actionTransform
 )
 
-private class ActionStateFlowProducer<Action : Any, State : Any>(
+private class ActionStateFlowMutator<Action : Any, State : Any>(
     coroutineScope: CoroutineScope,
     initialState: State,
     started: SharingStarted,
     inputs: List<Flow<Mutation<State>>>,
     stateTransform: (Flow<State>) -> Flow<State> = { it },
     actionTransform: SuspendingStateHolder<State>.(Flow<Action>) -> Flow<Mutation<State>>
-) : ActionStateProducer<Action, StateFlow<State>>,
+) : ActionStateMutator<Action, StateFlow<State>>,
     suspend () -> State {
 
     private val actions = Channel<Action>()
@@ -78,11 +78,11 @@ private class ActionStateFlowProducer<Action : Any, State : Any>(
     // Allows for reading the current state in concurrent contexts.
     // Note that it suspends to prevent reading state before this class is fully constructed
     private val stateReader = object : SuspendingStateHolder<State> {
-        override val state: suspend () -> State = this@ActionStateFlowProducer
+        override val state: suspend () -> State = this@ActionStateFlowMutator
     }
 
     override val state: StateFlow<State> =
-        coroutineScope.produceState(
+        coroutineScope.mutateState(
             initialState = initialState,
             started = started,
             stateTransform = stateTransform,
@@ -105,10 +105,10 @@ private class ActionStateFlowProducer<Action : Any, State : Any>(
  *
  * This is typically useful for testing or previews
  */
-fun <Action : Any, State : Any> State.asNoOpStateFlowMutator(): ActionStateProducer<Action, StateFlow<State>> =
-    object : ActionStateProducer<Action, StateFlow<State>> {
+fun <Action : Any, State : Any> State.asNoOpStateFlowMutator(): ActionStateMutator<Action, StateFlow<State>> =
+    object : ActionStateMutator<Action, StateFlow<State>> {
         override val accept: (Action) -> Unit = {}
         override val state: StateFlow<State> = MutableStateFlow(this@asNoOpStateFlowMutator)
     }
 
-private const val DEFAULT_STOP_TIMEOUT_MILLIS = 5000L
+internal const val DEFAULT_STOP_TIMEOUT_MILLIS = 5000L

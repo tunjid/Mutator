@@ -23,7 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.stateFlowProducer
+import com.tunjid.mutator.coroutines.stateFlowMutator
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
@@ -76,7 +76,7 @@ class Snail10StateHolder(
         .toInterval()
         .map { mutationOf { copy(progress = (progress + 1) % 100) } }
 
-    private val stateProducer = scope.stateFlowProducer(
+    private val stateMutator = scope.stateFlowMutator(
         initialState = Snail10State(),
         started = SharingStarted.WhileSubscribed(),
         inputs = listOf(
@@ -84,17 +84,17 @@ class Snail10StateHolder(
             progressChanges,
         )
     )
-    val state: StateFlow<Snail10State> = stateProducer.state
+    val state: StateFlow<Snail10State> = stateMutator.state
 
-    fun setSnailColor(index: Int) = stateProducer.launch {
+    fun setSnailColor(index: Int) = stateMutator.launch {
         emit { copy(colorIndex = index) }
     }
 
-    fun setProgress(progress: Float) = stateProducer.launch {
+    fun setProgress(progress: Float) = stateMutator.launch {
         emit { copy(progress = progress) }
     }
 
-    fun setMode(isDark: Boolean) = stateProducer.launch {
+    fun setMode(isDark: Boolean) = stateMutator.launch {
         setModeJob?.cancel()
         setModeJob = currentCoroutineContext()[Job]
         emit { copy(isDark = isDark) }

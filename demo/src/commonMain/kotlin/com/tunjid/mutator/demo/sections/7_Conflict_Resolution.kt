@@ -65,12 +65,12 @@ class Snail9StateHolder(
     private val scope: CoroutineScope
 ) {
 
-    private val stateProducer = scope.stateFlowProducer(
+    private val stateMutator = scope.stateFlowMutator(
         ...
     )   
     ...
 
-    fun setMode(isDark: Boolean) = stateProducer.launch {
+    fun setMode(isDark: Boolean) = stateMutator.launch {
         if (state.value.isInterpolating) return@launch
         emit { copy(isDark = isDark, isInterpolating = true) }
         interpolateColors(
@@ -107,13 +107,13 @@ class Snail10StateHolder(
     private val scope: CoroutineScope
 ) {
 
-    private val stateProducer = scope.stateFlowProducer(
+    private val stateMutator = scope.stateFlowMutator(
         ...
     )   
     private var setModeJob: Job? = null
     ...
 
-    fun setMode(isDark: Boolean) = stateProducer.launch {
+    fun setMode(isDark: Boolean) = stateMutator.launch {
         setModeJob?.cancel()
         setModeJob = currentCoroutineContext()[Job]
         mutate { copy(isDark = isDark) }
@@ -177,7 +177,7 @@ class Snail11StateHolder(
 
     private val progressChanges: Flow<Mutation<Snail11State>> = …
 
-    private val mutator = scope.actionStateFlowProducer<Action, Snail11State>(
+    private val mutator = scope.actionStateFlowMutator<Action, Snail11State>(
         initialState = Snail11State(),
         started = SharingStarted.WhileSubscribed(),
         inputs = listOf(
