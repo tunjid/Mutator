@@ -72,15 +72,15 @@ class Snail9StateHolder(
 
     fun setMode(isDark: Boolean) = stateProducer.launch {
         if (state.value.isInterpolating) return@launch
-        mutate { copy(isDark = isDark, isInterpolating = true) }
+        emit { copy(isDark = isDark, isInterpolating = true) }
         interpolateColors(
             ...
         ).collect { (progress, colors) ->
-            mutate {
+            emit {
                 copy(...)
             }
         }
-        mutate { copy(isInterpolating = false) }
+        emit { copy(isInterpolating = false) }
     }    
 }
 """.trimIndent()

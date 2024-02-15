@@ -60,7 +60,7 @@ val Snail8State.cardColor: Color get() = colors.last()
 val Snail8State.textColor: Color get() = if (cardColor.isBright()) Color.Black else Color.LightGray
 
 class Snail8StateHolder(
-    private val scope: CoroutineScope
+    scope: CoroutineScope
 ) {
 
     private val speed: Flow<Speed> = scope.speedFlow()
@@ -84,21 +84,21 @@ class Snail8StateHolder(
     val state: StateFlow<Snail8State> = stateProducer.state
 
     fun setSnailColor(index: Int) = stateProducer.launch {
-        mutate { copy(colorIndex = index) }
+        emit { copy(colorIndex = index) }
     }
 
     fun setProgress(progress: Float) = stateProducer.launch {
-        mutate { copy(progress = progress) }
+        emit { copy(progress = progress) }
     }
 
     fun setMode(isDark: Boolean) = stateProducer.launch {
-        mutate { copy(isDark = isDark) }
+        emit { copy(isDark = isDark) }
         // Collect from a flow that animates color changes
         interpolateColors(
             startColors = state.value.colors.map(Color::argb).toIntArray(),
             endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
         ).collect { (progress, colors) ->
-            mutate {
+            emit {
                 copy(
                     colorInterpolationProgress = progress,
                     colors = colors
