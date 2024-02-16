@@ -100,11 +100,11 @@ class SnailStateHolder(
     private val speed: Flow<Speed> = scope.speedFlow()
 
     private val speedChanges: Flow<Mutation<Snail7State>> = speed
-        .map { mutation { copy(speed = it) } }
+        .map { mutationOf { copy(speed = it) } }
 
     private val progressChanges: Flow<Mutation<Snail7State>> = speed
         .toInterval()
-        .map { mutation { copy(progress = (progress + 1) % 100) } }
+        .map { mutationOf { copy(progress = (progress + 1) % 100) } }
 
     private val stateMutator = scope.stateFlowMutator(
         initialState = Snail7State(),
@@ -166,11 +166,11 @@ A `StateFlow` `Mutator` of the above can be created by:
                     when (val action = type()) {
                         is Action.Add -> action.flow
                             .map {
-                                mutation { copy(count = count + value) }
+                                mutationOf { copy(count = count + value) }
                             }
                         is Action.Subtract -> action.flow
                             .map {
-                                mutation { copy(count = count - value) }
+                                mutationOf { copy(count = count - value) }
                             }
                     }
                 }
@@ -206,7 +206,7 @@ val mutator = scope.actionStateFlowMutator<Action, State>(
                 is Action.Fetch -> action.flow
                     .map { fetch ->
                         val fetched = repository.get(fetch.query)
-                        mutation {
+                        mutationOf {
                             copy(
                                 items = (items + fetched).sortedWith(comparator),
                             )
@@ -214,7 +214,7 @@ val mutator = scope.actionStateFlowMutator<Action, State>(
                     }
                 is Action.Sort -> action.flow
                     .mapLatest { sort ->
-                        mutation {
+                        mutationOf {
                             copy(
                                 comparator = sort.comparator,
                                 items = items.sortedWith(comparator)
