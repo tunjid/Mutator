@@ -23,7 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.coroutines.stateFlowProducer
+import com.tunjid.mutator.coroutines.stateFlowMutator
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
@@ -36,7 +36,7 @@ import com.tunjid.mutator.demo.udfvisualizer.Event
 import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
-import com.tunjid.mutator.mutation
+import com.tunjid.mutator.mutationOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -57,29 +57,29 @@ class Snail7StateHolder(
     private val speed: Flow<Speed> = scope.speedFlow()
 
     private val speedChanges: Flow<Mutation<Snail7State>> = speed
-        .map { mutation { copy(speed = it) } }
+        .map { mutationOf { copy(speed = it) } }
 
     private val progressChanges: Flow<Mutation<Snail7State>> = speed
         .toInterval()
-        .map { mutation { copy(progress = (progress + 1) % 100) } }
+        .map { mutationOf { copy(progress = (progress + 1) % 100) } }
 
-    private val stateProducer = scope.stateFlowProducer(
+    private val stateMutator = scope.stateFlowMutator(
         initialState = Snail7State(),
         started = SharingStarted.WhileSubscribed(),
-        mutationFlows = listOf(
+        inputs = listOf(
             speedChanges,
             progressChanges,
         )
     )
 
-    val state: StateFlow<Snail7State> = stateProducer.state
+    val state: StateFlow<Snail7State> = stateMutator.state
 
-    fun setSnailColor(index: Int) = stateProducer.launch {
-        mutate { copy(color = colors[index]) }
+    fun setSnailColor(index: Int) = stateMutator.launch {
+        emit { copy(color = colors[index]) }
     }
 
-    fun setProgress(progress: Float) = stateProducer.launch {
-        mutate { copy(progress = progress) }
+    fun setProgress(progress: Float) = stateMutator.launch {
+        emit { copy(progress = progress) }
     }
 }
 

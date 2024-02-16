@@ -40,11 +40,11 @@ The merge approach can be formalized into an extension function on the `Coroutin
 """.trimIndent()
 
 private val twoCode = """
-fun <State: Any> CoroutineScope.stateFlowProducer(
+fun <State: Any> CoroutineScope.stateFlowMutator(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(),
-    mutationFlows: List<Flow<Mutation<State>>>
-) : StateFlowProducer<State>
+    inputs: List<Flow<Mutation<State>>>
+) : StateFlowMutator<State>
 """.trimIndent()
 
 private val threeMarkdown = """
@@ -60,23 +60,23 @@ class Snail7StateHolder(
 
     private val progressChanges: Flow<Mutation<Snail7State>> = …
 
-    private val stateProducer = scope.stateFlowProducer(
+    private val stateMutator = scope.stateFlowMutator(
         initialState = Snail7State(),
         started = SharingStarted.WhileSubscribed(),
-        mutationFlows = listOf(
+        inputs = listOf(
             speedChanges,
             progressChanges,
         )
     )
 
-    val state: StateFlow<Snail7State> = stateProducer.state
+    val state: StateFlow<Snail7State> = stateMutator.state
 
-    fun setSnailColor(index: Int) = stateProducer.launch {
-        mutate { copy(color = colors[index]) }
+    fun setSnailColor(index: Int) = stateMutator.launch {
+        emit { copy(color = colors[index]) }
     }
 
-    fun setProgress(progress: Float) = stateProducer.launch {
-        mutate { copy(progress = progress) }
+    fun setProgress(progress: Float) = stateMutator.launch {
+        emit { copy(progress = progress) }
     }
 } 
 """.trimIndent()

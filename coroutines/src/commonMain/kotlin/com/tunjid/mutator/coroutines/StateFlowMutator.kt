@@ -17,72 +17,58 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.Mutator
-import com.tunjid.mutator.StateProducer
+import com.tunjid.mutator.StateMutator
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-fun <State : Any> CoroutineScope.stateFlowProducer(
+fun <State : Any> CoroutineScope.stateFlowMutator(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(),
-    mutationFlows: List<Flow<Mutation<State>>>
-) = StateFlowProducer(
+    inputs: List<Flow<Mutation<State>>>
+) = StateFlowMutator(
     scope = this,
     initialState = initialState,
     started = started,
-    mutationFlows = mutationFlows
+    inputs = inputs
 )
 
 /**
  * Manges state production for [State]
  */
-class StateFlowProducer<State : Any> internal constructor(
+class StateFlowMutator<State : Any> internal constructor(
     private val scope: CoroutineScope,
     initialState: State,
-    started: SharingStarted = SharingStarted.WhileSubscribed(),
-    mutationFlows: List<Flow<Mutation<State>>>
-) : StateProducer<StateFlow<State>> {
-    private val parallelExecutedTasks = MutableSharedFlow<Flow<Mutation<State>>>()
+    started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
+    inputs: List<Flow<Mutation<State>>> = emptyList(),
+    stateTransform: (Flow<State>) -> Flow<State> = { it },
+) : StateMutator<StateFlow<State>> {
+    private val mutationChannel = Channel<Mutation<State>>()
+    private val mutationSender = FlowCollector(mutationChannel::send)
 
-    override val state = scope.produceState(
+    override val state = scope.mutateState(
         initialState = initialState,
         started = started,
-        mutationFlows = mutationFlows + parallelExecutedTasks.flatMapMerge(
-            concurrency = Int.MAX_VALUE,
-            transform = { it }
-        )
+        stateTransform = stateTransform,
+        inputs = inputs + mutationChannel.receiveAsFlow()
     )
 
     /**
      * Runs [block] in parallel with any other tasks submitted to [launch]. [block] is only ever run if there is an
-     * active collector of [state], and is managed under the [SharingStarted] policy passed to this [StateProducer].
+     * active collector of [state], and is managed under the [SharingStarted] policy passed to this [StateMutator].
      *
      * If there are no observers of [state] at the invocation of [launch], the Coroutine launched will suspend till
      * a collector begins to collect from [state].
      */
     fun launch(
-        block: suspend Mutator<State>.() -> Unit
-    ) {
-        scope.launch {
-            // Suspend till downstream is connected
-            parallelExecutedTasks.subscriptionCount.first { it > 0 }
-            parallelExecutedTasks.emit(flow {
-                block(this.asMutator())
-            })
-        }
-    }
-}
-
-private fun <State : Any> FlowCollector<Mutation<State>>.asMutator() = object : Mutator<State> {
-    override suspend fun mutate(mutation: Mutation<State>) {
-        this@asMutator.emit(mutation)
+        block: suspend FlowCollector<Mutation<State>>.() -> Unit
+    ): Job = scope.launch {
+        block(mutationSender)
     }
 }

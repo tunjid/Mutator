@@ -65,22 +65,22 @@ class Snail9StateHolder(
     private val scope: CoroutineScope
 ) {
 
-    private val stateProducer = scope.stateFlowProducer(
+    private val stateMutator = scope.stateFlowMutator(
         ...
     )   
     ...
 
-    fun setMode(isDark: Boolean) = stateProducer.launch {
+    fun setMode(isDark: Boolean) = stateMutator.launch {
         if (state.value.isInterpolating) return@launch
-        mutate { copy(isDark = isDark, isInterpolating = true) }
+        emit { copy(isDark = isDark, isInterpolating = true) }
         interpolateColors(
             ...
         ).collect { (progress, colors) ->
-            mutate {
+            emit {
                 copy(...)
             }
         }
-        mutate { copy(isInterpolating = false) }
+        emit { copy(isInterpolating = false) }
     }    
 }
 """.trimIndent()
@@ -107,13 +107,13 @@ class Snail10StateHolder(
     private val scope: CoroutineScope
 ) {
 
-    private val stateProducer = scope.stateFlowProducer(
+    private val stateMutator = scope.stateFlowMutator(
         ...
     )   
     private var setModeJob: Job? = null
     ...
 
-    fun setMode(isDark: Boolean) = stateProducer.launch {
+    fun setMode(isDark: Boolean) = stateMutator.launch {
         setModeJob?.cancel()
         setModeJob = currentCoroutineContext()[Job]
         mutate { copy(isDark = isDark) }
@@ -177,10 +177,10 @@ class Snail11StateHolder(
 
     private val progressChanges: Flow<Mutation<Snail11State>> = …
 
-    private val mutator = scope.actionStateFlowProducer<Action, Snail11State>(
+    private val mutator = scope.actionStateFlowMutator<Action, Snail11State>(
         initialState = Snail11State(),
         started = SharingStarted.WhileSubscribed(),
-        mutationFlows = listOf(
+        inputs = listOf(
             speedChanges,
             progressChanges
         ),
@@ -239,7 +239,7 @@ private val nineMarkdown = """
     
 In the above, all there are two sources of state `Mutation`s:
 
-* Data sources in the `mutationFlows` argument; defined as `Flow<Mutation<State>>`
+* Data sources in the `inputs` argument; defined as `Flow<Mutation<State>>`
 * User events in the `actionTransform` argument; defined as `(Flow<Action>) -> Flow<Mutation<State>>`
    
 Crucially the `actionTransform` takes a `Flow` of all `Action` instances, splits them out into individual `Flow`s for each `Action`, and finally applies `Flow` transformations to each `Action` `Flow` to turn them into `Flow<Mutation<State>>`:

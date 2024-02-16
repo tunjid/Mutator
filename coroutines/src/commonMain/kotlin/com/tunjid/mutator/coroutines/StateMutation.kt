@@ -19,7 +19,6 @@ package com.tunjid.mutator.coroutines
 import com.tunjid.mutator.Mutation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emitAll
@@ -28,17 +27,16 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 /**
- * Produces a [StateFlow] by merging [mutationFlows] and reducing them into an
+ * Produces a [StateFlow] by merging [inputs] and reducing them into an
  * [initialState] state within [this] [CoroutineScope]
  */
-fun <State : Any> CoroutineScope.produceState(
+fun <State : Any> CoroutineScope.mutateState(
     initialState: State,
     started: SharingStarted,
-    stateTransform: (Flow<State>) -> Flow<State> = { it },
-    mutationFlows: List<Flow<Mutation<State>>>
+    inputs: List<Flow<Mutation<State>>>,
+    stateTransform: (Flow<State>) -> Flow<State> = { it }
 ): StateFlow<State> {
     // Set the seed for the state
     var seed = initialState
@@ -47,7 +45,7 @@ fun <State : Any> CoroutineScope.produceState(
     return stateTransform(
         flow {
             emitAll(
-                merge(*mutationFlows.toTypedArray())
+                merge(*inputs.toTypedArray())
                     // Reduce into the seed so if resubscribed, the last value of state is persisted
                     // when the flow pipeline is started again
                     .reduceInto(seed)
@@ -63,18 +61,5 @@ fun <State : Any> CoroutineScope.produceState(
         )
 }
 
-
 fun <State : Any> Flow<Mutation<State>>.reduceInto(initialState: State): Flow<State> =
     scan(initialState) { state, mutation -> mutation(state) }
-
-/**
- * Helper function to run the provided [block] in the [scope]
- */
-fun <T : Any> MutableSharedFlow<Mutation<T>>.withScope(
-    scope: CoroutineScope,
-    block: suspend MutableSharedFlow<Mutation<T>>.() -> Unit
-) {
-    scope.launch {
-        block()
-    }
-}

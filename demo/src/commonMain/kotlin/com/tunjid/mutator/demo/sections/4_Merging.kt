@@ -83,8 +83,8 @@ To produce state then, we simply have to start with an initial state, and increm
 Expressing this in code with `Flows` is very concise and requires just two operators:
 
 
-* `merge`: Used to merge all sources of `Mutation<State>` (Δstate) into a single stream
-* `scan`: Used to reduce the stream of `Mutation<State>` into the state being produced.
+* [`merge`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/merge.html): Used to merge all sources of `Mutation<State>` (Δstate) into a single stream
+* [`scan`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/scan.html): Used to reduce the stream of `Mutation<State>` into the state being produced.
 
 In our snail example, we can express the same state production pipeline with user actions as:    
 """.trimIndent()
@@ -113,7 +113,7 @@ class Snail5StateHolder(
         speedChanges,
         changeEvents,
     )
-        .scan(Snail5State()) { state, mutation -> mutation(state) }
+        .scan(Snail5State()) { startState, mutation -> mutation(startState) }
         .stateIn(...)
 
     fun setSnailColor(index: Int) {
@@ -150,7 +150,7 @@ It however brings the following advantages:
 
 The switch to `MutableSharedFlow` from `MutableStateFlow` for propagating user actions is because `StateFlow` conflates emissions. If two separate methods attempted to use the same `MutableStateFlow` to emit a `Mutation` of state, the `StateFlow` may only emit the latest `Mutation`. That is `MutableStateFlow` does not guarantee that every update to its `value` property is seen by its collectors.
 
-`MutableSharedFlow` on the other hand has an `emit` method which suspends until the `Mutation` is delivered. This means that multiple coroutines can be launched across several method invocations and call `emit` on the same `MutableShared` `Flow` and none of them will cancel out the other. The order in which they are applied also don't matter as `Mutation` instances just describe changes to state; they are designed to be independent.
+`MutableSharedFlow` on the other hand has an `emit` method which suspends until the `Mutation` is delivered. This means that multiple coroutines can be launched across several method invocations and call `emit` on the same `MutableShared` `Flow` and none of them will cancel out the other. The order in which they are applied also doesn't matter as `Mutation` instances just describe changes to state; they are designed to be independent.
    
 """.trimIndent()
 
@@ -193,7 +193,7 @@ Drag the snail to place it anywhere on its track. Also, try to hold it in place 
 private val nineMarkdown = """
 That is, we can simply introduce a state change to the `progress` property of the state despite the `progessChanges` flow also contributing to a change of the same property. This is something that would be rather difficult with the `combine` approach. This is because the combine approach only lets you set state properties of state to create new state. The `merge` approach instead lets you `mutate` or change properties of state and apply them to the existing state.  
   
-Furthermore both `setSnailColor` and `setProgress` contribute their changes to state using the same  `MutableSharedFlow`: `changeEvents`. This approach scales well because no mater how many methods are added that change the `State` from user events, they don't need any more variables to be declared in the state holder class. 
+Furthermore both `setSnailColor` and `setProgress` contribute their changes to state using the same  `MutableSharedFlow`: `changeEvents`. This approach scales well because no matter how many methods are added that change the `State` from user events, they don't need any more variables to be declared in the state holder class.
 """.trimIndent()
 
 private val tenMarkdown = """

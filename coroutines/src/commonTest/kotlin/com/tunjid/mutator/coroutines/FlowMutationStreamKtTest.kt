@@ -16,6 +16,9 @@
 
 package com.tunjid.mutator.coroutines
 
+import com.tunjid.mutator.mutationOf
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -23,6 +26,7 @@ import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -171,6 +175,113 @@ class FlowMutationStreamKtTest {
                 DoubleAction.Divide(value = 3.0),
             ),
             doubleActions
+        )
+    }
+
+    object Split {
+        sealed class Action {
+            object Regular : Action()
+            object Delayed : Action()
+        }
+
+        data class State(
+            val regularCount: Int = 0,
+            val delayedCount: Int = 0,
+        )
+    }
+
+
+    @Test
+    fun stream_splitting_channels_can_be_configured() = runTest {
+        val actions = listOf(
+            Split.Action.Delayed,
+            Split.Action.Delayed,
+            Split.Action.Regular,
+            Split.Action.Regular,
+            Split.Action.Delayed,
+            Split.Action.Regular,
+        )
+        val testFlow = actions
+            .asFlow()
+            .toMutationStream<Split.Action, Split.State>(
+                capacity = 1,
+                onBufferOverflow = BufferOverflow.SUSPEND,
+            ) {
+                when (val type = type()) {
+                    is Split.Action.Regular -> type.flow
+                        .map {
+                            mutationOf { copy(regularCount = regularCount + 1) }
+                        }
+
+                    is Split.Action.Delayed -> type.flow
+                        .map {
+                            // Delay when processing this action
+                            delay(1000)
+                            mutationOf { copy(delayedCount = delayedCount + 1) }
+                        }
+                }
+            }
+            .reduceInto(Split.State())
+
+        val output = testFlow.take(count = 7).toList()
+
+        assertEquals(
+            expected = Split.State(
+                regularCount = 0,
+                delayedCount = 0,
+            ),
+            actual = output[0]
+        )
+
+        assertEquals(
+            expected = Split.State(
+                regularCount = 1,
+                delayedCount = 0,
+            ),
+            actual = output[1]
+        )
+
+        assertEquals(
+            expected = Split.State(
+                regularCount = 2,
+                delayedCount = 0,
+            ),
+            actual = output[2]
+        )
+
+        // Buffer is full for delayed here, so the next action processed must be a delayed one.
+        assertEquals(
+            expected = Split.State(
+                regularCount = 2,
+                delayedCount = 1,
+            ),
+            actual = output[3]
+        )
+
+        // The buffer is now open for delayed actions, regular actions can be processed.
+        assertEquals(
+            expected = Split.State(
+                regularCount = 3,
+                delayedCount = 1,
+            ),
+            actual = output[4]
+        )
+
+        // Process remaining delayed actions.
+        assertEquals(
+            expected = Split.State(
+                regularCount = 3,
+                delayedCount = 2,
+            ),
+            actual = output[5]
+        )
+
+        assertEquals(
+            expected = Split.State(
+                regularCount = 3,
+                delayedCount = 3,
+            ),
+            actual = output[6]
         )
     }
 }

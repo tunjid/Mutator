@@ -18,7 +18,7 @@ package com.tunjid.mutator.coroutines
 
 import app.cash.turbine.test
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.mutation
+import com.tunjid.mutator.mutationOf
 import com.tunjid.mutator.plus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,10 +57,10 @@ class StateProductionKtTest {
 
     @Test
     fun test_simple_state_production() = runTest {
-        val state = scope.produceState(
+        val state = scope.mutateState(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
-            mutationFlows = listOf(
+            inputs = listOf(
                 eventMutations
             )
         )
@@ -76,10 +76,10 @@ class StateProductionKtTest {
 
     @Test
     fun test_state_production_persists_after_unsubscribing() = runTest {
-        val state = scope.produceState(
+        val state = scope.mutateState(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
-            mutationFlows = listOf(
+            inputs = listOf(
                 eventMutations
             )
         )
@@ -102,17 +102,17 @@ class StateProductionKtTest {
 
     @Test
     fun test_state_production_with_merged_flows() = runTest {
-        val state = scope.produceState(
+        val state = scope.mutateState(
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
-            mutationFlows = listOf(
+            inputs = listOf(
                 eventMutations,
                 flow {
                     delay(1000)
-                    emit(mutation { copy(count = 3.0) })
+                    emit(mutationOf { copy(count = 3.0) })
 
                     delay(1000)
-                    emit(mutation { copy(count = 7.0) })
+                    emit(mutationOf { copy(count = 7.0) })
                 }
             )
         )
@@ -135,13 +135,13 @@ class StateProductionKtTest {
 
     @Test
     fun test_state_change_addition() {
-        val additionMutation = mutation<State> {
+        val additionMutation = mutationOf<State> {
             copy(count = count + 1)
         } +
-                mutation {
+                mutationOf {
                     copy(count = count + 1)
                 } +
-                mutation {
+                mutationOf {
                     copy(count = count + 1)
                 }
 

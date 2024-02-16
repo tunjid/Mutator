@@ -17,7 +17,7 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.mutation
+import com.tunjid.mutator.mutationOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flatMapConcat
@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.mapLatest
 inline fun <T, State> Flow<T>.mapToMutation(
     crossinline mapper: State.(T) -> State
 ): Flow<Mutation<State>> =
-    map { mutation { mapper(it) } }
+    map { mutationOf { mapper(it) } }
 
 /**
  * Maps the latest emission of [T] into a single mutation of [State]
@@ -42,7 +42,7 @@ inline fun <T, State> Flow<T>.mapToMutation(
 inline fun <T, State> Flow<T>.mapLatestToMutation(
     crossinline mapper: State.(T) -> State
 ): Flow<Mutation<State>> =
-    mapLatest { mutation { mapper(it) } }
+    mapLatest { mutationOf { mapper(it) } }
 
 /**
  * Maps each emission of [T] into multiple mutations of [State]
