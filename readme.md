@@ -118,11 +118,11 @@ class SnailStateHolder(
     val state: StateFlow<Snail7State> = stateMutator.state
 
     fun setSnailColor(index: Int) = stateMutator.launch {
-        mutate { copy(color = colors[index]) }
+        emit { copy(color = colors[index]) }
     }
 
     fun setProgress(progress: Float) = stateMutator.launch {
-        mutate { copy(progress = progress) }
+        emit { copy(progress = progress) }
     }
 }
 ```
