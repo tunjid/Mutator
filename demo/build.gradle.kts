@@ -16,6 +16,7 @@
 
 plugins {
     kotlin("multiplatform")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
     id("kotlin-jvm-convention")
 }
@@ -52,6 +53,7 @@ kotlin {
                 implementation(libs.jetbrains.compose.foundation.layout)
 
                 implementation(libs.richtext.commonmark)
+                implementation(libs.richtext.material3)
             }
         }
         val jsMain by getting {
