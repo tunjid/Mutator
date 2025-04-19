@@ -23,7 +23,7 @@ plugins {
 
 kotlin {
     jvm("desktop")
-    js(IR) {
+    js {
         browser()
         binaries.executable()
     }
@@ -124,7 +124,6 @@ afterEvaluate {
     rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
         versions.webpackDevServer.version = "4.0.0"
         versions.webpackCli.version = "4.10.0"
-        nodeVersion = "16.0.0"
     }
 }
 
