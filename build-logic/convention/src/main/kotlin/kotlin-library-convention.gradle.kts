@@ -15,6 +15,7 @@
  */
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 
 /*
  * Copyright 2021 Google LLC
@@ -40,6 +41,12 @@ plugins {
 }
 
 kotlin {
+    applyDefaultHierarchyTemplate()
+
+    androidNativeArm32()
+    androidNativeArm64()
+    androidNativeX64()
+    androidNativeX86()
     js(IR) {
         nodejs()
         browser()
@@ -47,25 +54,27 @@ kotlin {
 
     jvm()
 
-    ios()
+    iosX64()
+    iosArm64()
     iosSimulatorArm64()
     linuxX64()
-    macosX64()
+
     macosArm64()
+    macosX64()
+
     mingwX64()
-    tvos()
+
+    tvosArm64()
     tvosSimulatorArm64()
-    watchos()
+    tvosX64()
+
+    watchosArm32()
+    watchosArm64()
+    watchosDeviceArm64()
     watchosSimulatorArm64()
+    watchosX64()
 
     sourceSets {
-        @Suppress("UnusedPrivateMember")
-        val commonMain by getting
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
         all {
             languageSettings.apply {
                 optIn("androidx.compose.animation.ExperimentalAnimationApi")
@@ -74,11 +83,6 @@ kotlin {
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 optIn("kotlinx.coroutines.FlowPreview")
             }
-        }
-    }
-    targets.withType(KotlinNativeTarget::class.java) {
-        binaries.all {
-            binaryOptions["memoryModel"] = "experimental"
         }
     }
     configureKotlinJvm()

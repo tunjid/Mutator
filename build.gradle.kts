@@ -30,7 +30,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+//        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://plugins.gradle.org/m2/")
     }
 }
@@ -38,6 +38,7 @@ buildscript {
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.jetbrains.compose) apply false
     alias(libs.plugins.jetbrains.dokka) apply false
     alias(libs.plugins.kotlin.android) apply false
