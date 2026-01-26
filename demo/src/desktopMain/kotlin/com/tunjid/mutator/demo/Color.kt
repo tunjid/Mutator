@@ -16,9 +16,9 @@
 
 package com.tunjid.mutator.demo
 
+import androidx.compose.ui.graphics.Color as ComposeColor
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.Color as ComposeColor
 
 actual class Color actual constructor(color: Long) {
     internal val composeColor = ComposeColor(color)

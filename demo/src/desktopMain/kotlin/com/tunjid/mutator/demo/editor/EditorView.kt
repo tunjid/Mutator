@@ -60,11 +60,11 @@ actual fun CodeBlock(content: String) = key(content) {
                     Box(
                         Modifier
                             .offset(
-                                x = settings.fontSize.toDp() * 0.5f * settings.maxLineSymbols
+                                x = settings.fontSize.toDp() * 0.5f * settings.maxLineSymbols,
                             )
                             .width(1.dp)
                             .fillMaxWidth()
-                            .background(AppTheme.colors.backgroundLight)
+                            .background(AppTheme.colors.backgroundLight),
                     )
                 }
             }
@@ -86,7 +86,7 @@ private fun Lines(lines: Lines, settings: Settings) = with(LocalDensity.current)
                     modifier = Modifier.align(Alignment.CenterStart),
                     maxNum = maxNum,
                     line = lines[index],
-                    settings = settings
+                    settings = settings,
                 )
             }
         }
@@ -107,7 +107,7 @@ private fun Line(modifier: Modifier, maxNum: String, line: Line, settings: Setti
                 .weight(1f)
 //                .withoutWidthConstraints()
                 .padding(start = 28.dp, end = 12.dp),
-            settings = settings
+            settings = settings,
         )
     }
 }
@@ -118,7 +118,7 @@ private fun LineNumber(number: String, modifier: Modifier, settings: Settings) =
     fontSize = settings.fontSize,
     fontFamily = Fonts.jetbrainsMono(),
     color = LocalContentColor.current.copy(alpha = 0.30f),
-    modifier = modifier.padding(start = 12.dp)
+    modifier = modifier.padding(start = 12.dp),
 )
 
 @Composable
@@ -136,7 +136,7 @@ private fun LineContent(content: Content, modifier: Modifier, settings: Settings
         fontSize = settings.fontSize,
         fontFamily = Fonts.jetbrainsMono(),
         modifier = modifier,
-        softWrap = false
+        softWrap = false,
     )
 }
 
@@ -199,6 +199,6 @@ object AppTheme {
         val keyword: SpanStyle = SpanStyle(Color(0xFFCC7832)),
         val punctuation: SpanStyle = SpanStyle(Color(0xFFA1C17E)),
         val annotation: SpanStyle = SpanStyle(Color(0xFFBBB529)),
-        val comment: SpanStyle = SpanStyle(Color(0xFF808080))
+        val comment: SpanStyle = SpanStyle(Color(0xFF808080)),
     )
 }

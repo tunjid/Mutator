@@ -53,14 +53,14 @@ fun <Action : Any, State : Any> CoroutineScope.actionStateFlowMutator(
     started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
     inputs: List<Flow<Mutation<State>>> = emptyList(),
     stateTransform: (Flow<State>) -> Flow<State> = { it },
-    actionTransform: SuspendingStateHolder<State>.(Flow<Action>) -> Flow<Mutation<State>> = { emptyFlow() }
+    actionTransform: SuspendingStateHolder<State>.(Flow<Action>) -> Flow<Mutation<State>> = { emptyFlow() },
 ): ActionStateMutator<Action, StateFlow<State>> = ActionStateFlowMutator(
     coroutineScope = this,
     initialState = initialState,
     started = started,
     inputs = inputs,
     stateTransform = stateTransform,
-    actionTransform = actionTransform
+    actionTransform = actionTransform,
 )
 
 private class ActionStateFlowMutator<Action : Any, State : Any>(
@@ -69,7 +69,7 @@ private class ActionStateFlowMutator<Action : Any, State : Any>(
     started: SharingStarted,
     inputs: List<Flow<Mutation<State>>>,
     stateTransform: (Flow<State>) -> Flow<State> = { it },
-    actionTransform: SuspendingStateHolder<State>.(Flow<Action>) -> Flow<Mutation<State>>
+    actionTransform: SuspendingStateHolder<State>.(Flow<Action>) -> Flow<Mutation<State>>,
 ) : ActionStateMutator<Action, StateFlow<State>>,
     suspend () -> State {
 
@@ -86,7 +86,7 @@ private class ActionStateFlowMutator<Action : Any, State : Any>(
             initialState = initialState,
             started = started,
             stateTransform = stateTransform,
-            inputs = inputs + actionTransform(stateReader, actions.receiveAsFlow())
+            inputs = inputs + actionTransform(stateReader, actions.receiveAsFlow()),
         )
 
     override val accept: (Action) -> Unit = { action ->

@@ -34,8 +34,8 @@ actual class Color actual constructor(color: Long) {
     actual fun isBright(): Boolean {
         val hsp = sqrt(
             0.299 * (r * r) +
-                    0.587 * (g * g) +
-                    0.114 * (b * b)
+                0.587 * (g * g) +
+                0.114 * (b * b),
         )
         return hsp > 127.5
     }

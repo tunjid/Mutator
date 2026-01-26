@@ -47,11 +47,11 @@ data class Snail7State(
     val progress: Float = 0f,
     val speed: Speed = Speed.One,
     val color: Color = MutedColors.colors(false).first(),
-    val colors: List<Color> = MutedColors.colors(false)
+    val colors: List<Color> = MutedColors.colors(false),
 )
 
 class Snail7StateHolder(
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
 
     private val speed: Flow<Speed> = scope.speedFlow()
@@ -69,7 +69,7 @@ class Snail7StateHolder(
         inputs = listOf(
             speedChanges,
             progressChanges,
-        )
+        ),
     )
 
     val state: StateFlow<Snail7State> = stateMutator.state
@@ -83,7 +83,6 @@ class Snail7StateHolder(
     }
 }
 
-
 @Composable
 fun Snail7() {
     val scope = rememberCoroutineScope()
@@ -95,8 +94,8 @@ fun Snail7() {
         udfStateHolder.accept(
             Event.StateChange(
                 color = state.color,
-                metadata = Marble.Metadata.Text(state.progress.toString())
-            )
+                metadata = Marble.Metadata.Text(state.progress.toString()),
+            ),
         )
     }
 
@@ -104,7 +103,7 @@ fun Snail7() {
         SnailCard {
             VerticalLayout {
                 Paragraph(
-                    text = "Snail7"
+                    text = "Snail7",
                 )
                 Snail(
                     progress = state.progress,
@@ -112,17 +111,17 @@ fun Snail7() {
                     onValueChange = {
                         stateHolder.setProgress(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Text(it.toString())))
-                    }
+                    },
                 )
                 ColorSwatch(
                     colors = state.colors,
                     onColorClicked = {
                         stateHolder.setSnailColor(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Tint(state.colors[it])))
-                    }
+                    },
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}"
+                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}",
                 )
             }
         }

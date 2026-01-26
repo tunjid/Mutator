@@ -66,7 +66,6 @@ kotlin {
                 implementation(npm("react-dom", "18.2.0"))
                 implementation(npm("highlight.js", "11.9.0"))
                 implementation(npm("react-markdown", "9.0.1"))
-
             }
         }
         all {
@@ -76,7 +75,6 @@ kotlin {
             }
         }
     }
-
 }
 
 compose.desktop {
@@ -87,7 +85,7 @@ compose.desktop {
             targetFormats(
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi,
-                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb,
             )
             packageName = "Falling Balls"
             packageVersion = "1.0.0"

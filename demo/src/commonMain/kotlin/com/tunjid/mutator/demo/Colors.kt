@@ -33,7 +33,6 @@ expect class Color(color: Long) {
     }
 }
 
-
 object MutedColors {
     private val mutedColors = listOf(
         Color(0xFF2980b9), // Belize Hole
@@ -50,7 +49,7 @@ object MutedColors {
         Color(0xFF392e3a),
         Color(0xFF3e2a2a),
         Color(0xFF474747),
-        Color(0x292929)
+        Color(0x292929),
     )
 
     fun colors(isDark: Boolean) = if (isDark) darkerMutedColors else mutedColors

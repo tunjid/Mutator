@@ -27,8 +27,7 @@ import com.tunjid.mutator.demo.sections.Section6
 import com.tunjid.mutator.demo.sections.Section7
 
 @Composable
-fun App(
-) {
+fun App() {
     ContainerLayout {
         Section1()
         Section2()

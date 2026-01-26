@@ -21,22 +21,21 @@ import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.MutedColors
 import com.tunjid.mutator.demo.Speed
 
-
 @Composable
 expect fun Illustration(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 )
 
 @Composable
 expect fun SnailCard(
     color: Color = Color(0xFFFFFF),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 )
 
 @Composable
 expect fun SnailText(
     color: Color,
-    text: String
+    text: String,
 )
 
 @Composable
@@ -44,17 +43,17 @@ expect fun Snail(
     progress: Float,
     speed: Speed = Speed.One,
     color: Color = MutedColors.colors(isDark = false).first(),
-    onValueChange: (Float) -> Unit = {}
+    onValueChange: (Float) -> Unit = {},
 )
 
 @Composable
 expect fun ColorSwatch(
     colors: List<Color> = listOf(),
-    onColorClicked: (Int) -> Unit = {}
+    onColorClicked: (Int) -> Unit = {},
 )
 
 @Composable
 expect fun ToggleButton(
     progress: Float,
-    onClicked: () -> Unit = {}
+    onClicked: () -> Unit = {},
 )

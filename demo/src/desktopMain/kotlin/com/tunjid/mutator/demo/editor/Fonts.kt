@@ -29,52 +29,52 @@ object Fonts {
             "JetBrains Mono",
             "jetbrainsmono_regular",
             FontWeight.Normal,
-            FontStyle.Normal
+            FontStyle.Normal,
         ),
         Font(
             "JetBrains Mono",
             "jetbrainsmono_italic",
             FontWeight.Normal,
-            FontStyle.Italic
+            FontStyle.Italic,
         ),
 
         Font(
             "JetBrains Mono",
             "jetbrainsmono_bold",
             FontWeight.Bold,
-            FontStyle.Normal
+            FontStyle.Normal,
         ),
         Font(
             "JetBrains Mono",
             "jetbrainsmono_bold_italic",
             FontWeight.Bold,
-            FontStyle.Italic
+            FontStyle.Italic,
         ),
 
         Font(
             "JetBrains Mono",
             "jetbrainsmono_extrabold",
             FontWeight.ExtraBold,
-            FontStyle.Normal
+            FontStyle.Normal,
         ),
         Font(
             "JetBrains Mono",
             "jetbrainsmono_extrabold_italic",
             FontWeight.ExtraBold,
-            FontStyle.Italic
+            FontStyle.Italic,
         ),
 
         Font(
             "JetBrains Mono",
             "jetbrainsmono_medium",
             FontWeight.Medium,
-            FontStyle.Normal
+            FontStyle.Normal,
         ),
         Font(
             "JetBrains Mono",
             "jetbrainsmono_medium_italic",
             FontWeight.Medium,
-            FontStyle.Italic
-        )
+            FontStyle.Italic,
+        ),
     )
 }

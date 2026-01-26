@@ -20,7 +20,7 @@ import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.mutationOf
 
 data class State(
-    val count: Double = 0.0
+    val count: Double = 0.0,
 )
 
 sealed class Action

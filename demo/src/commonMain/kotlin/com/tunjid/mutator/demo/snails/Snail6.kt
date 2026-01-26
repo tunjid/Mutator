@@ -31,8 +31,8 @@ import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.speedFlow
 import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
-import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
+import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import com.tunjid.mutator.mutationOf
@@ -51,11 +51,11 @@ data class Snail6State(
     val progress: Float = 0f,
     val speed: Speed = Speed.One,
     val color: Color = MutedColors.colors(false).first(),
-    val colors: List<Color> = MutedColors.colors(false)
+    val colors: List<Color> = MutedColors.colors(false),
 )
 
 class Snail6StateHolder(
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
 ) {
 
     private val speed: Flow<Speed> = scope.speedFlow()
@@ -78,7 +78,7 @@ class Snail6StateHolder(
         .stateIn(
             scope = scope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Snail6State()
+            initialValue = Snail6State(),
         )
 
     fun setSnailColor(index: Int) {
@@ -105,8 +105,8 @@ fun Snail6() {
         udfStateHolder.accept(
             Event.StateChange(
                 color = state.color,
-                metadata = Marble.Metadata.Text(state.progress.toString())
-            )
+                metadata = Marble.Metadata.Text(state.progress.toString()),
+            ),
         )
     }
 
@@ -114,7 +114,7 @@ fun Snail6() {
         SnailCard {
             VerticalLayout {
                 Paragraph(
-                    text = "Snail6"
+                    text = "Snail6",
                 )
                 Snail(
                     progress = state.progress,
@@ -122,17 +122,17 @@ fun Snail6() {
                     onValueChange = {
                         stateHolder.setProgress(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Text(it.toString())))
-                    }
+                    },
                 )
                 ColorSwatch(
                     colors = state.colors,
                     onColorClicked = {
                         stateHolder.setSnailColor(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Tint(state.colors[it])))
-                    }
+                    },
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}"
+                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}",
                 )
             }
         }

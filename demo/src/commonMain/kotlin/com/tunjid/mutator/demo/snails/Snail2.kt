@@ -26,8 +26,8 @@ import com.tunjid.mutator.demo.editor.Paragraph
 import com.tunjid.mutator.demo.editor.VerticalLayout
 import com.tunjid.mutator.demo.intervalFlow
 import com.tunjid.mutator.demo.toProgress
-import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
+import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import kotlinx.coroutines.CoroutineScope
@@ -36,14 +36,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
 class Snail2StateHolder(
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     val progress: StateFlow<Float> = intervalFlow(500)
         .toProgress()
         .stateIn(
             scope = scope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = 0f
+            initialValue = 0f,
         )
 }
 
@@ -62,13 +62,13 @@ fun Snail2() {
         SnailCard {
             VerticalLayout {
                 Paragraph(
-                    text = "Snail2"
+                    text = "Snail2",
                 )
                 Snail(
                     progress = state,
                 )
                 Paragraph(
-                    text = "Progress: $state"
+                    text = "Progress: $state",
                 )
             }
         }

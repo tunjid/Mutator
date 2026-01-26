@@ -35,7 +35,7 @@ actual fun ContainerLayout(content: @Composable () -> Unit) {
     val scrollState = rememberScrollState()
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         Column(
             modifier = Modifier
@@ -44,7 +44,7 @@ actual fun ContainerLayout(content: @Composable () -> Unit) {
                 .widthIn(0.dp, 600.dp)
                 .padding(horizontal = 16.dp)
                 .align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             content()
         }
@@ -57,7 +57,7 @@ actual fun SectionLayout(content: @Composable () -> Unit) {
         modifier = Modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        content = { content() }
+        content = { content() },
     )
 }
 
@@ -66,18 +66,18 @@ actual fun VerticalLayout(content: @Composable () -> Unit) {
     Column(
         modifier = Modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        content = { content() }
+        content = { content() },
     )
 }
 
 @Composable
 actual fun HorizontalLayout(
     centerOnMainAxis: Boolean,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Row(
         modifier = Modifier.padding(horizontal = 8.dp),
         horizontalArrangement = if (centerOnMainAxis) Arrangement.Center else Arrangement.Start,
-        content = { content() }
+        content = { content() },
     )
 }

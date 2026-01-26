@@ -20,13 +20,11 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import com.tunjid.mutator.demo.App
 
-
 fun main() {
     singleWindowApplication(
         title = "State",
-        state = WindowState(size = DpSize(800.dp, 800.dp))
+        state = WindowState(size = DpSize(800.dp, 800.dp)),
     ) {
         App()
     }
 }
-

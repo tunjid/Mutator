@@ -31,10 +31,13 @@ import kotlinx.coroutines.flow.shareIn
 const val SPEED = 1600L
 
 enum class Speed(val multiplier: Int) {
-    One(1), Two(2), Three(3), Four(4)
+    One(1),
+    Two(2),
+    Three(3),
+    Four(4),
 }
 
-val Speed.text get() = when(this) {
+val Speed.text get() = when (this) {
     Speed.One -> "1x"
     Speed.Two -> "2x"
     Speed.Three -> "3x"
@@ -64,12 +67,12 @@ fun <T> Flow<T>.toProgress(): Flow<Float> =
 
 data class ColorInterpolationProgress(
     val progress: Float,
-    val colors: List<Color>
+    val colors: List<Color>,
 )
 
 fun interpolateColors(
     startColors: IntArray,
-    endColors: IntArray
+    endColors: IntArray,
 ): Flow<ColorInterpolationProgress> = (0..100).asFlow()
     .onEach { delay(50) }
     .map { percentage ->
@@ -80,7 +83,7 @@ fun interpolateColors(
                 interpolateColors(
                     fraction = fraction,
                     startValue = start,
-                    endValue = end
+                    endValue = end,
                 )
             }
             .map(Int::toLong)

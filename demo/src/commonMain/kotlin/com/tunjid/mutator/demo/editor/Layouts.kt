@@ -30,5 +30,5 @@ expect fun VerticalLayout(content: @Composable () -> Unit)
 @Composable
 expect fun HorizontalLayout(
     centerOnMainAxis: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 )

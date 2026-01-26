@@ -37,12 +37,11 @@ import react.create
 import react.dom.client.createRoot
 import web.dom.Element
 
-
 @Composable
 actual fun Paragraph(text: String) = P(
     content = {
         Text(value = text)
-    }
+    },
 )
 
 @Composable
@@ -55,9 +54,9 @@ actual fun Markdown(content: String) = Div(
             content,
             reactMarkdown.create {
                 children = content
-            }
+            },
         )
-    }
+    },
 )
 
 @Composable
@@ -71,15 +70,15 @@ actual fun CallToAction(
                 "cta",
                 "horizontallyCentered",
                 "centerText".takeIf { centerText },
-            )
+            ),
         )
-    }
+    },
 ) {
     UseReactEffect(
         text,
         reactMarkdown.create {
             children = text
-        }
+        },
     )
 }
 
@@ -106,7 +105,7 @@ actual fun CodeBlock(content: String) = key(content) {
 @Composable
 private fun ElementScope<HTMLElement>.UseReactEffect(
     key: Any?,
-    content: ReactElement<*>
+    content: ReactElement<*>,
 ) {
     DisposableEffect(key1 = key) {
         val root = createRoot(scopeElement as Element)

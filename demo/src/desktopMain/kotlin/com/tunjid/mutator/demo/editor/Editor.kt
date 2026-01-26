@@ -21,25 +21,23 @@ import androidx.compose.ui.unit.sp
 
 data class Settings(
     val fontSize: TextUnit = 13.sp,
-    val maxLineSymbols: Int = 120
+    val maxLineSymbols: Int = 120,
 )
 
 data class Line(val number: Int, val content: Content)
 
 data class Lines(
-    val data: List<String>
+    val data: List<String>,
 ) {
     val size: Int = data.size
     val lineNumberDigitCount: Int = size.toString().length
 
     operator fun get(index: Int): Line = Line(
         number = index,
-        content = Content(data[index], true)
+        content = Content(data[index], true),
     )
 }
 
-
 data class Content(val value: String, val isCode: Boolean)
-
 
 fun String.toCodeLines() = Lines(split("\n"))

@@ -1,16 +1,21 @@
 [versions]
 androidGradlePlugin = "8.13.2"
+axion-release = "1.21.1"
 dokka = "2.1.0"
 composeMultiplatform = "1.10.0"
 junit4 = "4.13.2"
 kotlin = "2.3.0"
 kotlinWrappers = "2026.1.13-19.2.3"
 kotlinxCoroutines = "1.10.2"
+ktlint-cli = "1.8.0"
+mavenPublish = "0.34.0"
 richtext = "0.16.0"
 turbine = "1.1.0"
+spotless = "8.2.0"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+axionRelease-gradlePlugin = { group = "pl.allegro.tech.build.axion-release", name = "pl.allegro.tech.build.axion-release.gradle.plugin", version.ref = "axion-release" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 cashapp-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 compose-multiplatform-animation = { group = "org.jetbrains.compose.animation", name = "animation", version.ref = "composeMultiplatform" }
@@ -32,6 +37,8 @@ kotlin-wrappers-reactDom = { group = "org.jetbrains.kotlin-wrappers", name = "ko
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+ktlint = { group = "com.pinterest.ktlint", name = "ktlint-cli", version.ref = "ktlint-cli" }
+maven-publish-gradlePlugin = { group = "com.vanniktech", name = "gradle-maven-publish-plugin", version.ref = "mavenPublish" }
 richtext-commonmark= { group = "com.halilibo.compose-richtext", name = "richtext-commonmark", version.ref = "richtext" }
 richtext-material= { group = "com.halilibo.compose-richtext", name = "richtext-ui-material", version.ref = "richtext" }
 
@@ -40,9 +47,11 @@ android-application = { id = "com.android.application", version.ref = "androidGr
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 androidx-compose = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+axionRelease = { id = "pl.allegro.tech.build.axion-release", version.ref = "axion-release" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 jetbrains-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

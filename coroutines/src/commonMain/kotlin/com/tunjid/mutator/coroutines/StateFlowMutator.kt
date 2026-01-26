@@ -31,12 +31,12 @@ import kotlinx.coroutines.launch
 fun <State : Any> CoroutineScope.stateFlowMutator(
     initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(),
-    inputs: List<Flow<Mutation<State>>>
+    inputs: List<Flow<Mutation<State>>>,
 ) = StateFlowMutator(
     scope = this,
     initialState = initialState,
     started = started,
-    inputs = inputs
+    inputs = inputs,
 )
 
 /**
@@ -56,7 +56,7 @@ class StateFlowMutator<State : Any> internal constructor(
         initialState = initialState,
         started = started,
         stateTransform = stateTransform,
-        inputs = inputs + mutationChannel.receiveAsFlow()
+        inputs = inputs + mutationChannel.receiveAsFlow(),
     )
 
     /**
@@ -67,7 +67,7 @@ class StateFlowMutator<State : Any> internal constructor(
      * a collector begins to collect from [state].
      */
     fun launch(
-        block: suspend FlowCollector<Mutation<State>>.() -> Unit
+        block: suspend FlowCollector<Mutation<State>>.() -> Unit,
     ): Job = scope.launch {
         block(mutationSender)
     }
