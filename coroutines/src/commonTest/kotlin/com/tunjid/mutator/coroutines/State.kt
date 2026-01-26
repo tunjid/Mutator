@@ -16,12 +16,22 @@
 
 package com.tunjid.mutator.coroutines
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.setValue
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.mutationOf
 
 data class State(
     val count: Double = 0.0,
 )
+
+class SnapshotMutableState(
+    count: Double = 0.0,
+) {
+    var count by mutableDoubleStateOf(count)
+    fun toImmutable() = State(count = count)
+}
 
 sealed class Action
 

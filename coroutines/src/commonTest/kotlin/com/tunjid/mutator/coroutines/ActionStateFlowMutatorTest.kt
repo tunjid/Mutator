@@ -37,7 +37,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 
-class ActionStateMutatorKtTest {
+class ActionStateFlowMutatorTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
