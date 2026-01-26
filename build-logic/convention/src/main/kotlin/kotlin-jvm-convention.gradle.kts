@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
-configureKotlinJvm()
+plugins {
+    kotlin("multiplatform")
+}
+
+kotlin {
+    configureKotlinJvm()
+    jvmToolchain(17)
+}

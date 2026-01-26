@@ -15,7 +15,8 @@
  */
 
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
+    id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
     id("kotlin-jvm-convention")
 }
@@ -32,7 +33,7 @@ kotlin {
                 implementation(project(":core"))
                 implementation(project(":coroutines"))
 
-                implementation(libs.jetbrains.compose.runtime)
+                implementation(libs.compose.multiplatform.runtime)
 
                 implementation(libs.kotlinx.coroutines.core)
             }
@@ -47,9 +48,9 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
 
-                implementation(libs.jetbrains.compose.animation)
-                implementation(libs.jetbrains.compose.material)
-                implementation(libs.jetbrains.compose.foundation.layout)
+                implementation(libs.compose.multiplatform.animation)
+                implementation(libs.compose.multiplatform.material)
+                implementation(libs.compose.multiplatform.foundation.layout)
 
                 implementation(libs.richtext.commonmark)
             }
@@ -63,8 +64,8 @@ kotlin {
 
                 implementation(npm("react", "18.2.0"))
                 implementation(npm("react-dom", "18.2.0"))
-                implementation(npm("highlight.js", "10.7.2"))
-                implementation(npm("react-markdown", "6.0.3"))
+                implementation(npm("highlight.js", "11.9.0"))
+                implementation(npm("react-markdown", "9.0.1"))
 
             }
         }
@@ -100,14 +101,6 @@ compose.desktop {
     }
 }
 
-compose.experimental {
-    web.application {}
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
-}
-
 kotlin {
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         binaries.all {
@@ -115,21 +108,4 @@ kotlin {
             freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
         }
     }
-}
-
-// a temporary workaround for a bug in jsRun invocation - see https://youtrack.jetbrains.com/issue/KT-48273
-afterEvaluate {
-    rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-        versions.webpackDevServer.version = "4.0.0"
-        versions.webpackCli.version = "4.10.0"
-        nodeVersion = "16.0.0"
-    }
-}
-
-
-// TODO: remove when https://youtrack.jetbrains.com/issue/KT-50778 fixed
-project.tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile::class.java).configureEach {
-    kotlinOptions.freeCompilerArgs += listOf(
-        "-Xir-dce-runtime-diagnostic=log"
-    )
 }
