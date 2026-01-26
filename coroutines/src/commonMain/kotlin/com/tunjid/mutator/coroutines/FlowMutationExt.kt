@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.mapLatest
  * @see [Flow.map]
  */
 inline fun <T, State> Flow<T>.mapToMutation(
-    crossinline mapper: State.(T) -> State
+    crossinline mapper: State.(T) -> State,
 ): Flow<Mutation<State>> =
     map { mutationOf { mapper(it) } }
 
@@ -40,7 +40,7 @@ inline fun <T, State> Flow<T>.mapToMutation(
  * @see [Flow.mapLatest]
  */
 inline fun <T, State> Flow<T>.mapLatestToMutation(
-    crossinline mapper: State.(T) -> State
+    crossinline mapper: State.(T) -> State,
 ): Flow<Mutation<State>> =
     mapLatest { mutationOf { mapper(it) } }
 
@@ -49,7 +49,7 @@ inline fun <T, State> Flow<T>.mapLatestToMutation(
  * @see [Flow.flatMapConcat]
  */
 inline fun <T, State> Flow<T>.mapToManyMutations(
-    crossinline block: suspend FlowCollector<Mutation<State>>.(T) -> Unit
+    crossinline block: suspend FlowCollector<Mutation<State>>.(T) -> Unit,
 ): Flow<Mutation<State>> =
     flatMapConcat { flow { block(it) } }
 
@@ -58,6 +58,6 @@ inline fun <T, State> Flow<T>.mapToManyMutations(
  * @see [Flow.flatMapLatest]
  */
 inline fun <T, State> Flow<T>.mapLatestToManyMutations(
-    crossinline block: suspend FlowCollector<Mutation<State>>.(T) -> Unit
+    crossinline block: suspend FlowCollector<Mutation<State>>.(T) -> Unit,
 ): Flow<Mutation<State>> =
     flatMapLatest { flow { block(it) } }

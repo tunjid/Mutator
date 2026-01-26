@@ -33,8 +33,8 @@ import com.tunjid.mutator.demo.interpolateColors
 import com.tunjid.mutator.demo.speedFlow
 import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
-import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
+import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import com.tunjid.mutator.mutationOf
@@ -48,14 +48,13 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 
-
 data class Snail11State(
     val progress: Float = 0f,
     val speed: Speed = Speed.One,
     val isDark: Boolean = false,
     val colorIndex: Int = 0,
     val colorInterpolationProgress: Float = 0F,
-    val colors: List<Color> = MutedColors.colors(false)
+    val colors: List<Color> = MutedColors.colors(false),
 )
 
 val Snail11State.color get() = colors[colorIndex]
@@ -66,21 +65,21 @@ val Snail11State.textColor: Color get() = if (cardColor.isBright()) Color.Black 
 
 sealed class Action {
     data class SetColor(
-        val index: Int
+        val index: Int,
     ) : Action()
 
     data class SetProgress(
-        val progress: Float
+        val progress: Float,
     ) : Action()
 
     data class SetMode(
         val isDark: Boolean,
-        val startColors: List<Color>
+        val startColors: List<Color>,
     ) : Action()
 }
 
 class Snail11StateHolder(
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
 
     private val speed: Flow<Speed> = scope.speedFlow()
@@ -92,13 +91,12 @@ class Snail11StateHolder(
         .toInterval()
         .map { mutationOf { copy(progress = (progress + 1) % 100) } }
 
-
     private val mutator = scope.actionStateFlowMutator<Action, Snail11State>(
         initialState = Snail11State(),
         started = SharingStarted.WhileSubscribed(),
         inputs = listOf(
             speedChanges,
-            progressChanges
+            progressChanges,
         ),
         actionTransform = { actions ->
             actions.toMutationStream {
@@ -108,7 +106,7 @@ class Snail11StateHolder(
                     is Action.SetProgress -> type.flow.progressMutations()
                 }
             }
-        }
+        },
     )
 
     val state: StateFlow<Snail11State> = mutator.state
@@ -132,16 +130,16 @@ class Snail11StateHolder(
                 emitAll(
                     interpolateColors(
                         startColors = startColors.map(Color::argb).toIntArray(),
-                        endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
+                        endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray(),
                     )
                         .map { (progress, colors) ->
                             mutationOf {
                                 copy(
                                     colorInterpolationProgress = progress,
-                                    colors = colors
+                                    colors = colors,
                                 )
                             }
-                        }
+                        },
                 )
             }
         }
@@ -158,8 +156,8 @@ fun Snail11() {
         udfStateHolder.accept(
             Event.StateChange(
                 color = state.color,
-                metadata = Marble.Metadata.Text(state.progress.toString())
-            )
+                metadata = Marble.Metadata.Text(state.progress.toString()),
+            ),
         )
     }
 
@@ -168,7 +166,7 @@ fun Snail11() {
             VerticalLayout {
                 SnailText(
                     color = state.textColor,
-                    text = "Snail11"
+                    text = "Snail11",
                 )
                 Snail(
                     progress = state.progress,
@@ -176,18 +174,18 @@ fun Snail11() {
                     onValueChange = {
                         stateHolder.actions(Action.SetProgress(it))
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Text(it.toString())))
-                    }
+                    },
                 )
                 ColorSwatch(
                     colors = state.colors,
                     onColorClicked = {
                         stateHolder.actions(Action.SetColor(it))
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Tint(state.colors[it])))
-                    }
+                    },
                 )
                 SnailText(
                     color = state.textColor,
-                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}"
+                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}",
                 )
                 ToggleButton(
                     progress = state.colorInterpolationProgress,
@@ -195,18 +193,18 @@ fun Snail11() {
                         stateHolder.actions(
                             Action.SetMode(
                                 isDark = !state.isDark,
-                                startColors = state.colors
-                            )
+                                startColors = state.colors,
+                            ),
                         )
                         udfStateHolder.accept(
                             Event.UserTriggered(
                                 Marble.Metadata.Text(
                                     if (state.isDark) "☀️"
-                                    else "\uD83C\uDF18"
-                                )
-                            )
+                                    else "\uD83C\uDF18",
+                                ),
+                            ),
                         )
-                    }
+                    },
                 )
             }
         }

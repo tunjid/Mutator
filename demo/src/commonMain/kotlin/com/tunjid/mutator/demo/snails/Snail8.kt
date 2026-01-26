@@ -43,14 +43,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 
-
 data class Snail8State(
     val progress: Float = 0f,
     val speed: Speed = Speed.One,
     val isDark: Boolean = false,
     val colorIndex: Int = 0,
     val colorInterpolationProgress: Float = 0F,
-    val colors: List<Color> = MutedColors.colors(false)
+    val colors: List<Color> = MutedColors.colors(false),
 )
 
 val Snail8State.color get() = colors[colorIndex]
@@ -60,7 +59,7 @@ val Snail8State.cardColor: Color get() = colors.last()
 val Snail8State.textColor: Color get() = if (cardColor.isBright()) Color.Black else Color.LightGray
 
 class Snail8StateHolder(
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
 
     private val speed: Flow<Speed> = scope.speedFlow()
@@ -78,7 +77,7 @@ class Snail8StateHolder(
         inputs = listOf(
             speedChanges,
             progressChanges,
-        )
+        ),
     )
 
     val state: StateFlow<Snail8State> = stateMutator.state
@@ -96,12 +95,12 @@ class Snail8StateHolder(
         // Collect from a flow that animates color changes
         interpolateColors(
             startColors = state.value.colors.map(Color::argb).toIntArray(),
-            endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray()
+            endColors = MutedColors.colors(isDark).map(Color::argb).toIntArray(),
         ).collect { (progress, colors) ->
             emit {
                 copy(
                     colorInterpolationProgress = progress,
-                    colors = colors
+                    colors = colors,
                 )
             }
         }
@@ -119,8 +118,8 @@ fun Snail8() {
         udfStateHolder.accept(
             Event.StateChange(
                 color = state.color,
-                metadata = Marble.Metadata.Text(state.progress.toString())
-            )
+                metadata = Marble.Metadata.Text(state.progress.toString()),
+            ),
         )
     }
 
@@ -129,7 +128,7 @@ fun Snail8() {
             VerticalLayout {
                 SnailText(
                     color = state.textColor,
-                    text = "Snail8"
+                    text = "Snail8",
                 )
                 Snail(
                     progress = state.progress,
@@ -137,18 +136,18 @@ fun Snail8() {
                     onValueChange = {
                         stateHolder.setProgress(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Text(it.toString())))
-                    }
+                    },
                 )
                 ColorSwatch(
                     colors = state.colors,
                     onColorClicked = {
                         stateHolder.setSnailColor(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Tint(state.colors[it])))
-                    }
+                    },
                 )
                 SnailText(
                     color = state.textColor,
-                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}"
+                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}",
                 )
                 ToggleButton(
                     progress = state.colorInterpolationProgress,
@@ -158,11 +157,11 @@ fun Snail8() {
                             Event.UserTriggered(
                                 Marble.Metadata.Text(
                                     if (state.isDark) "☀️"
-                                    else "\uD83C\uDF18"
-                                )
-                            )
+                                    else "\uD83C\uDF18",
+                                ),
+                            ),
                         )
-                    }
+                    },
                 )
             }
         }

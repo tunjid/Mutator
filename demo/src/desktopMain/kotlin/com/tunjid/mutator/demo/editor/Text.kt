@@ -38,18 +38,18 @@ actual fun Paragraph(text: String) {
         modifier = Modifier.padding(vertical = 8.dp),
         text = text,
         style = MaterialTheme.typography.body1.copy(
-            MaterialTheme.colors.onSurface
-        )
+            MaterialTheme.colors.onSurface,
+        ),
     )
 }
 
 @Composable
 actual fun Markdown(content: String) {
     RichText(
-        modifier = Modifier.padding(horizontal = 16.dp)
+        modifier = Modifier.padding(horizontal = 16.dp),
     ) {
         Markdown(
-            content = content
+            content = content,
         )
     }
 }
@@ -63,7 +63,7 @@ actual fun CallToAction(
         modifier = Modifier.fillMaxWidth(0.8f)
             .background(
                 color = Color(0xE1F4FE),
-                shape = RoundedCornerShape(size = 16.dp)
+                shape = RoundedCornerShape(size = 16.dp),
             ),
         content = {
             Text(
@@ -76,7 +76,7 @@ actual fun CallToAction(
                         else it
                     },
                 color = Color(0x00589B),
-                text = text
+                text = text,
             )
         },
     )
@@ -86,12 +86,11 @@ actual fun CallToAction(
 private fun StyledText(
     text: String,
     style: TextStyle,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Text(
         modifier = modifier,
         style = style,
-        text = text
+        text = text,
     )
 }
-

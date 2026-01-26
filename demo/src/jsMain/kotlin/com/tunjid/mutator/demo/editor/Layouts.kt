@@ -38,14 +38,14 @@ actual fun VerticalLayout(content: @Composable () -> Unit) {
 @Composable
 actual fun HorizontalLayout(
     centerOnMainAxis: Boolean,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     StyledDiv(
         content = content,
         classNames = listOfNotNull(
             "horizontalLayout",
-            "horizontallyCentered".takeIf { centerOnMainAxis }
-        )
+            "horizontallyCentered".takeIf { centerOnMainAxis },
+        ),
     )
 }
 
@@ -53,7 +53,7 @@ actual fun HorizontalLayout(
 fun StyledDiv(
     styles: StyleScope.() -> Unit = {},
     content: @Composable () -> Unit,
-    classNames: List<String>
+    classNames: List<String>,
 ) {
     Div(
         attrs = {
@@ -62,6 +62,6 @@ fun StyledDiv(
         },
         content = {
             content()
-        }
+        },
     )
 }

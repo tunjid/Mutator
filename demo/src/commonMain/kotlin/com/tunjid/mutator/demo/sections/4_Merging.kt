@@ -74,7 +74,6 @@ private val inlineMutationCta = """
 To help with readability, creating a `Mutation` inside a `Flow` transformation lambda is done with an inline function: `aFlow.map { mutation { copy(...) } }`
 """.trimIndent()
 
-
 private val fiveMarkdown = """
 The declaration above now defines the unit of state change (Δstate) for any state `T` as a `Mutation`; a lambda with `T` as the receiver that when invoked, returns `T`. The above is extremely powerful as we can represent any state change for any state declaration with a single type.
 

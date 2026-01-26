@@ -16,6 +16,7 @@
 
 plugins {
     id("kotlin-library-convention")
+    id("publishing-library-convention")
 }
 
 kotlin {

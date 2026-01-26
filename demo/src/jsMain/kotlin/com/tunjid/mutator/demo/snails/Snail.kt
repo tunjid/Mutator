@@ -37,7 +37,7 @@ import org.jetbrains.compose.web.dom.Text
 
 @Composable
 actual fun Illustration(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     StyledDiv(
         content = content,
@@ -48,28 +48,28 @@ actual fun Illustration(
 @Composable
 actual fun SnailCard(
     color: Color,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     StyledDiv(
         content = content,
         classNames = listOf("card"),
         styles = {
             backgroundColor(color.rgb())
-        }
+        },
     )
 }
 
 @Composable
 actual fun SnailText(
     color: Color,
-    text: String
+    text: String,
 ) = P(
     attrs = {
         style { color(color.rgb()) }
     },
     content = {
         Text(value = text)
-    }
+    },
 )
 
 @Composable
@@ -77,7 +77,7 @@ actual fun Snail(
     progress: Float,
     speed: Speed,
     color: Color,
-    onValueChange: (Float) -> Unit
+    onValueChange: (Float) -> Unit,
 ) {
     Input(
         type = InputType.Range,
@@ -90,14 +90,14 @@ actual fun Snail(
             max("100")
             value(progress)
             onInput { onValueChange(it.value?.toFloat() ?: 0f) }
-        }
+        },
     )
 }
 
 @Composable
 actual fun ColorSwatch(
     colors: List<Color>,
-    onColorClicked: (Int) -> Unit
+    onColorClicked: (Int) -> Unit,
 ) {
     HorizontalLayout(centerOnMainAxis = true) {
         colors.forEachIndexed { index, color ->
@@ -106,13 +106,13 @@ actual fun ColorSwatch(
                     classes("colorSwatch")
                     style {
                         backgroundColor(
-                            color.rgb()
+                            color.rgb(),
                         )
                     }
                     onClick { onColorClicked(index) }
                 },
                 content = {
-                }
+                },
             )
         }
     }
@@ -121,7 +121,7 @@ actual fun ColorSwatch(
 @Composable
 actual fun ToggleButton(
     progress: Float,
-    onClicked: () -> Unit
+    onClicked: () -> Unit,
 ) = Div(
     attrs = {
         classes("progress-btn", "horizontallyCentered")
@@ -134,13 +134,13 @@ actual fun ToggleButton(
             },
             content = {
                 Text("Toggle mode")
-            }
+            },
         )
         Div(
             attrs = {
                 classes("progress")
                 style { width(((progress * 100).toInt() % 100).percent) }
-            }
+            },
         )
-    }
+    },
 )

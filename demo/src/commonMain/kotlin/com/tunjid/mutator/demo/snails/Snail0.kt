@@ -29,14 +29,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
 class Snail0StateHolder(
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     val progress: StateFlow<Float> = intervalFlow(500)
         .toProgress()
         .stateIn(
             scope = scope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = 0f
+            initialValue = 0f,
         )
 }
 

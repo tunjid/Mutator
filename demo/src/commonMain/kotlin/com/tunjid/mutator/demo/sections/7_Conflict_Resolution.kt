@@ -21,9 +21,9 @@ import com.tunjid.mutator.demo.editor.CallToAction
 import com.tunjid.mutator.demo.editor.CodeBlock
 import com.tunjid.mutator.demo.editor.Markdown
 import com.tunjid.mutator.demo.editor.SectionLayout
+import com.tunjid.mutator.demo.snails.Snail10
 import com.tunjid.mutator.demo.snails.Snail11
 import com.tunjid.mutator.demo.snails.Snail9
-import com.tunjid.mutator.demo.snails.Snail10
 
 @Composable
 fun Section7() = SectionLayout {

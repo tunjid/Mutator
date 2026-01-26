@@ -18,6 +18,10 @@ package com.tunjid.mutator.coroutines
 
 import app.cash.turbine.test
 import com.tunjid.mutator.ActionStateMutator
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,10 +36,6 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class ActionStateMutatorKtTest {
 
@@ -61,14 +61,16 @@ class ActionStateMutatorKtTest {
             actionTransform = { actions ->
                 actions.toMutationStream {
                     when (val action = type()) {
-                        is IntAction.Add -> action.flow
-                            .map { it.mutation }
+                        is IntAction.Add ->
+                            action.flow
+                                .map { it.mutation }
 
-                        is IntAction.Subtract -> action.flow
-                            .map { it.mutation }
+                        is IntAction.Subtract ->
+                            action.flow
+                                .map { it.mutation }
                     }
                 }
-            }
+            },
         )
         mutator.state.test {
             // Read first emission, should be the initial value
@@ -84,7 +86,7 @@ class ActionStateMutatorKtTest {
         // At this point, there are no subscribers and the upstream is cancelled
         assertEquals(
             expected = State(count = 2.0),
-            actual = mutator.state.value
+            actual = mutator.state.value,
         )
 
         // Subscribe again
@@ -114,15 +116,17 @@ class ActionStateMutatorKtTest {
                 actions
                     .onEach { delay(1000) }
                     .toMutationStream {
-                    when (val action = type()) {
-                        is IntAction.Add -> action.flow
-                            .map { it.mutation }
+                        when (val action = type()) {
+                            is IntAction.Add ->
+                                action.flow
+                                    .map { it.mutation }
 
-                        is IntAction.Subtract -> action.flow
-                            .map { it.mutation }
+                            is IntAction.Subtract ->
+                                action.flow
+                                    .map { it.mutation }
+                        }
                     }
-                }
-            }
+            },
         )
 
         mutator.accept(IntAction.Add(value = 1))
@@ -160,7 +164,7 @@ class ActionStateMutatorKtTest {
 
         assertEquals(
             expected = State(),
-            actual = noOpActionStateMutator.state.value
+            actual = noOpActionStateMutator.state.value,
         )
     }
 }

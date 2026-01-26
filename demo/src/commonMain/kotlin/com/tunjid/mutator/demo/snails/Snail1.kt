@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.update
 data class Snail1State(
     val progress: Float = 0f,
     val color: Color = MutedColors.colors(false).first(),
-    val colors: List<Color> = MutedColors.colors(false)
+    val colors: List<Color> = MutedColors.colors(false),
 )
 
 class Snail1StateHolder {
@@ -70,8 +70,8 @@ fun Snail1() {
         udfStateHolder.accept(
             Event.StateChange(
                 color = state.color,
-                metadata = Marble.Metadata.Text(state.progress.toString())
-            )
+                metadata = Marble.Metadata.Text(state.progress.toString()),
+            ),
         )
     }
 
@@ -79,7 +79,7 @@ fun Snail1() {
         SnailCard {
             VerticalLayout {
                 Paragraph(
-                    text = "Snail1"
+                    text = "Snail1",
                 )
                 Snail(
                     progress = state.progress,
@@ -87,17 +87,17 @@ fun Snail1() {
                     onValueChange = {
                         stateHolder.setProgress(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Text(it.toString())))
-                    }
+                    },
                 )
                 ColorSwatch(
                     colors = state.colors,
                     onColorClicked = {
                         stateHolder.setSnailColor(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Tint(state.colors[it])))
-                    }
+                    },
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}"
+                    text = "Progress: ${state.progress}",
                 )
             }
         }

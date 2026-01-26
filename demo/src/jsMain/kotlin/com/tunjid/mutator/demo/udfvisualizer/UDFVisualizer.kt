@@ -21,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.tunjid.mutator.demo.hex
 import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.Color as CSSColor
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.FlexDirection
 import org.jetbrains.compose.web.css.JustifyContent
@@ -52,7 +53,6 @@ import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
-import org.jetbrains.compose.web.css.Color as CSSColor
 
 private val marbleSize = 22.px
 
@@ -76,7 +76,7 @@ actual fun UDFVisualizer(stateHolder: UDFVisualizerStateHolder) {
             Marbles(state.marbles)
             Label("UI")
             P { Text("UDF Visualizer") }
-        }
+        },
     )
 }
 
@@ -99,7 +99,7 @@ private fun Label(text: String) = P(
     },
     content = {
         Text(value = text)
-    }
+    },
 )
 
 @Composable
@@ -117,7 +117,7 @@ private fun Marbles(marbles: List<Marble>) = Div(
         marbles.forEach { marble ->
             Marble(marble)
         }
-    }
+    },
 )
 
 @Composable
@@ -146,13 +146,13 @@ private fun Marble(marble: Marble) = Div(
                     }
 
                     is Marble.State -> marble.color.hex()
-                }
+                },
             )
             left(
                 when (marble) {
                     is Marble.Event -> 80.percent
                     is Marble.State -> 20.percent
-                }
+                },
             )
             when (marble) {
                 is Marble.Event -> bottom(marble.percentage.percent)
@@ -163,11 +163,12 @@ private fun Marble(marble: Marble) = Div(
     content = {
         when (val core = marble.metadata) {
             Marble.Metadata.Nothing,
-            is Marble.Metadata.Tint -> Unit
+            is Marble.Metadata.Tint,
+            -> Unit
 
             is Marble.Metadata.Text -> Text(value = core.text)
         }
-    }
+    },
 )
 
 private fun Marble.color() = when (this) {

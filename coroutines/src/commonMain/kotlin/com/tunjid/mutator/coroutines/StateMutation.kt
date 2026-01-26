@@ -36,7 +36,7 @@ fun <State : Any> CoroutineScope.mutateState(
     initialState: State,
     started: SharingStarted,
     inputs: List<Flow<Mutation<State>>>,
-    stateTransform: (Flow<State>) -> Flow<State> = { it }
+    stateTransform: (Flow<State>) -> Flow<State> = { it },
 ): StateFlow<State> {
     // Set the seed for the state
     var seed = initialState
@@ -50,14 +50,14 @@ fun <State : Any> CoroutineScope.mutateState(
                     // when the flow pipeline is started again
                     .reduceInto(seed)
                     // Set seed after each emission
-                    .onEach { seed = it }
+                    .onEach { seed = it },
             )
-        }
+        },
     )
         .stateIn(
             scope = this,
             started = started,
-            initialValue = seed
+            initialValue = seed,
         )
 }
 

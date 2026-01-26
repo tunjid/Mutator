@@ -17,6 +17,8 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.mutationOf
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asFlow
@@ -28,9 +30,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-
 
 class FlowMutationStreamKtTest {
     @Test
@@ -50,7 +49,7 @@ class FlowMutationStreamKtTest {
 
         assertEquals(
             State(count = 7.0),
-            testFlow.take(count = actions.size + 1).last()
+            testFlow.take(count = actions.size + 1).last(),
         )
     }
 
@@ -84,7 +83,7 @@ class FlowMutationStreamKtTest {
 
         assertEquals(
             State(count = 6.0),
-            testFlow.take(count = actions.distinct().size + 1).last()
+            testFlow.take(count = actions.distinct().size + 1).last(),
         )
     }
 
@@ -104,20 +103,22 @@ class FlowMutationStreamKtTest {
             .asFlow()
             .toMutationStream {
                 when (val type = type()) {
-                    is IntAction.Add -> type.flow
-                        .filter { it.value > 0 && it.value % 2 == 0 }
-                        .map { it.mutation }
+                    is IntAction.Add ->
+                        type.flow
+                            .filter { it.value > 0 && it.value % 2 == 0 }
+                            .map { it.mutation }
 
-                    is IntAction.Subtract -> type.flow
-                        .filter { it.value > 0 && it.value % 2 != 0 }
-                        .map { it.mutation }
+                    is IntAction.Subtract ->
+                        type.flow
+                            .filter { it.value > 0 && it.value % 2 != 0 }
+                            .map { it.mutation }
                 }
             }
             .reduceInto(State())
 
         assertEquals(
             State(count = 1.0),
-            testFlow.take(count = 3).last()
+            testFlow.take(count = 3).last(),
         )
     }
 
@@ -142,23 +143,25 @@ class FlowMutationStreamKtTest {
                         is IntAction -> "IntAction"
                         is DoubleAction -> "DoubleAction"
                     }
-                }
+                },
             ) {
                 when (val type = type()) {
-                    is IntAction -> type.flow
-                        .onEach { intActions.add(it) }
-                        .map { it.mutation }
+                    is IntAction ->
+                        type.flow
+                            .onEach { intActions.add(it) }
+                            .map { it.mutation }
 
-                    is DoubleAction -> type.flow
-                        .onEach { doubleActions.add(it) }
-                        .map { it.mutation }
+                    is DoubleAction ->
+                        type.flow
+                            .onEach { doubleActions.add(it) }
+                            .map { it.mutation }
                 }
             }
             .reduceInto(State())
 
         assertEquals(
             State(count = 2.0),
-            testFlow.take(count = 5).last()
+            testFlow.take(count = 5).last(),
         )
 
         assertEquals(
@@ -166,7 +169,7 @@ class FlowMutationStreamKtTest {
                 IntAction.Add(value = 2),
                 IntAction.Subtract(value = 1),
             ),
-            intActions
+            intActions,
         )
 
         assertEquals(
@@ -174,7 +177,7 @@ class FlowMutationStreamKtTest {
                 DoubleAction.Multiply(value = 6.0),
                 DoubleAction.Divide(value = 3.0),
             ),
-            doubleActions
+            doubleActions,
         )
     }
 
@@ -189,7 +192,6 @@ class FlowMutationStreamKtTest {
             val delayedCount: Int = 0,
         )
     }
-
 
     @Test
     fun stream_splitting_channels_can_be_configured() = runTest {
@@ -208,17 +210,19 @@ class FlowMutationStreamKtTest {
                 onBufferOverflow = BufferOverflow.SUSPEND,
             ) {
                 when (val type = type()) {
-                    is Split.Action.Regular -> type.flow
-                        .map {
-                            mutationOf { copy(regularCount = regularCount + 1) }
-                        }
+                    is Split.Action.Regular ->
+                        type.flow
+                            .map {
+                                mutationOf { copy(regularCount = regularCount + 1) }
+                            }
 
-                    is Split.Action.Delayed -> type.flow
-                        .map {
-                            // Delay when processing this action
-                            delay(1000)
-                            mutationOf { copy(delayedCount = delayedCount + 1) }
-                        }
+                    is Split.Action.Delayed ->
+                        type.flow
+                            .map {
+                                // Delay when processing this action
+                                delay(1000)
+                                mutationOf { copy(delayedCount = delayedCount + 1) }
+                            }
                 }
             }
             .reduceInto(Split.State())
@@ -230,7 +234,7 @@ class FlowMutationStreamKtTest {
                 regularCount = 0,
                 delayedCount = 0,
             ),
-            actual = output[0]
+            actual = output[0],
         )
 
         assertEquals(
@@ -238,7 +242,7 @@ class FlowMutationStreamKtTest {
                 regularCount = 1,
                 delayedCount = 0,
             ),
-            actual = output[1]
+            actual = output[1],
         )
 
         assertEquals(
@@ -246,7 +250,7 @@ class FlowMutationStreamKtTest {
                 regularCount = 2,
                 delayedCount = 0,
             ),
-            actual = output[2]
+            actual = output[2],
         )
 
         // Buffer is full for delayed here, so the next action processed must be a delayed one.
@@ -255,7 +259,7 @@ class FlowMutationStreamKtTest {
                 regularCount = 2,
                 delayedCount = 1,
             ),
-            actual = output[3]
+            actual = output[3],
         )
 
         // The buffer is now open for delayed actions, regular actions can be processed.
@@ -264,7 +268,7 @@ class FlowMutationStreamKtTest {
                 regularCount = 3,
                 delayedCount = 1,
             ),
-            actual = output[4]
+            actual = output[4],
         )
 
         // Process remaining delayed actions.
@@ -273,7 +277,7 @@ class FlowMutationStreamKtTest {
                 regularCount = 3,
                 delayedCount = 2,
             ),
-            actual = output[5]
+            actual = output[5],
         )
 
         assertEquals(
@@ -281,7 +285,7 @@ class FlowMutationStreamKtTest {
                 regularCount = 3,
                 delayedCount = 3,
             ),
-            actual = output[6]
+            actual = output[6],
         )
     }
 }

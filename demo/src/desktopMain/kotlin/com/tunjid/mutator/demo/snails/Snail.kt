@@ -40,7 +40,7 @@ import com.tunjid.mutator.demo.toComposeColor
 
 @Composable
 actual fun Illustration(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(0.8f),
@@ -51,7 +51,7 @@ actual fun Illustration(
 @Composable
 actual fun SnailCard(
     color: Color,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Surface(
         color = color.toComposeColor,
@@ -62,15 +62,15 @@ actual fun SnailCard(
 @Composable
 actual fun SnailText(
     color: Color,
-    text: String
+    text: String,
 ) {
     Text(
         modifier = Modifier.padding(vertical = 8.dp),
         text = text,
         color = color.toComposeColor,
         style = MaterialTheme.typography.body1.copy(
-            MaterialTheme.colors.onSurface
-        )
+            MaterialTheme.colors.onSurface,
+        ),
     )
 }
 
@@ -79,27 +79,27 @@ actual fun Snail(
     progress: Float,
     speed: Speed,
     color: Color,
-    onValueChange: (Float) -> Unit
+    onValueChange: (Float) -> Unit,
 ) {
     Slider(
         valueRange = 0f..100f,
         value = progress,
         colors = SliderDefaults.colors(
             thumbColor = color.toComposeColor,
-            activeTrackColor = color.toComposeColor
+            activeTrackColor = color.toComposeColor,
         ),
-        onValueChange = onValueChange
+        onValueChange = onValueChange,
     )
 }
 
 @Composable
 actual fun ColorSwatch(
     colors: List<Color>,
-    onColorClicked: (index: Int) -> Unit
+    onColorClicked: (index: Int) -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         colors.forEachIndexed { index, color ->
             Button(
@@ -118,15 +118,15 @@ actual fun ColorSwatch(
 @Composable
 actual fun ToggleButton(
     progress: Float,
-    onClicked: () -> Unit
+    onClicked: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.25F)
-                .align(Alignment.Center)
+                .align(Alignment.Center),
         ) {
             Button(
                 modifier = Modifier

@@ -17,8 +17,8 @@
 package com.tunjid.mutator.demo.udfvisualizer
 
 import androidx.compose.runtime.Composable
-import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.ActionStateMutator
+import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.coroutines.actionStateFlowMutator
 import com.tunjid.mutator.demo.Color
 import com.tunjid.mutator.demo.intervalFlow
@@ -60,21 +60,21 @@ sealed class Marble {
 sealed class Event {
     data class StateChange(
         val color: Color = stateColor,
-        val metadata: Marble.Metadata = Marble.Metadata.Nothing
+        val metadata: Marble.Metadata = Marble.Metadata.Nothing,
     ) : Event()
 
     data class UserTriggered(
-        val metadata: Marble.Metadata = Marble.Metadata.Nothing
+        val metadata: Marble.Metadata = Marble.Metadata.Nothing,
     ) : Event()
 }
 
 data class State(
     val index: Int = -1,
-    val marbles: List<Marble> = listOf()
+    val marbles: List<Marble> = listOf(),
 )
 
 fun udfVisualizerStateHolder(
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ): ActionStateMutator<Event, StateFlow<State>> = scope.actionStateFlowMutator(
     initialState = State(),
     inputs = listOf(frames()),
@@ -97,21 +97,23 @@ private operator fun State.plus(action: Event) = copy(
         is Event.StateChange -> Marble.State(
             index = index + 1,
             metadata = action.metadata,
-            color = action.color
+            color = action.color,
         )
-    }
+    },
 )
 
 /**
  * Advances the frame for the UDF visualizer
  */
-private fun State.advanceFrame() = copy(marbles = marbles.mapNotNull {
-    if (it.percentage > 100) null
-    else when (it) {
-        is Marble.Event -> it.copy(percentage = it.percentage + 1)
-        is Marble.State -> it.copy(percentage = it.percentage + 1)
-    }
-})
+private fun State.advanceFrame() = copy(
+    marbles = marbles.mapNotNull {
+        if (it.percentage > 100) null
+        else when (it) {
+            is Marble.Event -> it.copy(percentage = it.percentage + 1)
+            is Marble.State -> it.copy(percentage = it.percentage + 1)
+        }
+    },
+)
 
 @Composable
 expect fun UDFVisualizer(stateHolder: UDFVisualizerStateHolder)

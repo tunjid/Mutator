@@ -26,7 +26,9 @@ java {
 }
 
 dependencies {
+    implementation(libs.axionRelease.gradlePlugin)
     implementation(libs.compose.multiplatform.gradlePlugin)
-    implementation(libs.kotlin.gradlePlugin)
     implementation(libs.dokka.gradlePlugin)
+    implementation(libs.kotlin.gradlePlugin)
+    implementation(libs.maven.publish.gradlePlugin)
 }

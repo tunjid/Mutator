@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
  */
 data class TransformationContext<Action : Any>(
     private val type: Action,
-    val backing: Flow<Action>
+    val backing: Flow<Action>,
 ) {
 
     /**
@@ -76,7 +76,7 @@ fun <Action : Any, State : Any> Flow<Action>.toMutationStream(
     onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
     keySelector: (Action) -> String = Any::defaultKeySelector,
     // Ergonomic hack to simulate multiple receivers
-    transform: suspend TransformationContext<Action>.() -> Flow<Mutation<State>>
+    transform: suspend TransformationContext<Action>.() -> Flow<Mutation<State>>,
 ): Flow<Mutation<State>> = splitByType(
     capacity = capacity,
     onBufferOverflow = onBufferOverflow,
@@ -103,7 +103,7 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
     typeSelector: (Input) -> Selector,
     keySelector: (Selector) -> String = Any::defaultKeySelector,
     // Ergonomic hack to simulate multiple receivers
-    transform: suspend TransformationContext<Selector>.() -> Flow<Output>
+    transform: suspend TransformationContext<Selector>.() -> Flow<Output>,
 ): Flow<Output> =
     channelFlow mutationFlow@{
         val keysToFlowHolders = mutableMapOf<String, FlowHolder<Selector>>()
@@ -116,7 +116,7 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
                         val holder = FlowHolder(
                             capacity = capacity,
                             onBufferOverflow = onBufferOverflow,
-                            firstEmission = selected
+                            firstEmission = selected,
                         )
                         keysToFlowHolders[flowKey] = holder
                         val context = TransformationContext(selected, holder.exposedFlow)
@@ -132,7 +132,7 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
     }
         .flatMapMerge(
             concurrency = Int.MAX_VALUE,
-            transform = { it }
+            transform = { it },
         )
 
 /**
@@ -155,5 +155,5 @@ private data class FlowHolder<Action>(
 
 private fun Any.defaultKeySelector(): String = this::class.simpleName
     ?: throw IllegalArgumentException(
-        "Only well defined classes can be split or specify a different key selector"
+        "Only well defined classes can be split or specify a different key selector",
     )

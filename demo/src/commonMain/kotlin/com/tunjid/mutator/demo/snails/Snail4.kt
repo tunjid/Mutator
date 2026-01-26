@@ -31,8 +31,8 @@ import com.tunjid.mutator.demo.speedFlow
 import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
 import com.tunjid.mutator.demo.toProgress
-import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
+import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import kotlinx.coroutines.CoroutineScope
@@ -43,16 +43,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-
 data class Snail4State(
     val progress: Float = 0f,
     val speed: Speed = Speed.One,
     val color: Color = MutedColors.colors(false).first(),
-    val colors: List<Color> = MutedColors.colors(false)
+    val colors: List<Color> = MutedColors.colors(false),
 )
 
 class Snail4StateHolder(
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
 
     private val speed: Flow<Speed> = scope.speedFlow()
@@ -62,19 +61,19 @@ class Snail4StateHolder(
         .toProgress()
 
     private val color: MutableStateFlow<Color> = MutableStateFlow(
-        MutedColors.colors(isDark = false).first()
+        MutedColors.colors(isDark = false).first(),
     )
 
     val state: StateFlow<Snail4State> = combine(
         progress,
         speed,
         color,
-        ::Snail4State
+        ::Snail4State,
     )
         .stateIn(
             scope = scope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Snail4State()
+            initialValue = Snail4State(),
         )
 
     fun setSnailColor(index: Int) {
@@ -93,8 +92,8 @@ fun Snail4() {
         udfStateHolder.accept(
             Event.StateChange(
                 color = state.color,
-                metadata = Marble.Metadata.Text(state.progress.toString())
-            )
+                metadata = Marble.Metadata.Text(state.progress.toString()),
+            ),
         )
     }
 
@@ -102,7 +101,7 @@ fun Snail4() {
         SnailCard {
             VerticalLayout {
                 Paragraph(
-                    text = "Snail4"
+                    text = "Snail4",
                 )
                 Snail(
                     progress = state.progress,
@@ -113,10 +112,10 @@ fun Snail4() {
                     onColorClicked = {
                         stateHolder.setSnailColor(it)
                         udfStateHolder.accept(Event.UserTriggered(metadata = Marble.Metadata.Tint(state.colors[it])))
-                    }
+                    },
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}"
+                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}",
                 )
             }
         }

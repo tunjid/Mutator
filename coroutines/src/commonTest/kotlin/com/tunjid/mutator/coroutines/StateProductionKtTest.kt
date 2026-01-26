@@ -20,6 +20,10 @@ import app.cash.turbine.test
 import com.tunjid.mutator.Mutation
 import com.tunjid.mutator.mutationOf
 import com.tunjid.mutator.plus
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -32,10 +36,6 @@ import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class StateProductionKtTest {
 
@@ -61,8 +61,8 @@ class StateProductionKtTest {
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             inputs = listOf(
-                eventMutations
-            )
+                eventMutations,
+            ),
         )
 
         state.test {
@@ -80,8 +80,8 @@ class StateProductionKtTest {
             initialState = State(),
             started = SharingStarted.WhileSubscribed(),
             inputs = listOf(
-                eventMutations
-            )
+                eventMutations,
+            ),
         )
 
         // Subscribe the first time
@@ -113,8 +113,8 @@ class StateProductionKtTest {
 
                     delay(1000)
                     emit(mutationOf { copy(count = 7.0) })
-                }
-            )
+                },
+            ),
         )
 
         state.test {
@@ -138,12 +138,12 @@ class StateProductionKtTest {
         val additionMutation = mutationOf<State> {
             copy(count = count + 1)
         } +
-                mutationOf {
-                    copy(count = count + 1)
-                } +
-                mutationOf {
-                    copy(count = count + 1)
-                }
+            mutationOf {
+                copy(count = count + 1)
+            } +
+            mutationOf {
+                copy(count = count + 1)
+            }
 
         val state = additionMutation(State())
 

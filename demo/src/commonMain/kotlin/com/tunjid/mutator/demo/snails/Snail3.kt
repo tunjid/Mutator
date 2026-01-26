@@ -29,8 +29,8 @@ import com.tunjid.mutator.demo.speedFlow
 import com.tunjid.mutator.demo.text
 import com.tunjid.mutator.demo.toInterval
 import com.tunjid.mutator.demo.toProgress
-import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.Event
+import com.tunjid.mutator.demo.udfvisualizer.Marble
 import com.tunjid.mutator.demo.udfvisualizer.UDFVisualizer
 import com.tunjid.mutator.demo.udfvisualizer.udfVisualizerStateHolder
 import kotlinx.coroutines.CoroutineScope
@@ -40,14 +40,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-
 data class Snail3State(
     val progress: Float = 0f,
     val speed: Speed = Speed.One,
 )
 
 class Snail3StateHolder(
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     private val speed: Flow<Speed> = scope.speedFlow()
 
@@ -58,12 +57,12 @@ class Snail3StateHolder(
     val state: StateFlow<Snail3State> = combine(
         progress,
         speed,
-        ::Snail3State
+        ::Snail3State,
     )
         .stateIn(
             scope = scope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Snail3State()
+            initialValue = Snail3State(),
         )
 }
 
@@ -77,8 +76,8 @@ fun Snail3() {
     LaunchedEffect(state) {
         udfStateHolder.accept(
             Event.StateChange(
-                metadata = Marble.Metadata.Text(state.progress.toString())
-            )
+                metadata = Marble.Metadata.Text(state.progress.toString()),
+            ),
         )
     }
 
@@ -86,13 +85,13 @@ fun Snail3() {
         SnailCard {
             VerticalLayout {
                 Paragraph(
-                    text = "Snail3"
+                    text = "Snail3",
                 )
                 Snail(
                     progress = state.progress,
                 )
                 Paragraph(
-                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}"
+                    text = "Progress: ${state.progress}; Speed: ${state.speed.text}",
                 )
             }
         }
