@@ -17,20 +17,28 @@
 plugins {
     id("kotlin-library-convention")
     id("publishing-library-convention")
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":core"))
-                implementation(libs.kotlinx.coroutines.core)
+                api(project(":core"))
+                api(project(":coroutines"))
+                implementation(libs.compose.multiplatform.runtime)
+                implementation(libs.lifecycle.multiplatform.runtime.compose)
             }
         }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(libs.compose.multiplatform.runtime)
+                implementation(libs.compose.multiplatform.foundation)
+                implementation(libs.compose.multiplatform.foundation.layout)
+                implementation(libs.compose.multiplatform.ui.ui)
+                implementation(libs.compose.multiplatform.ui.tooling)
+
                 implementation(libs.cashapp.turbine)
                 implementation(libs.kotlinx.coroutines.test)
             }

@@ -34,5 +34,6 @@ rootProject.name = "Mutator"
 include(
     ":core",
     ":coroutines",
+    ":compose",
     ":demo",
 )
