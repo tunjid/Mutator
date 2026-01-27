@@ -78,7 +78,7 @@ class TransformationContext<Action : Any>(
 fun <Action : Any, State : Any> Flow<Action>.toMutationStream(
     capacity: Int = Channel.BUFFERED,
     onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
-    keySelector: (Action) -> String = Any::defaultKeySelector,
+    keySelector: (Action) -> Any = Any::defaultKeySelector,
     // Ergonomic hack to simulate multiple receivers
     transform: suspend TransformationContext<Action>.() -> Flow<Mutation<State>>,
 ): Flow<Mutation<State>> = splitByType(
@@ -116,7 +116,7 @@ fun <Action : Any> Flow<Action>.launchMutationsIn(
     productionScope: CoroutineScope,
     capacity: Int = Channel.BUFFERED,
     onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
-    keySelector: (Action) -> String = Any::defaultKeySelector,
+    keySelector: (Action) -> Any = Any::defaultKeySelector,
     transform: suspend TransformationContext<Action>.() -> Unit,
 ) {
     productionScope.launch {
@@ -152,12 +152,12 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
     capacity: Int,
     onBufferOverflow: BufferOverflow,
     typeSelector: (Input) -> Selector,
-    keySelector: (Selector) -> String = Any::defaultKeySelector,
+    keySelector: (Selector) -> Any = Any::defaultKeySelector,
     // Ergonomic hack to simulate multiple receivers
     transform: suspend TransformationContext<Selector>.() -> Flow<Output>,
 ): Flow<Output> =
     channelFlow mutationFlow@{
-        val keysToFlowHolders = mutableMapOf<String, FlowHolder<Selector>>()
+        val keysToFlowHolders = mutableMapOf<Any, FlowHolder<Selector>>()
         this@splitByType
             .collect { item ->
                 val selected = typeSelector(item)
@@ -205,7 +205,4 @@ private data class FlowHolder<Action>(
         .onStart { emit(firstEmission) }
 }
 
-private fun Any.defaultKeySelector(): String = this::class.qualifiedName
-    ?: throw IllegalArgumentException(
-        "Only well defined classes can be split or specify a different key selector",
-    )
+private fun Any.defaultKeySelector(): Any = this::class
