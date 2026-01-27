@@ -23,11 +23,23 @@ typealias Mutation<State> = State.() -> State
 
 typealias StateHolder<State> = StateMutator<State>
 
-interface StateMutator<State : Any> {
+/**
+ * A type that holds a state of type [State].
+ */
+interface StateMutator<out State : Any> {
+    /**
+     * The current state of the mutator.
+     */
     val state: State
 }
 
+/**
+ * A [StateMutator] that can accept actions of type [Action] to mutate its state.
+ */
 interface ActionStateMutator<Action : Any, State : Any> : StateMutator<State> {
+    /**
+     * Accepts an action to mutate the state.
+     */
     val accept: (Action) -> Unit
 }
 
