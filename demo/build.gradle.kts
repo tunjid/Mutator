@@ -28,23 +28,24 @@ kotlin {
         binaries.executable()
     }
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":core"))
                 implementation(project(":coroutines"))
+                implementation(project(":compose"))
 
                 implementation(libs.compose.multiplatform.runtime)
 
                 implementation(libs.kotlinx.coroutines.core)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.cashapp.turbine)
             }
         }
-        val desktopMain by getting {
+        getByName("desktopMain") {
             dependencies {
                 implementation(compose.desktop.currentOs)
 
@@ -55,7 +56,7 @@ kotlin {
                 implementation(libs.richtext.commonmark)
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 implementation(compose.html.core)
 

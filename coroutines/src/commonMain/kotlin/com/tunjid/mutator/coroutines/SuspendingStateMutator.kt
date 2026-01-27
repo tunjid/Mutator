@@ -47,19 +47,19 @@ interface SuspendingStateMutator<State : Any> : StateMutator<State> {
 /**
  * Creates a [SuspendingStateMutator] that derives its state from a [producer].
  *
- * @param state The initial state of the mutator.
+ * @param initialState The initial state of the mutator.
  * @param started The [SharingStarted] strategy to control when the producer is active.
  * @param producer A suspending lambda that produces state changes. It is invoked when the
  * [started] strategy dictates that the producer should be active.
  */
 fun <State : Any> CoroutineScope.suspendingStateMutator(
-    state: State,
+    initialState: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
     producer: suspend CoroutineScope.(State) -> Unit,
 ): SuspendingStateMutator<State> {
     val subscriptionCount = MutableStateFlow(0)
     val mutator = RefCountingSuspendingStateMutator(
-        state = state,
+        state = initialState,
         subscriptionCount = subscriptionCount,
     )
 
@@ -69,7 +69,7 @@ fun <State : Any> CoroutineScope.suspendingStateMutator(
             when (command) {
                 SharingCommand.START -> {
                     if (producerJob == null || producerJob?.isActive == false) {
-                        producerJob = launch { producer(state) }
+                        producerJob = launch { producer(initialState) }
                     }
                 }
 

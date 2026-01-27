@@ -65,7 +65,7 @@ private class DelegatingActionSuspendingStateMutator<Action : Any, State : Any>(
     private val actions = Channel<Action>()
 
     val mutator = coroutineScope.suspendingStateMutator(
-        state = initialState,
+        initialState = initialState,
         started = started,
         producer = { currentState ->
             producer(

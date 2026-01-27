@@ -43,10 +43,6 @@ plugins {
 kotlin {
     applyDefaultHierarchyTemplate()
 
-    androidNativeArm32()
-    androidNativeArm64()
-    androidNativeX64()
-    androidNativeX86()
     js(IR) {
         nodejs()
         browser()
@@ -57,22 +53,33 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-    linuxX64()
 
-    macosArm64()
-    macosX64()
+    val isComposeMultiplatformProject = project
+        // Not using project.provider deliberately.
+        // See https://github.com/gradle/gradle/issues/23572
+        .findProperty("isComposeMultiplatform")
+        ?.toString()
+        ?.toBoolean()
+        ?: false
 
-    mingwX64()
+    if (!isComposeMultiplatformProject) {
+        linuxX64()
 
-    tvosArm64()
-    tvosSimulatorArm64()
-    tvosX64()
+        macosArm64()
+        macosX64()
 
-    watchosArm32()
-    watchosArm64()
-    watchosDeviceArm64()
-    watchosSimulatorArm64()
-    watchosX64()
+        mingwX64()
+
+        tvosArm64()
+        tvosSimulatorArm64()
+        tvosX64()
+
+        watchosArm32()
+        watchosArm64()
+        watchosDeviceArm64()
+        watchosSimulatorArm64()
+        watchosX64()
+    }
 
     sourceSets {
         all {
