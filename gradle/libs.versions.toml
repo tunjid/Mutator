@@ -2,13 +2,13 @@
 androidGradlePlugin = "8.13.2"
 axion-release = "1.21.1"
 dokka = "2.1.0"
-composeMultiplatform = "1.10.0"
+composeMultiplatform = "1.11.0-alpha03"
 junit4 = "4.13.2"
 kotlin = "2.3.0"
 kotlinWrappers = "2026.1.13-19.2.3"
 kotlinxCoroutines = "1.10.2"
 ktlint-cli = "1.8.0"
-lifecycleMultiplatform = "2.10.0-alpha07"
+lifecycleMultiplatform = "2.10.0-alpha08"
 mavenPublish = "0.34.0"
 richtext = "0.16.0"
 turbine = "1.1.0"
@@ -27,8 +27,8 @@ compose-multiplatform-material = { group = "org.jetbrains.compose.material", nam
 compose-multiplatform-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "composeMultiplatform" }
 compose-multiplatform-ui-test = { group = "org.jetbrains.compose.ui", name = "ui-test-junit4", version.ref = "composeMultiplatform" }
 compose-multiplatform-ui-testManifest = { group = "org.jetbrains.compose.ui", name = "ui-test-manifest", version.ref = "composeMultiplatform" }
-compose-multiplatforme-ui-tooling = { group = "org.jetbrains.compose.ui", name = "ui-tooling", version.ref = "composeMultiplatform" }
-compose-multiplatform-ui-tooling = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "composeMultiplatform" }
+compose-multiplatform-ui-tooling = { group = "org.jetbrains.compose.ui", name = "ui-tooling", version.ref = "composeMultiplatform" }
+compose-multiplatform-ui-tooling-preview = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "composeMultiplatform" }
 compose-multiplatform-ui-ui = { group = "org.jetbrains.compose.ui", name = "ui", version.ref = "composeMultiplatform" }
 compose-multiplatform-ui-util = { group = "org.jetbrains.compose.ui", name = "ui-util", version.ref = "composeMultiplatform" }
 dokka-gradlePlugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
