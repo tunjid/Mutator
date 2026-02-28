@@ -31,6 +31,10 @@ scmVersion {
             ),
         )
     }
+    nextVersion {
+        suffix.set("alpha")
+        separator.set("-")
+    }
     repository {
         pushTagsOnly.set(true)
     }
