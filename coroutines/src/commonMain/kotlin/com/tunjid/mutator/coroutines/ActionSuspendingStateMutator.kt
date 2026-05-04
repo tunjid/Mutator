@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
  * This interface combines the capabilities of [ActionStateMutator] and [SuspendingStateMutator],
  * allowing for state production to be driven by actions and tied to the lifecycle of the collector.
  */
-interface ActionSuspendingStateMutator<Action : Any, State : Any> :
+interface ActionSuspendingStateMutator<in Action : Any, out State : Any> :
     ActionStateMutator<Action, State>,
     SuspendingStateMutator<State>
 

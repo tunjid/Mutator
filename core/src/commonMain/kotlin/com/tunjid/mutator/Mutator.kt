@@ -36,7 +36,7 @@ interface StateMutator<out State : Any> {
 /**
  * A [StateMutator] that can accept actions of type [Action] to mutate its state.
  */
-interface ActionStateMutator<Action : Any, State : Any> : StateMutator<State> {
+interface ActionStateMutator<in Action : Any, out State : Any> : StateMutator<State> {
     /**
      * Accepts an action to mutate the state.
      */

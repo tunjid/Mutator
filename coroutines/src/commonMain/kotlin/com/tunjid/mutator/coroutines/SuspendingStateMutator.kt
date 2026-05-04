@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
  * This interface allows for the state production to be tied to the lifecycle of the collector.
  * When [collect] is called, it signals that the state production should be active.
  */
-interface SuspendingStateMutator<State : Any> : StateMutator<State> {
+interface SuspendingStateMutator<out State : Any> : StateMutator<State> {
     /**
      * Suspends and keeps the upstream producer active for as long as this function
      * is running.
