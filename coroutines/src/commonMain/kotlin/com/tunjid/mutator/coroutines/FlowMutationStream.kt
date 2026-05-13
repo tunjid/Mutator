@@ -61,6 +61,10 @@ class TransformationContext<Action : Any>(
  * emissions, whereas other actions may need to use more complex [Flow] transformations like
  * [Flow.flatMapMerge] and so on. It does so by creating a [Channel] for each subtype.
  *
+ * Ordering: actions sharing the same [keySelector] key are routed through the same sub-[Flow]
+ * and processed in FIFO order. Actions with different keys are processed concurrently and their
+ * resulting mutations may interleave in the output [Flow].
+ *
  * [capacity]: The capacity for the [Channel] created for each subtype. See the [Channel] factory
  * function for details.
  *
@@ -69,7 +73,10 @@ class TransformationContext<Action : Any>(
  *
  * [keySelector]: The mapping for the [Action] to the key used to identify it. This is useful
  * for nested class hierarchies. By default each distinct type will be split out, but if you want
- * to treat certain subtypes as one type, this lets you do that.
+ * to treat certain subtypes as one type, this lets you do that. The returned key set is expected
+ * to be small and bounded (typically the runtime [kotlin.reflect.KClass] of the action) — one
+ * sub-[Channel] is retained per distinct key for the lifetime of this [Flow], so a [keySelector]
+ * that returns dynamic or unbounded values (e.g. a user id) will accumulate channels.
  *
  * [transform]: a function for mapping independent [Flow]s of [Action] to [Flow]s of [State]
  * [Mutation]s
@@ -96,6 +103,10 @@ fun <Action : Any, State : Any> Flow<Action>.toMutationStream(
  * emissions, whereas other actions may need to use more complex [Flow] transformations like
  * [Flow.flatMapMerge] and so on. It does so by creating a [Channel] for each subtype.
  *
+ * Ordering: actions sharing the same [keySelector] key are routed through the same sub-[Flow]
+ * and processed in FIFO order. Actions with different keys are processed concurrently — use
+ * [keySelector] to group actions that must be processed sequentially relative to one another.
+ *
  * [productionScope]: The [CoroutineScope] for processing flows transformed.
  * [capacity]: The capacity for the [Channel] created for each subtype. See the [Channel] factory
  * function for details.
@@ -105,7 +116,10 @@ fun <Action : Any, State : Any> Flow<Action>.toMutationStream(
  *
  * [keySelector]: The mapping for the [Action] to the key used to identify it. This is useful
  * for nested class hierarchies. By default each distinct type will be split out, but if you want
- * to treat certain subtypes as one type, this lets you do that.
+ * to treat certain subtypes as one type, this lets you do that. The returned key set is expected
+ * to be small and bounded (typically the runtime [kotlin.reflect.KClass] of the action) — one
+ * sub-[Channel] is retained per distinct key for the lifetime of this [Flow], so a [keySelector]
+ * that returns dynamic or unbounded values (e.g. a user id) will accumulate channels.
  *
  *  [transform]: a function for processing independent [Flow]s of [Action]. Each independent flow should be collected
  *  in this block.
@@ -141,11 +155,18 @@ fun <Action : Any> Flow<Action>.launchMutationsIn(
  * of type [Selector]. Each independent [Flow] of the [Selector] type can then be transformed
  * into a [Flow] of [Output].
  *
+ * Ordering: items sharing the same [keySelector] key are routed through the same sub-[Flow] in
+ * FIFO order. Items with different keys are processed concurrently and may interleave in the
+ * output [Flow].
+ *
  * [typeSelector]: The mapping to the type the [Input] [Flow] should be split into
  *
  * [keySelector]: The mapping to the [Selector] to the key used to identify it. This is useful
  * for nested class hierarchies. By default each distinct type will be split out, but if you want
- * to treat certain subtypes as one type, this lets you do that.
+ * to treat certain subtypes as one type, this lets you do that. The returned key set is expected
+ * to be small and bounded — one sub-[Channel] is retained per distinct key for the lifetime of
+ * this [Flow], so a [keySelector] that returns dynamic or unbounded values will accumulate
+ * channels until the upstream completes or is cancelled.
  * [transform]: a function for mapping independent [Flow]s of [Selector] to [Flow]s of [Output]
  */
 fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
@@ -158,29 +179,32 @@ fun <Input : Any, Selector : Any, Output : Any> Flow<Input>.splitByType(
 ): Flow<Output> =
     channelFlow mutationFlow@{
         val keysToFlowHolders = mutableMapOf<Any, FlowHolder<Selector>>()
-        this@splitByType
-            .collect { item ->
-                val selected = typeSelector(item)
-                val flowKey = keySelector(selected)
-                when (val existingHolder = keysToFlowHolders[flowKey]) {
-                    null -> {
-                        val holder = FlowHolder(
-                            capacity = capacity,
-                            onBufferOverflow = onBufferOverflow,
-                            firstEmission = selected,
-                        )
-                        keysToFlowHolders[flowKey] = holder
-                        val context = TransformationContext(selected, holder.exposedFlow)
-                        val mutationFlow = transform(context)
-                        channel.send(mutationFlow)
-                    }
+        try {
+            this@splitByType
+                .collect { item ->
+                    val selected = typeSelector(item)
+                    val flowKey = keySelector(selected)
+                    when (val existingHolder = keysToFlowHolders[flowKey]) {
+                        null -> {
+                            val holder = FlowHolder(
+                                capacity = capacity,
+                                onBufferOverflow = onBufferOverflow,
+                                firstEmission = selected,
+                            )
+                            keysToFlowHolders[flowKey] = holder
+                            val context = TransformationContext(selected, holder.exposedFlow)
+                            val mutationFlow = transform(context)
+                            channel.send(mutationFlow)
+                        }
 
-                    else -> {
-                        existingHolder.channel.send(selected)
+                        else -> {
+                            existingHolder.channel.send(selected)
+                        }
                     }
                 }
-            }
-        keysToFlowHolders.values.forEach { it.channel.close() }
+        } finally {
+            keysToFlowHolders.values.forEach { it.channel.close() }
+        }
     }
         .flatMapMerge(
             concurrency = Int.MAX_VALUE,
