@@ -2,7 +2,7 @@
 androidGradlePlugin = "8.13.2"
 axion-release = "1.21.1"
 dokka = "2.1.0"
-composeMultiplatform = "1.11.0-rc01"
+composeMultiplatform = "1.11.0"
 junit4 = "4.13.2"
 kotlin = "2.3.21"
 kotlinWrappers = "2026.1.13-19.2.3"
