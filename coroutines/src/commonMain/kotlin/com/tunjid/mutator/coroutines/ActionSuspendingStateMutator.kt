@@ -20,6 +20,7 @@ import com.tunjid.mutator.ActionStateMutator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingCommand
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -38,26 +39,36 @@ interface ActionSuspendingStateMutator<in Action : Any, out State : Any> :
  * Creates an [ActionSuspendingStateMutator] that derives its state from a [producer] which
  * consumes a stream of [Action]s.
  *
- * @param initialState The initial state of the mutator.
+ * @param state The state holder used by the mutator. This is expected to be a mutable holder
+ * (e.g. an `androidx.compose.runtime.mutableStateOf`-backed object, a `MutableStateFlow`, or any
+ * other observable mutable container). The [producer] is re-invoked with this same instance on
+ * every [SharingCommand.START], so any mutations applied to it persist across stop→restart
+ * cycles. If you need immutable state semantics, use [actionStateFlowMutator] instead.
+ *
+ * [ActionSuspendingStateMutator.accept] is decoupled from the [started] lifecycle:
+ * actions sent while no collector is active are buffered and processed when the producer
+ * next becomes active. Action ordering is not guaranteed — use `launchMutationsIn` with a
+ * key for sequential processing of related actions.
+ *
  * @param started The [SharingStarted] strategy to control when the producer is active.
  * @param producer A suspending lambda that produces state changes. It is invoked when the
- * [started] strategy dictates that the producer should be active. It receives the current state
+ * [started] strategy dictates that the producer should be active. It receives the [state] holder
  * and a [Flow] of actions.
  */
 fun <Action : Any, State : Any> CoroutineScope.actionSuspendingStateMutator(
-    initialState: State,
+    state: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
     producer: suspend CoroutineScope.(State, Flow<Action>) -> Unit,
 ): ActionSuspendingStateMutator<Action, State> = DelegatingActionSuspendingStateMutator(
     coroutineScope = this,
-    initialState = initialState,
+    state = state,
     started = started,
     producer = producer,
 )
 
 private class DelegatingActionSuspendingStateMutator<Action : Any, State : Any>(
     coroutineScope: CoroutineScope,
-    initialState: State,
+    state: State,
     started: SharingStarted,
     producer: suspend CoroutineScope.(State, Flow<Action>) -> Unit,
 ) : ActionSuspendingStateMutator<Action, State> {
@@ -65,11 +76,11 @@ private class DelegatingActionSuspendingStateMutator<Action : Any, State : Any>(
     private val actions = Channel<Action>()
 
     val mutator = coroutineScope.suspendingStateMutator(
-        initialState = initialState,
+        state = state,
         started = started,
-        producer = { currentState ->
+        producer = { state ->
             producer(
-                currentState,
+                state,
                 actions.receiveAsFlow(),
             )
         },

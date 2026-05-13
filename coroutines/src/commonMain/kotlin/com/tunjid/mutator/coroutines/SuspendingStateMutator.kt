@@ -47,19 +47,23 @@ interface SuspendingStateMutator<out State : Any> : StateMutator<State> {
 /**
  * Creates a [SuspendingStateMutator] that derives its state from a [producer].
  *
- * @param initialState The initial state of the mutator.
+ * @param state The state holder used by the mutator. This is expected to be a mutable holder
+ * (e.g. an `androidx.compose.runtime.mutableStateOf`-backed object, a `MutableStateFlow`, or any
+ * other observable mutable container). The [producer] is re-invoked with this same instance on
+ * every [SharingCommand.START], so any mutations applied to it persist across stop→restart
+ * cycles. If you need immutable state semantics, use [actionStateFlowMutator] instead.
  * @param started The [SharingStarted] strategy to control when the producer is active.
  * @param producer A suspending lambda that produces state changes. It is invoked when the
  * [started] strategy dictates that the producer should be active.
  */
 fun <State : Any> CoroutineScope.suspendingStateMutator(
-    initialState: State,
+    state: State,
     started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
     producer: suspend CoroutineScope.(State) -> Unit,
 ): SuspendingStateMutator<State> {
     val subscriptionCount = MutableStateFlow(0)
     val mutator = RefCountingSuspendingStateMutator(
-        state = initialState,
+        state = state,
         subscriptionCount = subscriptionCount,
     )
 
@@ -69,7 +73,7 @@ fun <State : Any> CoroutineScope.suspendingStateMutator(
             when (command) {
                 SharingCommand.START -> {
                     if (producerJob == null || producerJob?.isActive == false) {
-                        producerJob = launch { producer(initialState) }
+                        producerJob = launch { producer(state) }
                     }
                 }
 

@@ -87,7 +87,7 @@ private fun SuspendingStateMutatorProduceStateDemo() {
     val scope = rememberCoroutineScope()
     val mutator = remember(scope) {
         scope.suspendingStateMutator(
-            initialState = State.SnapshotMutable(),
+            state = State.SnapshotMutable(),
             started = SharingStarted.WhileSubscribed(),
             producer = { state ->
                 IndexFlow.collect { index ->
@@ -108,7 +108,7 @@ private fun SuspendingStateMutatorProduceStateWithLifecycleDemo() {
     val scope = rememberCoroutineScope()
     val mutator = remember(scope) {
         scope.suspendingStateMutator(
-            initialState = State.SnapshotMutable(),
+            state = State.SnapshotMutable(),
             started = SharingStarted.WhileSubscribed(),
             producer = { state ->
                 IndexFlow.collect { index ->

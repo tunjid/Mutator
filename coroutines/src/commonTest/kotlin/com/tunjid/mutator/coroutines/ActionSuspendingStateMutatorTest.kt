@@ -25,16 +25,22 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 
@@ -57,7 +63,7 @@ class ActionSuspendingStateMutatorTest {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
         val mutator = scope.actionSuspendingStateMutator<IntAction, SnapshotMutableState>(
-            initialState = SnapshotMutableState(),
+            state = SnapshotMutableState(),
             producer = { state, actions ->
                 actions.launchMutationsIn(productionScope = this) {
                     when (val action = type()) {
@@ -103,6 +109,117 @@ class ActionSuspendingStateMutatorTest {
             cancelAndIgnoreRemainingEvents()
         }
 
+        scope.cancel()
+    }
+
+    @Test
+    fun producerRestartsWhenResubscribedAfterStopTimeout() = runTest {
+        val scope = CoroutineScope(SupervisorJob() + StandardTestDispatcher(testScheduler))
+        var producerInvocations = 0
+
+        val mutator = scope.actionSuspendingStateMutator<IntAction, SnapshotMutableState>(
+            state = SnapshotMutableState(),
+            producer = { _, _ ->
+                producerInvocations++
+                awaitCancellation()
+            },
+        )
+
+        val firstCollector = scope.launch { mutator.collect() }
+        advanceUntilIdle()
+        assertEquals(1, producerInvocations)
+
+        firstCollector.cancel()
+        // Cross the 5s WhileSubscribed timeout so SharingCommand.STOP fires.
+        advanceTimeBy(6_000)
+        runCurrent()
+
+        val secondCollector = scope.launch { mutator.collect() }
+        advanceUntilIdle()
+        assertEquals(2, producerInvocations)
+
+        secondCollector.cancel()
+        scope.cancel()
+    }
+
+    @Test
+    fun actionsSentWhileUnsubscribedAreDrainedAfterResubscribe() = runTest {
+        val scope = CoroutineScope(SupervisorJob() + StandardTestDispatcher(testScheduler))
+        val stateHolder = SnapshotMutableState()
+
+        val mutator = scope.actionSuspendingStateMutator<IntAction, SnapshotMutableState>(
+            state = stateHolder,
+            producer = { state, actions ->
+                actions.launchMutationsIn(productionScope = this) {
+                    when (val action = type()) {
+                        is IntAction.Add -> action.flow.collect { state.count += it.value }
+                        is IntAction.Subtract -> action.flow.collect { state.count -= it.value }
+                    }
+                }
+            },
+        )
+
+        val firstCollector = scope.launch { mutator.collect() }
+        advanceUntilIdle()
+
+        mutator.accept(IntAction.Add(value = 1))
+        advanceUntilIdle()
+        assertEquals(1.0, stateHolder.count)
+
+        firstCollector.cancel()
+        advanceTimeBy(6_000)
+        runCurrent()
+
+        // Producer is now cancelled. These accepts suspend on the rendezvous channel.
+        mutator.accept(IntAction.Add(value = 2))
+        mutator.accept(IntAction.Add(value = 3))
+        advanceUntilIdle()
+        assertEquals(1.0, stateHolder.count)
+
+        // Resubscribing restarts the producer and drains the buffered sends.
+        val secondCollector = scope.launch { mutator.collect() }
+        advanceUntilIdle()
+        assertEquals(6.0, stateHolder.count)
+
+        secondCollector.cancel()
+        scope.cancel()
+    }
+
+    @Test
+    fun stateHolderIsReusedAcrossStopRestartCycles() = runTest {
+        val scope = CoroutineScope(SupervisorJob() + StandardTestDispatcher(testScheduler))
+        val stateHolder = SnapshotMutableState()
+
+        val mutator = scope.actionSuspendingStateMutator<IntAction, SnapshotMutableState>(
+            state = stateHolder,
+            producer = { state, actions ->
+                actions.launchMutationsIn(productionScope = this) {
+                    when (val action = type()) {
+                        is IntAction.Add -> action.flow.collect { state.count += it.value }
+                        is IntAction.Subtract -> action.flow.collect { state.count -= it.value }
+                    }
+                }
+            },
+        )
+
+        val firstCollector = scope.launch { mutator.collect() }
+        advanceUntilIdle()
+        mutator.accept(IntAction.Add(value = 5))
+        advanceUntilIdle()
+        assertEquals(5.0, stateHolder.count)
+        assertSame(stateHolder, mutator.state)
+
+        firstCollector.cancel()
+        advanceTimeBy(6_000)
+        runCurrent()
+
+        val secondCollector = scope.launch { mutator.collect() }
+        advanceUntilIdle()
+        // The mutable holder survived the stop→restart cycle: same instance, same value.
+        assertSame(stateHolder, mutator.state)
+        assertEquals(5.0, stateHolder.count)
+
+        secondCollector.cancel()
         scope.cancel()
     }
 }

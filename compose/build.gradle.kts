@@ -38,6 +38,7 @@ kotlin {
                 implementation(libs.compose.multiplatform.foundation.layout)
                 implementation(libs.compose.multiplatform.ui.ui)
                 implementation(libs.compose.multiplatform.ui.tooling)
+                implementation(libs.compose.multiplatform.ui.tooling.preview)
 
                 implementation(libs.cashapp.turbine)
                 implementation(libs.kotlinx.coroutines.test)
