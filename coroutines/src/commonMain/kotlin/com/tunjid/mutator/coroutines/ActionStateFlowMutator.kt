@@ -63,6 +63,23 @@ fun <Action : Any, State : Any> CoroutineScope.actionStateFlowMutator(
     actionTransform = actionTransform,
 )
 
+/**
+ * Represents the receiver as a no-op [ActionStateMutator]: its [ActionStateMutator.accept] does
+ * nothing and its [StateFlow] only ever holds the receiver.
+ *
+ * Typically useful for tests or previews.
+ */
+fun <Action : Any, State : Any> State.asNoOpStateFlowMutator(): ActionStateMutator<Action, StateFlow<State>> =
+    NoOpActionStateFlowMutator(this)
+
+/**
+ * Returns whether the receiver is a no-op [ActionStateMutator] — that is, either `null` or an
+ * instance produced by [asNoOpStateFlowMutator]. Useful for short-circuiting when no real state
+ * production is wired up, for example in tests or previews.
+ */
+fun <Action : Any, State : Any> ActionStateMutator<Action, StateFlow<State>>?.isNoOp() =
+    this == null || this is NoOpActionStateFlowMutator
+
 private class ActionStateFlowMutator<Action : Any, State : Any>(
     coroutineScope: CoroutineScope,
     initialState: State,
@@ -100,15 +117,11 @@ private class ActionStateFlowMutator<Action : Any, State : Any>(
     override suspend fun invoke(): State = state.value
 }
 
-/**
- * Represents a type as a StateFlowMutator of itself with no op [Action]s.
- *
- * This is typically useful for testing or previews
- */
-fun <Action : Any, State : Any> State.asNoOpStateFlowMutator(): ActionStateMutator<Action, StateFlow<State>> =
-    object : ActionStateMutator<Action, StateFlow<State>> {
-        override val accept: (Action) -> Unit = {}
-        override val state: StateFlow<State> = MutableStateFlow(this@asNoOpStateFlowMutator)
-    }
+private class NoOpActionStateFlowMutator<Action : Any, State : Any>(
+    state: State,
+) : ActionStateMutator<Action, StateFlow<State>> {
+    override val accept: (Action) -> Unit = {}
+    override val state: StateFlow<State> = MutableStateFlow(state)
+}
 
 internal const val DEFAULT_STOP_TIMEOUT_MILLIS = 5000L

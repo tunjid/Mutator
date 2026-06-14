@@ -16,7 +16,7 @@
 
 package com.tunjid.mutator.coroutines
 
-import com.tunjid.mutator.StateMutator
+import com.tunjid.mutator.StateHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.awaitCancellation
@@ -27,19 +27,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
- * A [StateMutator] that can be suspended.
+ * A [StateHolder] that can be suspended.
  *
  * This interface allows for the state production to be tied to the lifecycle of the collector.
  * When [collect] is called, it signals that the state production should be active.
  */
-interface SuspendingStateMutator<out State : Any> : StateMutator<State> {
+interface SuspendingStateMutator<out State : Any> : StateHolder<State> {
     /**
      * Suspends and keeps the upstream producer active for as long as this function
      * is running.
      *
-     * Callers should launch this in a coroutine. When the coroutine is cancelled,
-     * the reference count is decremented.
-     * * This function does not return normally; it suspends until cancellation.
+     * This function does not return normally; it suspends until cancellation.
      */
     suspend fun collect()
 }

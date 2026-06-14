@@ -66,6 +66,24 @@ fun <Action : Any, State : Any> CoroutineScope.actionSuspendingStateMutator(
     producer = producer,
 )
 
+/**
+ * Represents the receiver as a no-op [ActionSuspendingStateMutator]: its
+ * [ActionSuspendingStateMutator.accept] and [ActionSuspendingStateMutator.collect] do nothing and
+ * its state always holds the receiver.
+ *
+ * Typically useful for tests or previews.
+ */
+fun <Action : Any, State : Any> State.asNoOpActionSuspendingStateMutator(): ActionSuspendingStateMutator<Action, State> =
+    NoOpActionSuspendingStateMutator(this)
+
+/**
+ * Returns whether the receiver is a no-op [ActionSuspendingStateMutator] — that is, either `null`
+ * or an instance produced by [asNoOpActionSuspendingStateMutator]. Useful for short-circuiting when
+ * no real state production is wired up, for example in tests or previews.
+ */
+fun <Action : Any, State : Any> ActionSuspendingStateMutator<Action, State>?.isNoOp() =
+    this == null || this is NoOpActionSuspendingStateMutator
+
 private class DelegatingActionSuspendingStateMutator<Action : Any, State : Any>(
     coroutineScope: CoroutineScope,
     state: State,
@@ -97,4 +115,11 @@ private class DelegatingActionSuspendingStateMutator<Action : Any, State : Any>(
 
     override suspend fun collect() =
         mutator.collect()
+}
+
+private class NoOpActionSuspendingStateMutator<Action : Any, State : Any>(
+    override val state: State,
+) : ActionSuspendingStateMutator<Action, State> {
+    override val accept: (Action) -> Unit = {}
+    override suspend fun collect() = Unit
 }

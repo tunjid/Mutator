@@ -25,7 +25,9 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -220,6 +222,44 @@ class ActionSuspendingStateMutatorTest {
         assertEquals(5.0, stateHolder.count)
 
         secondCollector.cancel()
+        scope.cancel()
+    }
+
+    @Test
+    fun noOpActionSuspendingStateMutatorHoldsStateAndIgnoresEverything() = runTest {
+        val stateHolder = SnapshotMutableState()
+        val mutator = stateHolder.asNoOpActionSuspendingStateMutator<IntAction, SnapshotMutableState>()
+
+        // The state is exactly the receiver.
+        assertSame(stateHolder, mutator.state)
+
+        // accept is a no-op: the state is untouched.
+        mutator.accept(IntAction.Add(value = 5))
+        assertEquals(0.0, mutator.state.count)
+
+        // collect returns immediately rather than suspending until cancellation.
+        mutator.collect()
+    }
+
+    @Test
+    fun isNoOpIsTrueForNoOpMutatorAndNull() {
+        val noOp = SnapshotMutableState().asNoOpActionSuspendingStateMutator<IntAction, SnapshotMutableState>()
+        assertTrue(noOp.isNoOp())
+
+        val nullMutator: ActionSuspendingStateMutator<IntAction, SnapshotMutableState>? = null
+        assertTrue(nullMutator.isNoOp())
+    }
+
+    @Test
+    fun isNoOpIsFalseForRealMutator() {
+        val scope = CoroutineScope(SupervisorJob() + StandardTestDispatcher(testDispatcher.scheduler))
+        val mutator = scope.actionSuspendingStateMutator<IntAction, SnapshotMutableState>(
+            state = SnapshotMutableState(),
+            producer = { _, _ -> awaitCancellation() },
+        )
+
+        assertFalse(mutator.isNoOp())
+
         scope.cancel()
     }
 }
