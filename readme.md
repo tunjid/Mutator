@@ -23,10 +23,10 @@ are production tested, and should not be taken as anything more than its face va
 
 Mutator is a Kotlin multiplatform library that provides a suite of tools that help with producing state while following unidirectional data flow (UDF) principles. More specifically it provides implementations of the paradigm `newState = oldState + Δstate`.
 
-Where `StateMutator`s are defined as:
+Where `StateHolder`s are defined as:
 
 ```kotlin
-interface StateMutator<State : Any> {
+interface StateHolder<State : Any> {
     val state: State
 }
 ```
@@ -44,7 +44,7 @@ fun <State : Any> CoroutineScope.stateFlowMutator(
     initialState: State,
     started: SharingStarted,
     inputs: List<Flow<Mutation<State>>>
-): StateMutator<StateFlow<State>>  
+): StateHolder<StateFlow<State>>  
 ```
 
 and 
@@ -55,7 +55,7 @@ fun <Action : Any, State : Any> CoroutineScope.actionStateFlowMutator(
     started: SharingStarted,
     inputs: List<Flow<Mutation<State>>>,
     actionTransform: (Flow<Action>) -> Flow<Mutation<State>>
-): StateMutator<StateFlow<State>>
+): StateHolder<StateFlow<State>>
 ```
 
 `stateFlowMutator` is well suited for MVVM style applications and `actionStateFlowMutator` for MVI like approaches.
@@ -63,7 +63,7 @@ fun <Action : Any, State : Any> CoroutineScope.actionStateFlowMutator(
 ## Foreground execution limits
 
 Both implementations enforce that coroutines launched in them are only active as specified by the `SharingStarted`
-policies passed to them. For most UI `StateMutator`s, this is typically `SharingStarted.whileSubscribed(duration)`.
+policies passed to them. For most UI `StateHolder`s, this is typically `SharingStarted.whileSubscribed(duration)`.
 Any work launched that does not fit into this policy (a photo upload for example) should be queued to be run with the
 appropriate API on the platform you're working on. On Android, this is `WorkManager`.
 

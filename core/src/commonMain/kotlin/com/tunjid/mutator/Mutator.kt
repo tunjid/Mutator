@@ -21,27 +21,32 @@ package com.tunjid.mutator
  */
 typealias Mutation<State> = State.() -> State
 
-typealias StateHolder<State> = StateMutator<State>
-
 /**
- * A type that holds a state of type [State].
+ * A type that holds a readable state of type [State].
  */
-interface StateMutator<out State : Any> {
+interface StateHolder<out State : Any> {
     /**
-     * The current state of the mutator.
+     * The current state.
      */
     val state: State
 }
 
 /**
- * A [StateMutator] that can accept actions of type [Action] to mutate its state.
+ * A [StateHolder] that can accept actions of type [Action] to mutate its state.
  */
-interface ActionStateMutator<in Action : Any, out State : Any> : StateMutator<State> {
+interface ActionStateMutator<in Action : Any, out State : Any> : StateHolder<State> {
     /**
      * Accepts an action to mutate the state.
      */
     val accept: (Action) -> Unit
 }
+
+/**
+ * Alias for [ActionStateMutator.accept]
+ */
+operator fun <Action : Any, State : Any> ActionStateMutator<Action, State>.invoke(
+    action: Action,
+) = accept(action)
 
 /**
  * Syntactic sugar for creating a [Mutation]

@@ -18,10 +18,13 @@ package com.tunjid.mutator.coroutines
 
 import app.cash.turbine.test
 import com.tunjid.mutator.ActionStateMutator
+import com.tunjid.mutator.invoke
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -166,5 +169,41 @@ class ActionStateFlowMutatorTest {
             expected = State(),
             actual = noOpActionStateMutator.state.value,
         )
+    }
+
+    @Test
+    fun isNoOpIsTrueForNoOpMutatorAndNull() {
+        val noOp: ActionStateMutator<Action, StateFlow<State>> = State().asNoOpStateFlowMutator()
+        assertTrue(noOp.isNoOp())
+
+        val nullMutator: ActionStateMutator<Action, StateFlow<State>>? = null
+        assertTrue(nullMutator.isNoOp())
+    }
+
+    @Test
+    fun isNoOpIsFalseForRealMutator() {
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        val mutator = scope.actionStateFlowMutator<Action, State>(
+            initialState = State(),
+            started = SharingStarted.WhileSubscribed(),
+            actionTransform = { actions -> actions.map { it.mutation } },
+        )
+
+        assertFalse(mutator.isNoOp())
+
+        scope.cancel()
+    }
+
+    @Test
+    fun invokeOperatorForwardsToAccept() {
+        val received = mutableListOf<IntAction>()
+        val mutator = object : ActionStateMutator<IntAction, State> {
+            override val accept: (IntAction) -> Unit = { received.add(it) }
+            override val state: State = State()
+        }
+
+        mutator(IntAction.Add(value = 3))
+
+        assertEquals(listOf<IntAction>(IntAction.Add(value = 3)), received)
     }
 }

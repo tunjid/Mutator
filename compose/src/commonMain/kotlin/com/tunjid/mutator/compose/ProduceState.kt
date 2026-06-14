@@ -24,7 +24,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.tunjid.mutator.StateMutator
+import com.tunjid.mutator.StateHolder
 import com.tunjid.mutator.coroutines.SuspendingStateMutator
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -33,21 +33,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * Produces state by collecting the [StateFlow] in the [StateMutator].
+ * Produces state by collecting the [StateFlow] in the [StateHolder].
  */
 @Composable
-fun <T : Any> StateMutator<StateFlow<T>>.produceState(): T =
+fun <T : Any> StateHolder<StateFlow<T>>.produceState(): T =
     state.collectAsState().value
 
 /**
- * Produces state by collecting the [StateFlow] in the [StateMutator].
+ * Produces state by collecting the [StateFlow] in the [StateHolder].
  *
  * @param lifecycle The [Lifecycle] to observe.
  * @param minActiveState The minimum active state of the lifecycle required to collect the flow.
  * @param context The [CoroutineContext] to use for collection.
  */
 @Composable
-fun <T : Any> StateMutator<StateFlow<T>>.produceStateWithLifecycle(
+fun <T : Any> StateHolder<StateFlow<T>>.produceStateWithLifecycle(
     lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
     minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
     context: CoroutineContext = EmptyCoroutineContext,

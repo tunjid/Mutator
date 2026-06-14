@@ -17,7 +17,7 @@
 package com.tunjid.mutator.coroutines
 
 import com.tunjid.mutator.Mutation
-import com.tunjid.mutator.StateMutator
+import com.tunjid.mutator.StateHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -48,7 +48,7 @@ class StateFlowMutator<State : Any> internal constructor(
     started: SharingStarted = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
     inputs: List<Flow<Mutation<State>>> = emptyList(),
     stateTransform: (Flow<State>) -> Flow<State> = { it },
-) : StateMutator<StateFlow<State>> {
+) : StateHolder<StateFlow<State>> {
     private val mutationChannel = Channel<Mutation<State>>()
     private val mutationSender = FlowCollector(mutationChannel::send)
 
@@ -61,7 +61,7 @@ class StateFlowMutator<State : Any> internal constructor(
 
     /**
      * Runs [block] in parallel with any other tasks submitted to [launch]. [block] is only ever run if there is an
-     * active collector of [state], and is managed under the [SharingStarted] policy passed to this [StateMutator].
+     * active collector of [state], and is managed under the [SharingStarted] policy passed to this [StateHolder].
      *
      * If there are no observers of [state] at the invocation of [launch], the Coroutine launched will suspend till
      * a collector begins to collect from [state].
