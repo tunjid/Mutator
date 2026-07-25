@@ -1,7 +1,7 @@
 [versions]
 androidGradlePlugin = "8.13.2"
 axion-release = "1.21.1"
-dokka = "2.1.0"
+dokka = "2.2.0"
 composeMultiplatform = "1.11.1"
 junit4 = "4.13.2"
 kotlin = "2.4.0"
@@ -10,8 +10,8 @@ kotlinxCoroutines = "1.11.0"
 ktlint-cli = "1.8.0"
 lifecycleMultiplatform = "2.11.0-beta01"
 mavenPublish = "0.34.0"
-richtext = "0.16.0"
-turbine = "1.1.0"
+richtext = "0.20.0"
+turbine = "1.2.1"
 spotless = "8.2.0"
 
 [libraries]
