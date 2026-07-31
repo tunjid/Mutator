@@ -56,3 +56,10 @@ kotlin {
         }
     }
 }
+
+// `jvmTest` holds only @Preview composables (Previews.kt), kept out of the published
+// artifact — not tests. Gradle 9 fails a test task that has sources but discovers no
+// tests, so opt out for this (intentionally test-less) module.
+tasks.withType<Test>().configureEach {
+    failOnNoDiscoveredTests = false
+}
