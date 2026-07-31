@@ -29,8 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.halilibo.richtext.markdown.Markdown
-import com.halilibo.richtext.ui.RichText
+import com.halilibo.richtext.commonmark.Markdown
+import com.halilibo.richtext.ui.BasicRichText
 
 @Composable
 actual fun Paragraph(text: String) {
@@ -45,7 +45,7 @@ actual fun Paragraph(text: String) {
 
 @Composable
 actual fun Markdown(content: String) {
-    RichText(
+    BasicRichText(
         modifier = Modifier.padding(horizontal = 16.dp),
     ) {
         Markdown(

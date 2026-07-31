@@ -10,7 +10,7 @@ kotlinxCoroutines = "1.11.0"
 ktlint-cli = "1.8.0"
 lifecycleMultiplatform = "2.11.0"
 mavenPublish = "0.34.0"
-richtext = "0.20.0"
+richtext = "1.0.0-alpha05"
 turbine = "1.2.1"
 spotless = "8.2.0"
 
@@ -42,7 +42,6 @@ ktlint = { group = "com.pinterest.ktlint", name = "ktlint-cli", version.ref = "k
 lifecycle-multiplatform-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleMultiplatform" }
 maven-publish-gradlePlugin = { group = "com.vanniktech", name = "gradle-maven-publish-plugin", version.ref = "mavenPublish" }
 richtext-commonmark= { group = "com.halilibo.compose-richtext", name = "richtext-commonmark", version.ref = "richtext" }
-richtext-material= { group = "com.halilibo.compose-richtext", name = "richtext-ui-material", version.ref = "richtext" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
