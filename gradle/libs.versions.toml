@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "9.3.2"
+androidGradlePlugin = "9.4.0"
 axion-release = "1.21.3"
 dokka = "2.2.0"
 composeMultiplatform = "1.12.0"
@@ -12,7 +12,7 @@ lifecycleMultiplatform = "2.11.0"
 mavenPublish = "0.37.0"
 richtext = "1.0.0-alpha05"
 turbine = "1.2.1"
-spotless = "8.10.0"
+spotless = "8.10.1"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
