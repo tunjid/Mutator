@@ -1,6 +1,6 @@
 [versions]
 androidGradlePlugin = "9.4.1"
-axion-release = "1.21.3"
+axion-release = "1.21.4"
 dokka = "2.2.0"
 composeMultiplatform = "1.12.1"
 junit4 = "4.13.2"
